@@ -1,0 +1,99 @@
+﻿{% load cms_tags menu_tags sekizai_tags staticfiles %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-framework="angularjs">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{% page_attribute 'meta_description' %}">
+	<meta name="author" content="{% page_attribute 'author' %}">
+
+    <style type="text/css">
+        /** Hide when Angular is not yet loaded and initialized */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+
+	<title>{% page_attribute 'page_title' %}</title>
+	<!-- Load CSS -->
+	<!-- Bootstrap Core CSS -->
+	<link href="{% static 'vendor/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+	<!-- Bootstrap Plugins -->
+	<link href="{% static 'vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+
+    <!-- AngularJS Slider CSS -->
+    <link href="{% static 'vendor/angularjs-slider/dist/rzslider.min.css' %}" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="{% static 'css/main.css' %}" rel="stylesheet">
+	<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
+	<link href="{% static 'css/sidebar.css' %}" rel="stylesheet">
+	<link href="{% static 'css/dateslider.css' %}" rel="stylesheet">
+	<link href="{% static 'css/footer.css' %}" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="{% static 'vendor/components-font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+
+	{% render_block "css" %}
+
+</head>
+<body>
+	{% cms_toolbar %}
+
+    <!-- CMS Menu -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+            {% show_menu 0 100 100 100 %}
+        </ul>
+    </div>
+
+	<div ng-cloak class="container-fluid">
+
+        {% include "navigation.html" %}
+
+		<div class="container-fluid container-wrapper">
+			{% block main_container %} {% endblock main_container %}
+		</div>
+
+		<div id="push"></div>
+
+		<!-- /.wrapper-collapse -->
+	</div>
+    
+    {% block footer %} {% endblock footer %}
+
+	<!-- Load JS Lib -->
+	<!-- jQuery -->
+	<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+	<!-- Bootstrap Plugins -->
+    <script src="{% static 'vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCftEx2S9RjScdfNCGa4Z-8HgUVIUjOErk&v=3.exp&libraries=drawing"></script>
+
+	<!--  Load Angular  -->
+	<script src="{% static 'vendor/angular/angular.js' %}"></script>
+
+    <!-- Angular Dependent Library -->
+    <script src="{% static 'vendor/angularjs-slider/dist/rzslider.min.js' %}"></script>
+
+    <!-- Bootstrap Application -->
+    <script src="{% static 'app/init.js' %}"></script>
+
+    <!-- Load Settings -->
+    <script src="{% static 'app/config/settings.js' %}"></script>
+
+    <!-- Services -->
+    <script src="{% static 'app/services/map.js' %}"></script>
+    
+    <!-- Controllers -->
+    <script src="{% static 'app/controllers/settings.js' %}"></script>
+    <script src="{% static 'app/controllers/map.js' %}"></script>
+
+
+	{% render_block "js" %}
+
+</body>
+</html>
