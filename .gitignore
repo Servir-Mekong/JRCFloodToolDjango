@@ -13,11 +13,11 @@ jrcfloodtool/settings.py
 # ======================
 .project
 .pydevproject
-.pyproj
+*.pyproj
 
 # Visual Studio project files
 # ======================
 .settings/
 .vs/
-.sln
+*.sln
 
