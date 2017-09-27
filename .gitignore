@@ -5,8 +5,8 @@
 # private
 # ===========
 credentials/
-media/
-static/
+./media/*
+./static/*
 jrcfloodtool/settings.py
 
 # Eclipse project files
