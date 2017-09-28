@@ -10,16 +10,19 @@ def api(request):
     action = get('action', '')
 
     if action:
-        public_methods = ['get-map-id', 'download-url', 'download-to-drive', 'oauth2']
+        public_methods = ['get-map-id', 'download-url', 'download-to-drive']
         if action in public_methods:
-            start_year = get('start', settings.EE_START_YEAR)
-            end_year = get('end', settings.EE_END_YEAR)
+            start_year = get('startYear', '2000')
+            end_year = get('endYear', '2012')
+            start_month = get('startMonth', '01')
+            end_month = get('endMonth', '12')
             shape = get('shape', '')
             geom = get('geom', '')
             radius = get('radius', '')
             center = get('center', '')
             file_name = get('file', '')
-            core = GEEApi(start_year, end_year, shape, geom, radius, center)
+            method = get('method', '')
+            core = GEEApi(start_year, end_year, start_month, end_month, shape, geom, radius, center, method)
             if action == 'get-map-id':
                 data = core.get_map_id()
             elif action == 'download-url':

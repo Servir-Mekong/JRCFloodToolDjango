@@ -119,5 +119,15 @@ angular.module('baseApp').constant('appSettings', {
 			'src': 'https://servir.adpc.net/themes/svmk/images/optimized/partner-deltares.png',
 			'className': 'partner-deltares'
 		}
+	],
+	timePeriodOptions: [
+		{
+			'value': 'continuous',
+			'name' : 'Continuous'
+		},
+		{
+			'value': 'discrete',
+			'name' : 'Discrete'
+		}
 	]
 });

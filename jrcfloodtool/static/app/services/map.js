@@ -6,13 +6,16 @@
 	.service('MapService', function ($http, $q) {
 		
 		//var deferred = $q.defer();
-		this.getEEMapTokenID = function (startYear, endYear, shape) {
+		this.getEEMapTokenID = function (startYear, endYear, startMonth, endMonth, method, shape) {
 
 			var config = {
 					params: {
-						start: startYear,
-						end: endYear,
-						action: 'get-map-id'
+						startYear: startYear,
+						endYear: endYear,
+						startMonth: startMonth,
+						endMonth: endMonth,
+						action: 'get-map-id',
+						method: method
 					}
 			}
 
@@ -41,13 +44,16 @@
 			return deferred.promise;*/
 		};
 
-		this.downloadMap = function (startYear, endYear, shape) {
+		this.downloadMap = function (startYear, endYear, startMonth, endMonth, method, shape) {
 
 			var config = {
 					params: {
-						start: startYear,
-						end: endYear,
-						action: 'download-url'
+						startYear: startYear,
+						endYear: endYear,
+						startMonth: startMonth,
+						endMonth: endMonth,
+						action: 'download-url',
+						method: method
 					}
 			}
 
@@ -64,13 +70,16 @@
 			return promise;
 		};
 
-		this.saveToDrive = function (startYear, endYear, shape, fileName) {
+		this.saveToDrive = function (startYear, endYear, startMonth, endMonth, method, shape, fileName) {
 			var config = {
 					params: {
-						start: startYear,
-						end: endYear,
+						startYear: startYear,
+						endYear: endYear,
+						startMonth: startMonth,
+						endMonth: endMonth,
 						action: 'download-to-drive',
-						file: fileName
+						file: fileName,
+						method: method
 					}
 			}
 

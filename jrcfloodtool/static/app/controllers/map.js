@@ -3,8 +3,11 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl', function ($scope, $timeout, MapService) {
+	.controller('mapCtrl', function ($scope, $timeout, MapService, appSettings) {
 
+		// Settings
+		$scope.timePeriodOptions = appSettings.timePeriodOptions;
+		
 		// Sidebar Menu controller
 		$scope.toggleButtonClass = 'toggle-sidebar-button is-closed';
 		$scope.sidebarClass = 'display-none';
@@ -71,22 +74,24 @@
 
 		$scope.showLegend = false;
 		$scope.showAlert = false;
+		$scope.timePeriodOption = null;
 
 		/**
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
-		$scope.initMap = function (startDate, endDate, init) {
+		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
 			if (typeof(init)==='undefined') init = false;
 			$scope.showLoader = true;
-			MapService.getEEMapTokenID(startDate, endDate, $scope.shape)
+			MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 		    .then(function (data) {
 				$scope.showAlert();
 		    	loadMap(data.eeMapId, data.eeMapToken);
 		    	if (init) {
-					$('.custom-alert').removeClass('alert-success');
-					$('.custom-alert').removeClass('alert-danger');
-					$('.custom-alert').addClass('alert-info');
-					$scope.alertContent = "The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!";	
+					$scope.showInfoAlert();
+					$scope.alertContent = 'The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!';	
+		    	} else {
+					$scope.showSuccessAlert();
+					$scope.alertContent = 'The map view is updated!';
 		    	}
 		    	$scope.showLegend = true;
 		    }, function (error) {
@@ -322,17 +327,19 @@
 			return monthObject[month];
 		}
 
-		$scope.checkBeforeDownload = function (checkAreaLimit) {
+		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon) {
 
-			if (!$scope.overlays[0]) {
-				$scope.showDangerAlert();
-				$scope.alertContent = 'Please draw a polygon to begin downloading!';
-				$scope.showAlert();
-				return false;
+			if (typeof(needPolygon)==='undefined') needPolygon = true;
+			if (needPolygon){
+				if (!$scope.overlays[0]) {
+					$scope.showDangerAlert();
+					$scope.alertContent = 'Please draw a polygon to begin downloading!';
+					$scope.showAlert();
+					return false;
+				}
 			}
-			
-			if (typeof(checkAreaLimit)==='undefined') checkAreaLimit = false;
 
+			if (typeof(checkAreaLimit)==='undefined') checkAreaLimit = false;
 			if (checkAreaLimit) {
 				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays[0].getPath()) / 1e6;
 
@@ -404,15 +411,11 @@
 		};
 
 		$scope.updateMap = function () {
-			var dateObject = $scope.checkBeforeDownload();
+			var dateObject = $scope.checkBeforeDownload(false, false);
 			// Clear before adding
 			map.overlayMapTypes.clear();
 			$scope.clearOverlays();
-			var startDate = dateObject['startYear'] + '-' + dateObject['startMonth'];
-			var endDate = dateObject['endYear'] + '-' + dateObject['endMonth'];
-			$scope.initMap(startDate, endDate);
-			$scope.showSuccessAlert();
-			$scope.alertContent = dateObject['message'] + ' The map view is updated!';
+			$scope.initMap(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value);
 		};
 
 		$scope.downloadMap = function () {
@@ -423,7 +426,7 @@
 				$scope.showInfoAlert();
 				$scope.alertContent = dateObject['message'] + ' Please wait while I prepare the download link for you!';
 				$scope.showAlert();
-				MapService.downloadMap(dateObject['startYear'] + '-'+ dateObject['startMonth'], dateObject['endYear'] + '-' + dateObject['endMonth'], $scope.shape)
+				MapService.downloadMap(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value, $scope.shape)
 			    .then(function (data) {
 					$scope.showSuccessAlert();
 					$scope.alertContent = 'Your Download Link is ready. Enjoy!';
@@ -446,7 +449,7 @@
 				$scope.showInfoAlert();
 				$scope.alertContent = dateObject['message'] + ' Please wait while I prepare the download link for you. This might take a while!';
 				$scope.showAlert();
-				MapService.saveToDrive(dateObject['startYear'] + '-' + dateObject['startMonth'], dateObject['endYear'] + '-' +dateObject['endMonth'], $scope.shape, fileName)
+				MapService.saveToDrive(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value, $scope.shape, fileName)
 			    .then(function (data) {
 			    	if (data.error) {
 				    	$scope.showDangerAlert();

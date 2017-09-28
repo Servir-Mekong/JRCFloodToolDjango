@@ -9,7 +9,7 @@ from utils import get_unique_string, transfer_files_to_user_drive
 class GEEApi():
     """ Google Earth Engine API """
 
-    def __init__(self, start_year, end_year, shape, geom, radius, center):
+    def __init__(self, start_year, end_year, start_month, end_month, shape, geom, radius, center, method):
 
         ee.Initialize(settings.EE_CREDENTIALS)
         self.IMAGE_COLLECTION = ee.ImageCollection(settings.EE_IMAGE_COLLECTION_ID)
@@ -18,9 +18,12 @@ class GEEApi():
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
         self.start_year = start_year
         self.end_year = end_year
+        self.start_month = start_month
+        self.end_month = end_month
         self.geom = geom
         self.radius = radius
         self.center = center
+        self.method = method
         self.geometry = self._get_geometry(shape)
 
     # -------------------------------------------------------------------------
@@ -53,7 +56,7 @@ class GEEApi():
 
         return ee.Image(img.gt(0)).set('system:time_start', img.get('system:time_start'))
 
-    # ---------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     def _get_water_image(self, img):
         """ 
             Returns the new image setting the attribute from the img
@@ -63,10 +66,25 @@ class GEEApi():
         return ee.Image(img.select('water').eq(2)).set('system:time_start', img.get('system:time_start'))
 
     # -------------------------------------------------------------------------
+    def _get_filtered_image_collection(self):
+        """ 
+            Returns the filtered image collection based on the type of method
+            selected for the time - continuous and discrete
+        """
+
+        if self.method == 'discrete':
+            return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
+                    filter(ee.Filter.calendarRange(int(self.start_year), int(self.end_year), 'year')).\
+                    filter(ee.Filter.calendarRange(int(self.start_month), int(self.end_month), 'month'))
+        else:
+            return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
+                                        filterDate(self.start_year + '-' + self.start_month,
+                                                   self.end_year + '-' + self.end_month)
+
+    # -------------------------------------------------------------------------
     def _calculate_water_percent_image(self):
 
-        filtered_image_collection = self.IMAGE_COLLECTION.filterBounds(self.geometry).\
-                                        filterDate(self.start_year, self.end_year)
+        filtered_image_collection = self._get_filtered_image_collection()
 
         observation_image_collection = filtered_image_collection.map(self._get_observations_image)
 
