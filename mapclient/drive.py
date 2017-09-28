@@ -6,10 +6,11 @@
 import googleapiclient.discovery
 import httplib2
 
-
+# -----------------------------------------------------------------------------
 class DriveHelper(object):
     """A helper class for interfacing with Google Drive."""
 
+    # -------------------------------------------------------------------------
     def __init__(self, credentials):
         """Creates a credentialed Drive service with the given credentials.
     
@@ -19,6 +20,7 @@ class DriveHelper(object):
         http = credentials.authorize(httplib2.Http())
         self.service = googleapiclient.discovery.build('drive', 'v2', http=http)
 
+    # -------------------------------------------------------------------------
     def GrantAccess(self, file_id, email):
         """Grants the email address write access to the file with the given ID.
 
@@ -40,6 +42,7 @@ class DriveHelper(object):
             body=new_permission,
             sendNotificationEmails=False).execute()
 
+    # -------------------------------------------------------------------------
     def CopyFile(self, origin_file_id, copy_title):
         """Copies the file with the ID in the user's root folder with the title.
 
@@ -55,6 +58,7 @@ class DriveHelper(object):
             fileId=origin_file_id, body=body).execute()
         return copied_file['id']
 
+    # -------------------------------------------------------------------------
     def GetExportedFiles(self, prefix):
         """Returns the Drive file ID of the first file found with the prefix.
 
@@ -69,6 +73,7 @@ class DriveHelper(object):
         files = self.service.files().list(q=query).execute()
         return files.get('items')
 
+    # -------------------------------------------------------------------------
     def DeleteFile(self, file_id):
         """Deletes the file with the given ID.
 

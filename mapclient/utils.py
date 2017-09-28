@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 import drive
 import random
 import string
 import time
-
-from django.conf import settings
 
 # -----------------------------------------------------------------------------
 def get_unique_string():

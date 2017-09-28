@@ -14,6 +14,12 @@ static/*
 scripts/*
 jrcfloodtool/settings.py
 
+# Unused templates
+# ======================
+jrcfloodtool/templates/home_.html
+jrcfloodtool/templates/panels/graph.html
+jrcfloodtool/templates/panels/map-view.html
+
 # Eclipse project files
 # ======================
 .project

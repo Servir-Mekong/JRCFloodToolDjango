@@ -1,5 +1,5 @@
 """
-WSGI config for ForestMonitoringSystem project.
+WSGI config for jrcfloodtool project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

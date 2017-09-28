@@ -12,7 +12,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.views.generic import TemplateView
 
-from oauth2client.contrib.django_util.site import urls as oauth2_urls
 admin.autodiscover()
 
 urlpatterns = [

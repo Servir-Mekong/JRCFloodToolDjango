@@ -6,5 +6,4 @@ urlpatterns = [
     url(r'^map/', views.index),
     url(r'^oauth2/', include(oauth2_urls)),
     url(r'^api/$', api.api),
-    
 ]
