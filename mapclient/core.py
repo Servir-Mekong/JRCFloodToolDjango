@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.contrib.sites.models import get_current_site
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-
-import datetime
-from . import drive
 import ee
-import logging
 import time
-
 from utils import get_unique_string, transfer_files_to_user_drive
 
 
@@ -143,12 +135,10 @@ class GEEApi():
             skipEmptyTiles = True
         )
         task.start()
-        #logging.info('Started EE task (id: %s).' % task.id)
 
         # Wait for the task to complete (taskqueue auto times out after 10 mins).
         i = 1
         while task.active():
-        #    logging.info('Polling for task (id: %s).' % task.id)
             print ("past %d seconds" % (i * settings.EE_TASK_POLL_FREQUENCY))
             i += 1
             time.sleep(settings.EE_TASK_POLL_FREQUENCY)
@@ -156,7 +146,6 @@ class GEEApi():
         # Make a copy (or copies) in the user's Drive if the task succeeded
         state = task.status()['state']
         if state == ee.batch.Task.State.COMPLETED:
-        #    logging.info('Task succeed (id: %s).' % task.id)
             try:
                 link = transfer_files_to_user_drive(temp_file_name, user_email, user_id, file_name, oauth2object)
                 return {'driveLink': link}

@@ -1,61 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import drive
-import httplib2
 import random
 import string
 import time
-import oauth2client
 
 from django.conf import settings
-
-from apiclient.discovery import build
-from oauth2client.contrib.django_util import decorators
-
-from oauth2client.contrib.multiprocess_file_storage import MultiprocessFileStorage
-
-class UserInfo:
-    # -------------------------------------------------------------------------
-    def __init__(self, credential):
-        self.credential = credential
-        _http_auth = self.credential.authorize(httplib2.Http())
-        _build_user_profile = build('oauth2', 'v2', _http_auth)
-        self.user_profile = _build_user_profile.userinfo().get().execute()
-
-    # -------------------------------------------------------------------------
-    def get_user_id(self):
-        """ Returns the user id from the build user profile """
-        self.user_id = self.user_profile['id']
-        return self.user_id
-
-    # -------------------------------------------------------------------------
-    def get_user_email(self):
-        """ Returns the user email from the build user profile """
-        self.user_email = self.user_profile['email']
-        return self.user_email
-
-    # -------------------------------------------------------------------------
-    def get_credential(self):
-        """ Returns the property credential """
-        return self.credential
-
-# -----------------------------------------------------------------------------
-class CredentialStorage:
-    # -------------------------------------------------------------------------
-    def __init__(self, user_id):
-        self.filename = 'credentials/user_credentials'
-        self.key = user_id
-        #key = '{}-{}'.format(client_id, user_id)
-        self.storage = MultiprocessFileStorage(self.filename, self.key)
-
-    # -------------------------------------------------------------------------
-    def set_credential(self, credential):
-        self.storage.put(credential)
-        credential.set_store(self.storage)
-
-    # -------------------------------------------------------------------------
-    def get_credential(self):
-        return self.storage.get()
 
 # -----------------------------------------------------------------------------
 def get_unique_string():
@@ -75,10 +25,6 @@ def transfer_files_to_user_drive(temp_file_name, user_email, user_id, file_name,
     for f in files:
         APP_DRIVE_HELPER.GrantAccess(f['id'], user_email)
 
-    # Create a Drive helper to access the user's Google Drive.
-    #user_credentials = oauth2client.appengine.StorageByKeyName(
-    #    oauth2client.appengine.CredentialsModel,
-    #    user_id, 'credentials').get()
     user_drive_helper = drive.DriveHelper(oauth2object)
 
     # Copy the file(s) into the user's Drive.
