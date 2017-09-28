@@ -5,9 +5,13 @@
 # private
 # ===========
 credentials/
-./media/
-./static/
-./scripts/
+media/*
+# Exception to the rule
+!media/README.md
+static/*
+# Exception to the rule
+!static/README.md
+scripts/*
 jrcfloodtool/settings.py
 
 # Eclipse project files
