@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load cms_tags %}
+{% load cms_tags staticfiles %}
 
 {% block main_container %}
 
@@ -37,16 +37,50 @@
             {% include "panels/view-and-data-download.html" %}
         </div>
 
-        <!-- Map Container -->
+        <!-- Alert Container -->
         <div class="alert alert-dismissible custom-alert text-center display-none" role="alert">
             <button type="button" class="close" ng-click="closeAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>[[alertContent]]</strong>
         </div>
-        <div ng-class="mapClass" id="map" ng-init="initMap('2000-01', '2012-12', true)">
-	        <div class="loader" ng-show="showLoader">
-	            <div class="loading-img" style="background: url(../static/img/loading.gif) center center no-repeat;"></div>
-	        </div>
+
+        <!-- Legend Container -->
+        <div class="panel panel-default legend" ng-show="showLegend">
+		    <div class="panel-heading">
+		        <h4>
+		            <a class="legend-toggle"
+		               data-toggle="collapse"
+                       data-parent="#accordion"
+                       href="#legend-body"></a>
+                    Legend
+                 </h4>
+		    </div>
+		    <div class="panel-collapse collapse out" id="legend-body">
+	            <div class="panel-body">
+		            <span class="text-center"><h5><b>Surface<br />Water<br />Occurrence</b></h5></span>
+		            <div>
+		                <table>
+		                    <tbody>
+			                    <tr>
+			                        <td rowspan="4"><img src="{% static 'images/legend.png' %}" alt="legend"/></td>
+			                    </tr>
+			                    <tr>
+			                        <td>100%</td>
+			                    </tr>
+			                    <tr>
+			                        <td>50%</td>
+			                    </tr>
+			                    <tr>
+			                        <td>1%</td>
+			                    </tr>
+		                    </tbody>
+		                </table>
+		            </div>
+	            </div>
+            </div>
         </div>
+
+        <!-- Map Container -->
+        <div ng-class="mapClass" id="map" ng-init="initMap('2000-01', '2012-12', true)"></div>
         
     </div>
     

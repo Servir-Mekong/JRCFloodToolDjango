@@ -31,7 +31,7 @@ angular.module('baseApp').constant('appSettings', {
 			'show': true
 		}
 	],
-	applicationName: 'JRC Flood Analysis Tool',
+	applicationName: 'Historical Flood Analysis Tool',
 	footerLinks: [
 		{
 			'name': 'About',

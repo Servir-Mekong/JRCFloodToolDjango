@@ -69,8 +69,7 @@
 			// Map variable
 			map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-		// Loader Scope
-		$scope.showLoader = false;
+		$scope.showLegend = false;
 		$scope.showAlert = false;
 
 		/**
@@ -83,13 +82,13 @@
 		    .then(function (data) {
 				$scope.showAlert();
 		    	loadMap(data.eeMapId, data.eeMapToken);
-		    	$scope.showLoader = false;
 		    	if (init) {
 					$('.custom-alert').removeClass('alert-success');
 					$('.custom-alert').removeClass('alert-danger');
 					$('.custom-alert').addClass('alert-info');
 					$scope.alertContent = "The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!";	
 		    	}
+		    	$scope.showLegend = true;
 		    }, function (error) {
 		        console.log(error);
 		    });
