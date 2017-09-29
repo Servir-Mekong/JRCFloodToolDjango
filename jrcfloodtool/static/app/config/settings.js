@@ -27,7 +27,7 @@ angular.module('baseApp').constant('appSettings', {
 		},
 		{
 			'name': 'Feedback',
-			'url': '#',
+			'url': 'https://goo.gl/forms/gJGWBlCEolbbpbJF2',
 			'show': true
 		}
 	],
