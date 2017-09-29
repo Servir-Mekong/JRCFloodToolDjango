@@ -11,7 +11,7 @@ media/*
 static/*
 # Exception to the rule
 !static/README.md
-scripts/*
+scripts/install.sh
 jrcfloodtool/settings.py
 
 # Unused templates
