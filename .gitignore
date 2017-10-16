@@ -32,3 +32,7 @@ jrcfloodtool/templates/panels/map-view.html
 .vs/
 *.sln
 
+# Vendor files
+# ======================
+jrcfloodtool/static/vendor/*
+

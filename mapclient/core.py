@@ -154,7 +154,6 @@ class GEEApi():
         )
         task.start()
 
-        # Wait for the task to complete (taskqueue auto times out after 10 mins).
         i = 1
         while task.active():
             print ("past %d seconds" % (i * settings.EE_TASK_POLL_FREQUENCY))

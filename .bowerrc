@@ -1,4 +1,4 @@
 {
-  "directory": "static/vendor/",
+  "directory": "jrcfloodtool/static/vendor/",
   "json": "bower.json"
 }

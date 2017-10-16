@@ -11,19 +11,23 @@
 		// Sidebar Menu controller
 		$scope.toggleButtonClass = 'toggle-sidebar-button is-closed';
 		$scope.sidebarClass = 'display-none';
-		$scope.mapClass = 'col-md-12 map';
+		$scope.mapClass = 'col-md-12 col-sm-12 col-lg-12';
+		
+		$scope.alertClass = 'custom-alert-full';
 		
 		$scope.openSidebar = function () {
 			
 			if ($scope.toggleButtonClass === 'toggle-sidebar-button is-closed') {
-				$scope.mapClass = 'col-md-9 map';
-				$scope.sidebarClass = 'col-md-3 sidebar';
+				$scope.mapClass = 'col-sm-7 col-md-9 col-lg-9';
+				$scope.sidebarClass = 'col-sm-5 col-md-3 col-lg-3 sidebar';
 				$scope.toggleButtonClass = 'toggle-sidebar-button is-open';
+				$scope.alertClass = 'custom-alert';
 				//$scope.broadcastTimeSlider();
 			} else {
-				$scope.mapClass = 'col-md-12 map';
+				$scope.mapClass = 'col-md-12 col-sm-12 col-lg-12';
 				$scope.sidebarClass = 'display-none';
 				$scope.toggleButtonClass = 'toggle-sidebar-button is-closed';
+				$scope.alertClass = 'custom-alert-full';
 			}
 			
 		};
@@ -224,11 +228,11 @@
 		$scope.alertContent = '';
 		
 		$scope.closeAlert = function () {
-			$('.custom-alert').addClass('display-none');
+			$('.' + $scope.alertClass).addClass('display-none');
 		};
 
 		$scope.showAlert = function () {
-			$('.custom-alert').removeClass('display-none');
+			$('.' + $scope.alertClass).removeClass('display-none');
 		};
 
 		$scope.copyToClipBoard = function () {
@@ -279,21 +283,21 @@
 		};
 
 		$scope.showDangerAlert = function () {
-			$('.custom-alert').removeClass('alert-info');
-			$('.custom-alert').removeClass('alert-success');
-			$('.custom-alert').addClass('alert-danger');
+			$('.' + $scope.alertClass).removeClass('alert-info');
+			$('.' + $scope.alertClass).removeClass('alert-success');
+			$('.' + $scope.alertClass).addClass('alert-danger');
 		};
 
 		$scope.showSuccessAlert = function () {
-			$('.custom-alert').removeClass('alert-info');
-			$('.custom-alert').removeClass('alert-danger');
-			$('.custom-alert').addClass('alert-success');
+			$('.' + $scope.alertClass).removeClass('alert-info');
+			$('.' + $scope.alertClass).removeClass('alert-danger');
+			$('.' + $scope.alertClass).addClass('alert-success');
 		};
 
 		$scope.showInfoAlert = function () {
-			$('.custom-alert').removeClass('alert-success');
-			$('.custom-alert').removeClass('alert-danger');
-			$('.custom-alert').addClass('alert-info');
+			$('.' + $scope.alertClass).removeClass('alert-success');
+			$('.' + $scope.alertClass).removeClass('alert-danger');
+			$('.' + $scope.alertClass).addClass('alert-info');
 		};
 
 		$('#datepicker-year-start').datepicker(datepickerYearOptions);

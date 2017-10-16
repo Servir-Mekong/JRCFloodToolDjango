@@ -2,45 +2,52 @@
 
 ### Update system
 ```sh
-apt-get update
-apt-get -y upgrade
-apt-get clean
+sudo apt-get update
+sudo apt-get -y upgrade
+sudo apt-get clean
 ```
 
 ### Install Admin Tools
 ```sh
-apt-get -y install unzip psmisc mlocate telnet lrzsz vim rcconf htop sudo p7zip dos2unix curl
-apt-get clean
-apt-get -y install gcc
-apt-get clean
-apt-get -y install build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev
-apt-get clean
-apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
-apt-get clean
+sudo apt-get -y install unzip psmisc mlocate telnet lrzsz vim rcconf htop p7zip dos2unix curl
+sudo apt-get clean
+sudo apt-get -y install gcc
+sudo apt-get clean
+sudo apt-get -y install build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev
+sudo apt-get clean
+sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+sudo apt-get clean
 ```
 
 ### Git
 ```sh
-apt-get -y install git-core
-apt-get clean
+sudo apt-get -y install git-core
+sudo apt-get clean
 ```
 
-### Install Python and environment
+
+### Install rabbitmq message broker
 ```sh
-#apt-get -y install python2.7
-apt-get -y install python-dev
-apt-get clean
-apt-get -y install python-pip
-apt-get -y install python-virtualenv
-apt-get -y install python-pillow
-apt-get clean
+sudo apt-get -y install erlang
+sudo apt-get -y install rabbitmq-server
+```
+
+### Enable the RabbitMQ service
+```sh
+systemctl enable rabbitmq-server
+systemctl start rabbitmq-server
+```
+
+### Check the status of the server
+```sh
+systemctl status rabbitmq-server
 ```
 
 ### Postgres
 ```sh
-apt-get -y install postgresql postgresql-contrib libpq-dev python-psycopg2
-apt-get -y install postgis
-apt-get clean
+sudo apt-get -y install postgresql postgresql-contrib libpq-dev python-psycopg2
+sudo apt-get -y install postgis
+sudo apt-get clean
 ```
 
 ### creating the database and user
@@ -69,20 +76,44 @@ createdb --owner jrcfloodtool jrcflood
 logout
 ```
 
+### Install Python Virtual Environment
+```sh
+sudo apt-get -y install python-virtualenv
+sudo apt-get clean
+```
+
+### Create a folder for the jrcfloodtool
+```sh
+sudo mkdir /home/jrcfloodtool
+```
+- grant permission
+```sh
+sudo chown -R -v your-user /your-folder
+```
+
 ### Now create a virtual env for the jrcfloodtool
 ```sh
-virtualenv jrcfloodtool_env
+virtualenv /home/jrcfloodtool/jrcfloodtool_env
 ```
 
 ### Workon the virtual env we just created
 ```sh
-source jrcfloodtool_env/bin/activate
+source /home/jrcfloodtool/jrcfloodtool_env/bin/activate
 ```
 
-### Make folder for the jrcfloodtool
+### Make folder for the jrcfloodtool itself
 ```sh
-cd /home
+cd /home/jrcfloodtool/
 mkdir jrcfloodtool
+```
+
+### Install Python and environment
+```sh
+sudo apt-get -y install python-dev
+sudo apt-get clean
+sudo apt-get -y install python-pip
+sudo apt-get -y install python-pillow
+sudo apt-get clean
 ```
 
 ### Download the jrcfloodtool from git
@@ -100,7 +131,8 @@ pip install -r requirements.txt
 ##### Make changes in the settings
 1. Make changes in the database settings
 2. ALLOWED_URL
-3. Make a folder named credentials in the project path and copy client_secret.json and privatekey.json
+3. Change the TIME_ZONE. The list of all the available timezone is avaialble [here](http://bit.ly/2glGdNY)
+4. Make a folder named credentials in the project path and copy client_secret.json and privatekey.json
 
 ### Verify the server is running by
 ```sh
@@ -126,21 +158,21 @@ gunicorn jrcfloodtool.wsgi:application --bind 0.0.0.0:8001
 ### Now make sh (or bash) script called outside from project to automate with gunicorn
 ```sh
 cd ..
-nano gunicorn_jrcfloodtool.bash
+nano gunicorn_jrcfloodtool.sh
 ```
 ##### Edit according to your environment
 ```sh
-#!/bin/sh
+#!/bin/bash
 
 NAME="jrcfloodtool"                                   # Name of the application
-DJANGODIR=/home/jrcfloodtool                          # Django project directory
-VIRENV=/home/jrcfloodtool_env                         # Env path for the application
-SOCKFILE=/home/jrcfloodtool_env/run/gunicorn.sock     # we will communicte using this unix socket
+DJANGODIR=/home/jrcfloodtool/jrcfloodtool             # Django project directory
+SOCKFILE=/home/jrcfloodtool/jrcfloodtool_env/run/gunicorn.sock # we will communicte using this unix socket
 USER=ubuntu                                           # the user to run as
 GROUP=ubuntu                                          # the group to run as
-NUM_WORKERS=3                                         # how many worker processes should Gunicorn spawn;                                                      # usually is NUM_OF_CPU * 2 + 1
+NUM_WORKERS=3                                         # how many worker processes should Gunicorn spawn;                                               # usually is NUM_OF_CPU * 2 + 1
 DJANGO_SETTINGS_MODULE=jrcfloodtool.settings          # which settings file should Django use
 DJANGO_WSGI_MODULE=jrcfloodtool.wsgi                  # WSGI module name
+TIMEOUT=60
 echo "Starting $NAME as `whoami`"
 
 # Activate the virtual environment
@@ -162,6 +194,7 @@ exec gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
   --user=$USER --group=$GROUP \
+  --timeout $TIMEOUT \
   --bind=unix:$SOCKFILE \
   --log-level=debug \
   --log-file=-
@@ -185,20 +218,26 @@ sudo nano /etc/supervisor/conf.d/jrcfloodtool.conf
 ##### And add the following bash script
 ```sh
 [program:jrcfloodtool]
-command = /home/gunicorn_jrcfloodtool.bash                         ; Command to start app
-user = ubuntu                                                      ; User to run as
-stdout_logfile = /home/logs/gunicorn_jrcfloodtool_supervisor.log   ; Where to write log messages
-redirect_stderr = true                                             ; Save stderr in the same log
-environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8                    ; Set UTF-8 as default encoding
+command = /home/jrcfloodtool/gunicorn_jrcfloodtool.sh ; Command to start app
+user = ubuntu                                         ; User to run as
+stdout_logfile = /home/jrcfloodtool/logs/jrcfloodtool_supervisor.log ; Where to write log messages
+redirect_stderr = true                                ; Save stderr in the same log
+environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8       ; Set UTF-8 as default encoding
 ```
 
 ### Now create the required files and folder
 ```sh
-mkdir -p /home/logs/
-touch /home/logs/gunicorn_jrcfloodtool_supervisor.log
+mkdir -p /home/jrcfloodtool/logs/
+touch /home/jrcfloodtool/logs/jrcfloodtool_supervisor.log
 ```
 
 ### Make supervisor reread configuration files
+
+#### First Check the Ubuntu version
+```sh
+lsb_release -a
+```
+
 ##### For ubuntu 14.04
 ```sh
 sudo supervisorctl reread
@@ -212,6 +251,12 @@ sudo systemctl restart supervisor
 sudo systemctl enable supervisor
 ```
 
+#### Check status of supervisor
+```sh
+sudo supervisorctl status jrcfloodtool
+jrcfloodtool             RUNNING  pid 24768, uptime 0:00:10
+```
+
 ### Install nginx
 ```sh
 sudo apt-get -y install nginx
@@ -223,11 +268,11 @@ sudo nano /etc/nginx/sites-available/jrcfloodtool.conf
 ```
 ##### Then add the following script to the conf file
 ```sh
-upstream sample_project_server {
+upstream jrcfloodtool_server {
   # fail_timeout=0 means we always retry an upstream even if it failed
   # to return a good HTTP response (in case the Unicorn master nukes a
   # single worker for timing out).
-  server unix:/home/ubuntu/django_env/run/gunicorn.sock fail_timeout=0;
+  server unix:/home/jrcfloodtool/jrcfloodtool_env/run/gunicorn.sock fail_timeout=0;
 }
 
 server {
@@ -236,15 +281,19 @@ server {
     server_name <your domain name>;
 
     client_max_body_size 4G;
-    access_log /home/ubuntu/logs/nginx-access.log;
-    error_log /home/ubuntu/logs/nginx-error.log;
+    
+    keepalive_timeout 0;
+    sendfile on;
+    
+    access_log /home/jrcfloodtool/logs/nginx-access.log;
+    error_log /home/jrcfloodtool/logs/nginx-error.log;
 
     location /static/ {
-        alias   /home/ubuntu/static/;
+        alias   /home/jrcfloodtool/jrcfloodtool/static/;
     }
 
     location /media/ {
-        alias   /home/ubuntu/media/;
+        alias   /home/jrcfloodtool/jrcfloodtool/media/;
     }
 
     location / {
@@ -276,7 +325,7 @@ server {
         # Try to serve static files from nginx, no point in making an
         # *application* server like Unicorn/Rainbows! serve static files.
         if (!-f $request_filename) {
-            proxy_pass http://sample_project_server;
+            proxy_pass http://jrcfloodtool_server;
             break;
         }
     }
@@ -284,7 +333,7 @@ server {
     # Error pages
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root /home/ubuntu/static/;
+        root /home/jrcfloodtool/jrcfloodtool/static/;
     }
 }
 ```
@@ -307,6 +356,11 @@ sudo service nginx start
 ### Sometimes ngnix might not work, so consider restarting the service as well
 ```sh
 sudo service nginx restart
+```
+
+### see the status of the nginx service
+```sh
+sudo service nginx status
 ```
 
 `NB: make sure the application, script and services have necessary permission to run`

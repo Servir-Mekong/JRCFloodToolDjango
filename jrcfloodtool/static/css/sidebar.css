@@ -229,6 +229,11 @@
 }
 
 .toggle-sidebar-button.is-open {
-	/* margin-left: 330px;  for 3 columns */
 	margin-left: 25%;
+}
+
+@media (max-width: 992px) {
+	.toggle-sidebar-button.is-open {
+		margin-left: 42%;
+	}
 }

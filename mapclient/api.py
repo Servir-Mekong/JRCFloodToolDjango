@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from celery.result import AsyncResult
+from core import GEEApi
 from django.conf import settings
 from django.http import JsonResponse
-from core import GEEApi
+from tasks import export_to_drive_task
+import time
 
 def api(request):
 
@@ -31,7 +34,7 @@ def api(request):
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:
                     import json
-                    from oauth2client.client import OAuth2Credentials
+                    #from oauth2client.client import OAuth2Credentials
                     google_oauth2_credentials = json.loads(session_cache['google_oauth2_credentials'])
                     access_token = google_oauth2_credentials['access_token']
                     client_id = google_oauth2_credentials['client_id']
@@ -46,10 +49,44 @@ def api(request):
                     scopes = google_oauth2_credentials['scopes']
                     token_info_uri = google_oauth2_credentials['token_info_uri']
                     id_token_jwt = google_oauth2_credentials['id_token_jwt']
-                    oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
+                    #oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
                     user_email = id_token['email']
                     user_id = id_token['sub']
-                    data = core.download_to_drive(user_email, user_id, file_name, oauth2object)
+                    task = export_to_drive_task.delay(start_year=start_year,
+                                                      end_year=end_year,
+                                                      start_month=start_month,
+                                                      end_month=end_month,
+                                                      shape=shape,
+                                                      geom=geom,
+                                                      radius=radius,
+                                                      center=center,
+                                                      method=method,
+                                                      access_token=access_token,
+                                                      client_id=client_id,
+                                                      client_secret=client_secret,
+                                                      refresh_token=refresh_token,
+                                                      token_expiry=token_expiry,
+                                                      token_uri=token_uri,
+                                                      user_agent=user_agent,
+                                                      revoke_uri=revoke_uri,
+                                                      id_token=id_token,
+                                                      token_response=token_response,
+                                                      scopes=scopes,
+                                                      token_info_uri=token_info_uri,
+                                                      id_token_jwt=id_token_jwt,
+                                                      user_email=user_email,
+                                                      user_id=user_id,
+                                                      file_name=file_name
+                                                      )
+                    work = AsyncResult(task.task_id)
+                    while not work.ready():
+                        time.sleep(5)
+                    else:
+                        try:
+                            data = work.get()
+                        except:
+                            data = {'error': 'Something went wrong. Please try again later!'}
+                    #data = core.download_to_drive(user_email, user_id, file_name, oauth2object)
                 else:
                     # default fallback
                     data = {'error': 'You have not allowed the tool to use your google drive to upload file! Allow it first and try again!'}

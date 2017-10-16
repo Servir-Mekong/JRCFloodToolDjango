@@ -38,7 +38,7 @@
         </div>
 
         <!-- Alert Container -->
-        <div class="alert alert-dismissible custom-alert text-center display-none" role="alert">
+        <div class="alert alert-dismissible text-center display-none" ng-Class="alertClass" role="alert">
             <button type="button" class="close" ng-click="closeAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>[[alertContent]]</strong>
         </div>
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Map Container -->
-        <div ng-class="mapClass" id="map" ng-init="initMap('2000', '2012', '01', '12', 'continuous', true)"></div>
+        <div class="map" ng-class="mapClass" id="map" ng-init="initMap('2000', '2012', '01', '12', 'continuous', true)"></div>
         
     </div>
     

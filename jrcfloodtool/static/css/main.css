@@ -82,6 +82,13 @@
 	z-index: 2;
 }
 
+.custom-alert-full {
+	margin-left: 4%; /* See sidebar.css .toggle-sidebar-button.is-open */
+	width: calc(100vw - 5%);
+	position: fixed;
+	z-index: 2;
+}
+
 .display-none {
     display: none;
 }
@@ -112,8 +119,10 @@
 }
 
 .main-padding {
-	padding-right: 150px;
-	padding-left: 150px;
+	/*padding-right: 150px;
+	padding-left: 150px;*/
+	padding-right: 5% !important;
+	padding-left: 5% !important;
 }
 
 /* Legend */

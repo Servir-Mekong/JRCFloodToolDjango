@@ -31,6 +31,8 @@
 	<link href="{% static 'css/sidebar.css' %}" rel="stylesheet">
 	<link href="{% static 'css/dateslider.css' %}" rel="stylesheet">
 	<link href="{% static 'css/footer.css' %}" rel="stylesheet">
+	<!-- Normalize CSS -->
+	<link href="{% static 'vendor/normalize-css/normalize.css' %}" rel="stylesheet">
 	<!-- Fonts -->
 	<link href="{% static 'vendor/components-font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
@@ -55,8 +57,6 @@
 			{% block main_container %} {% endblock main_container %}
 		</div>
 
-		<div id="push"></div>
-
 		<!-- /.wrapper-collapse -->
 	</div>
     
@@ -74,7 +74,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCftEx2S9RjScdfNCGa4Z-8HgUVIUjOErk&v=3.exp&libraries=drawing"></script>
 
 	<!--  Load Angular  -->
-	<script src="{% static 'vendor/angular/angular.js' %}"></script>
+	<script src="{% static 'vendor/angular/angular.min.js' %}"></script>
 
     <!-- Angular Dependent Library -->
     <script src="{% static 'vendor/angularjs-slider/dist/rzslider.min.js' %}"></script>
