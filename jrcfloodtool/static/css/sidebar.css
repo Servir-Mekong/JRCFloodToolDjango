@@ -1,4 +1,23 @@
+.sidebar {
+	left: 0;
+	position: relative;
+	display: block;
+	padding: 20px;
+	overflow-x: hidden;
+	overflow-y: scroll; /* Scrollable contents if viewport is shorter than content. */
+	background-color: white;
+	border: 1px solid black;
+	height: calc(100vh - 115px);
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	max-height: calc(100vh - 115px);
+	margin-top: 100px;
+}
+
 /* Hide for mobile, show later */
+/*
 .sidebar {
   display: none;
 }
@@ -10,7 +29,7 @@
     display: block;
     padding: 20px;
     overflow-x: hidden;
-    overflow-y: scroll; /* Scrollable contents if viewport is shorter than content. */
+    overflow-y: scroll;
     background-color: white;
     border: 1px solid black;
     height: calc(100vh - 115px);
@@ -21,10 +40,7 @@
     max-height: calc(100vh - 115px);
   }
 }
-
-.sidebar::-webkit-scrollbar {
-    display: none;
-}
+*/
 
 .nav-sidebar {
     margin-right: -21px; /* 20px padding + 1px border */
@@ -121,7 +137,7 @@
 .toggle-sidebar-button {
 	position: absolute;
 	z-index: 1;
-	margin-top: 20px;
+	margin-top: 110px;
     display: block;
     width: 32px;
     height: 32px;

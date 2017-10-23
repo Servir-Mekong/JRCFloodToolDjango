@@ -142,7 +142,7 @@
 		    };
 		    drawingManagerOptions['drawingMode'] = type;
 		    drawingManagerOptions[typeOptions] = {
-	    		'strokeColor': '#6c6c6c',
+	    		'strokeColor': '#ff0000',
 				'strokeWeight': 3.5,
 				'fillColor': 'yellow',
 				'fillOpacity': 0.6
@@ -460,12 +460,13 @@
 				    	$scope.alertContent = data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!';
 				        console.log(error);
 			    	} else {
-						$scope.showSuccessAlert();
-						$scope.alertContent = 'Your Download Link is ready. Enjoy!';
+						$scope.showInfoAlert();
+						$scope.alertContent = data.info;
 						$scope.showAlert();
-				    	$scope.downloadURL = data.driveLink;
-				    	$scope.showDownloadUrl();
+				    	//$scope.downloadURL = data.driveLink;
+				    	//$scope.showDownloadUrl();
 				    	$scope.hideGDriveFileName();
+				    	$('#gdrive-file-name').val('');
 			    	}
 			    }, function (error) {
 			    	$scope.showDangerAlert();

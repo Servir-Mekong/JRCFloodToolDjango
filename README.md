@@ -34,14 +34,21 @@ sudo apt-get -y install rabbitmq-server
 
 ### Enable the RabbitMQ service
 ```sh
-systemctl enable rabbitmq-server
-systemctl start rabbitmq-server
+sudo systemctl enable rabbitmq-server
+sudo systemctl start rabbitmq-server
 ```
 
-### Check the status of the server
+### Check the status of the RabbitMQ server
 ```sh
-systemctl status rabbitmq-server
+sudo systemctl status rabbitmq-server
 ```
+
+### For local development, you can start the celery as
+```sh
+celery -A name_of_app worker -l info
+```
+
+`NB: This is recommended only for development. For production, we need to use it as service`
 
 ### Postgres
 ```sh

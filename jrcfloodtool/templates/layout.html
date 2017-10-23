@@ -40,16 +40,17 @@
 
 </head>
 <body>
-	{% cms_toolbar %}
-
-    <!-- CMS Menu -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-            {% show_menu 0 100 100 100 %}
-        </ul>
-    </div>
 
 	<div ng-cloak class="container-fluid">
+
+		{% cms_toolbar %}
+
+	    <!-- CMS Menu -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	        <ul class="nav navbar-nav navbar-right">
+	            {% show_menu 0 100 100 100 %}
+	        </ul>
+	    </div>
 
         {% include "navigation.html" %}
 
@@ -60,7 +61,9 @@
 		<!-- /.wrapper-collapse -->
 	</div>
     
-    {% block footer %} {% endblock footer %}
+    {% block footer %}
+    	{% include "footer.html" %}
+	{% endblock footer %}
 
 	<!-- Load JS Lib -->
 	<!-- jQuery -->
