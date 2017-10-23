@@ -25,31 +25,6 @@ sudo apt-get -y install git-core
 sudo apt-get clean
 ```
 
-
-### Install rabbitmq message broker
-```sh
-sudo apt-get -y install erlang
-sudo apt-get -y install rabbitmq-server
-```
-
-### Enable the RabbitMQ service
-```sh
-sudo systemctl enable rabbitmq-server
-sudo systemctl start rabbitmq-server
-```
-
-### Check the status of the RabbitMQ server
-```sh
-sudo systemctl status rabbitmq-server
-```
-
-### For local development, you can start the celery as
-```sh
-celery -A name_of_app worker -l info
-```
-
-`NB: This is recommended only for development. For production, we need to use it as service`
-
 ### Postgres
 ```sh
 sudo apt-get -y install postgresql postgresql-contrib libpq-dev python-psycopg2
@@ -133,6 +108,30 @@ cd jrcfloodtool/
 ```sh
 pip install -r requirements.txt
 ```
+
+### Install rabbitmq message broker
+```sh
+sudo apt-get -y install erlang
+sudo apt-get -y install rabbitmq-server
+```
+
+### Enable the RabbitMQ service
+
+```sh
+sudo service rabbitmq-server start
+```
+
+### Check the status of the RabbitMQ server
+```sh
+sudo service rabbitmq-server status
+```
+
+### For local development, you can start the celery as
+```sh
+celery -A jrcfloodtool worker -l info
+```
+
+`NB: This is recommended only for development. For production, we need to use it as service`
 
 ### Copy the settings.example.py in the jrcfloodtool and rename it as settings.py
 ##### Make changes in the settings
@@ -240,7 +239,7 @@ touch /home/jrcfloodtool/logs/jrcfloodtool_supervisor.log
 
 ### Make supervisor reread configuration files
 
-#### First Check the Ubuntu version
+#### Check your Ubuntu version
 ```sh
 lsb_release -a
 ```
@@ -262,6 +261,54 @@ sudo systemctl enable supervisor
 ```sh
 sudo supervisorctl status jrcfloodtool
 jrcfloodtool             RUNNING  pid 24768, uptime 0:00:10
+```
+
+### Make a conf file for celery
+```sh
+sudo nano /etc/supervisor/conf.d/jrcfloodtool-celery.conf
+```
+
+#### And add the following bash script
+```sh
+[program:jrcfloodtool-celery]
+command=/home/jrcfloodtool/jrcfloodtool_env/bin/celery worker -A jrcfloodtool --loglevel=INFO
+directory=/home/jrcfloodtool
+user=ubuntu
+numprocs=1
+stdout_logfile=/home/jrcfloodtool/logs/celery.log
+stderr_logfile=/home/jrcfloodtool/logs/celery.log
+autostart=true
+autorestart=true
+startsecs=10
+
+; Need to wait for currently executing tasks to finish at shutdown.
+; Increase this if you have very long running tasks.
+stopwaitsecs = 600
+
+stopasgroup=true
+
+; Set Celery priority higher than default (999)
+; so, if rabbitmq is supervised, it will start first.
+priority=1000
+```
+
+##### For ubuntu 14.04
+```sh
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start jrcfloodtool-celery
+```
+
+##### For ubuntu 16.04
+```sh
+sudo systemctl restart supervisor
+sudo systemctl enable supervisor
+```
+
+##### Check status of celery
+```sh
+sudo supervisorctl status jrcfloodtool-celery
+jrcfloodtool-celery      RUNNING  pid 21768, uptime 0:00:10
 ```
 
 ### Install nginx

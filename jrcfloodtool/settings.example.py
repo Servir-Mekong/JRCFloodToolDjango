@@ -43,6 +43,13 @@ ROOT_URLCONF = 'jrcfloodtool.urls'
 
 WSGI_APPLICATION = 'jrcfloodtool.wsgi.application'
 
+# Celery
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_RESULT_BACKEND = 'amqp'
+
+CELERY_ACCEPT_CONTENT = ['pickle']
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
