@@ -29,7 +29,7 @@
 	    <link href="{% static 'vendor/angularjs-slider/dist/rzslider.min.css' %}" rel="stylesheet">
 	
 		<!-- Load CSS -->
-		{% if not debug %}	
+		{% if debug %}	
 		<!-- Custom CSS -->
 		<link href="{% static 'css/main.css' %}" rel="stylesheet">
 		<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
@@ -94,7 +94,7 @@
 	    <!-- Angular Dependent Library -->
 	    <script src="{% static 'vendor/angularjs-slider/dist/rzslider.min.js' %}"></script>
 	
-		{% if not debug %}
+		{% if debug %}
 	    <!-- Bootstrap Application -->
 	    <script src="{% static 'app/init.js' %}"></script>
 	
