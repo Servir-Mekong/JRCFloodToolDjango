@@ -111,7 +111,7 @@
 	    /* padding-left: 160px; */
 	    /* padding-bottom: 50px; */
 	    /* padding-top: 50px; */
-	    margin-top: 17%;
+	    margin-top: 13%;
 	}
 }
 
@@ -146,7 +146,7 @@
     display: inline-block;
     z-index: 3;
     margin: 20px;
-    float: left;
+    /*float: left;*/
 }
 
 .legend tr td img {

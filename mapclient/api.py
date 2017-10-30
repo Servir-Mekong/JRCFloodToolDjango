@@ -52,6 +52,8 @@ def api(request):
                     #oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
                     user_email = id_token['email']
                     user_id = id_token['sub']
+                    # for expiry of tokens see this
+                    # https://github.com/google/oauth2client/issues/391
                     export_to_drive_task.delay(start_year=start_year,
                                                end_year=end_year,
                                                start_month=start_month,

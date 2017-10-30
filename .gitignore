@@ -35,4 +35,12 @@ jrcfloodtool/templates/panels/map-view.html
 # Vendor files
 # ======================
 jrcfloodtool/static/vendor/*
+jrcfloodtool/static/dist/*
+# Exception to the rule
+!jrcfloodtool/static/dist/README.md
+
+# Node and related environment
+# ======================
+.npmignore
+node_modules/
 

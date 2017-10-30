@@ -272,7 +272,7 @@ sudo nano /etc/supervisor/conf.d/jrcfloodtool-celery.conf
 ```sh
 [program:jrcfloodtool-celery]
 command=/home/jrcfloodtool/jrcfloodtool_env/bin/celery worker -A jrcfloodtool --loglevel=INFO
-directory=/home/jrcfloodtool
+directory=/home/jrcfloodtool/jrcfloodtool
 user=ubuntu
 numprocs=1
 stdout_logfile=/home/jrcfloodtool/logs/celery.log
@@ -291,18 +291,17 @@ stopasgroup=true
 ; so, if rabbitmq is supervised, it will start first.
 priority=1000
 ```
+#### Now create the required log file
+```sh
+touch /home/jrcfloodtool/logs/celery.log
+```
 
-##### For ubuntu 14.04
+#### Start the service and check its status
+
+##### Start the service
 ```sh
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start jrcfloodtool-celery
-```
-
-##### For ubuntu 16.04
-```sh
-sudo systemctl restart supervisor
-sudo systemctl enable supervisor
 ```
 
 ##### Check status of celery

@@ -80,6 +80,24 @@
 		$scope.showAlert = false;
 		$scope.timePeriodOption = null;
 
+		/** Updates the image based on the current control panel config. */
+		var loadMap = function (mapId, mapToken) {
+			var eeMapOptions = {
+				getTileUrl: function (tile, zoom) {
+					var url = EE_URL + '/map/';
+						url += [mapId, zoom, tile.x, tile.y].join('/');
+						url += '?token=' + mapToken;
+						return url;
+					},
+				tileSize: new google.maps.Size(256, 256),
+				name: 'FloodViewer',
+				opacity: 1.0,
+				mapTypeId: MAP_TYPE
+			};
+			var mapType = new google.maps.ImageMapType(eeMapOptions);
+			map.overlayMapTypes.push(mapType);
+		};
+
 		/**
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
@@ -103,24 +121,6 @@
 		    });
 		};
 
-		/** Updates the image based on the current control panel config. */
-		var loadMap = function (mapId, mapToken) {
-			var eeMapOptions = {
-				getTileUrl: function (tile, zoom) {
-					var url = EE_URL + '/map/';
-						url += [mapId, zoom, tile.x, tile.y].join('/');
-						url += '?token=' + mapToken;
-						return url;
-					},
-				tileSize: new google.maps.Size(256, 256),
-				name: 'FloodViewer',
-				opacity: 1.0,
-				mapTypeId: MAP_TYPE
-			};
-			var mapType = new google.maps.ImageMapType(eeMapOptions);
-			map.overlayMapTypes.push(mapType);
-		};
-
 		// Custom Control Google Maps API
 		$scope.overlays = [];
 		$scope.shape = {};
@@ -140,7 +140,7 @@
 		    var drawingManagerOptions = {
 		    		'drawingControl': false
 		    };
-		    drawingManagerOptions['drawingMode'] = type;
+		    drawingManagerOptions.drawingMode = type;
 		    drawingManagerOptions[typeOptions] = {
 	    		'strokeColor': '#ff0000',
 				'strokeWeight': 3.5,
@@ -155,7 +155,7 @@
 		var getRectangleArray = function (bounds) {
 			var start = bounds.getNorthEast();
 			var end = bounds.getSouthWest();
-			return [start.lng().toFixed(2), start.lat().toFixed(2), end.lng().toFixed(2), end.lat().toFixed(2)]
+			return [start.lng().toFixed(2), start.lat().toFixed(2), end.lng().toFixed(2), end.lat().toFixed(2)];
 		};
 
 		var getPolygonArray = function (pathArray) {
@@ -176,14 +176,14 @@
 			$scope.shape = {};
 
 			var drawingType = event.type;
-			$scope.shape['type'] = drawingType;
+			$scope.shape.type = drawingType;
 			if (drawingType === 'rectangle') {
-				$scope.shape['geom'] = getRectangleArray(overlay.getBounds());
+				$scope.shape.geom = getRectangleArray(overlay.getBounds());
 			} else if (drawingType === 'circle') {
-				$scope.shape['center'] = [overlay.getCenter().lng().toFixed(2), overlay.getCenter().lat().toFixed(2)];
-				$scope.shape['radius'] = overlay.getRadius().toFixed(2); // unit: meter
+				$scope.shape.center = [overlay.getCenter().lng().toFixed(2), overlay.getCenter().lat().toFixed(2)];
+				$scope.shape.radius = overlay.getRadius().toFixed(2); // unit: meter
 			} else if (drawingType === 'polygon') {
-				$scope.shape['geom'] = getPolygonArray(overlay.getPath().getArray());
+				$scope.shape.geom = getPolygonArray(overlay.getPath().getArray());
 			}
 		});
 
@@ -246,19 +246,19 @@
 				copyTextArea.value = $scope.downloadURL;
 				document.body.appendChild(copyTextArea);
 				copyTextArea.select();
-		    try {
-		    	var successful = document.execCommand('copy');
-		    	var msg = successful ? 'Copied!' : 'Whoops, not copied!';
-		    	btnCopy.attr('data-original-title', msg).tooltip('show');
-		    } catch (err) {
-		    	console.log('Oops, unable to copy');
-		    }
-		    document.body.removeChild(copyTextArea);
-		    btnCopy.attr('data-original-title', elOriginalText);
-		  } else {
-		    // Fallback if browser doesn't support .execCommand('copy')
-		    window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", text);
-		  }
+		    	try {
+		    		var successful = document.execCommand('copy');
+		    		var msg = successful ? 'Copied!' : 'Whoops, not copied!';
+		    		btnCopy.attr('data-original-title', msg).tooltip('show');
+		    	} catch (err) {
+		    		console.log('Oops, unable to copy');
+		    	}
+		    	document.body.removeChild(copyTextArea);
+		    	btnCopy.attr('data-original-title', elOriginalText);
+		  	} else {
+		    	// Fallback if browser doesn't support .execCommand('copy')
+		    	window.prompt("Copy to clipboard: Ctrl+C or Command+C");
+		  	}
 		};
 
 		var datepickerYearOptions = {
@@ -329,7 +329,7 @@
 				December: '12'
 			};
 			return monthObject[month];
-		}
+		};
 
 		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon) {
 
@@ -419,7 +419,7 @@
 			// Clear before adding
 			map.overlayMapTypes.clear();
 			$scope.clearOverlays();
-			$scope.initMap(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value);
+			$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 		};
 
 		$scope.downloadMap = function () {
@@ -428,9 +428,9 @@
 			// @ToDo: Do proper check
 			if (dateObject) {
 				$scope.showInfoAlert();
-				$scope.alertContent = dateObject['message'] + ' Please wait while I prepare the download link for you!';
+				$scope.alertContent = dateObject.message + ' Please wait while I prepare the download link for you!';
 				$scope.showAlert();
-				MapService.downloadMap(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value, $scope.shape)
+				MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
 			    .then(function (data) {
 					$scope.showSuccessAlert();
 					$scope.alertContent = 'Your Download Link is ready. Enjoy!';
@@ -451,14 +451,14 @@
 			var fileName = $('#gdrive-file-name').val() || '';
 			if (dateObject) {
 				$scope.showInfoAlert();
-				$scope.alertContent = dateObject['message'] + ' Please wait while I prepare the download link for you. This might take a while!';
+				$scope.alertContent = dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!';
 				$scope.showAlert();
-				MapService.saveToDrive(dateObject['startYear'], dateObject['endYear'], dateObject['startMonth'], dateObject['endMonth'], $scope.timePeriodOption.value, $scope.shape, fileName)
+				MapService.saveToDrive(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape, fileName)
 			    .then(function (data) {
 			    	if (data.error) {
 				    	$scope.showDangerAlert();
 				    	$scope.alertContent = data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!';
-				        console.log(error);
+				        console.log(data.error);
 			    	} else {
 						$scope.showInfoAlert();
 						$scope.alertContent = data.info;
