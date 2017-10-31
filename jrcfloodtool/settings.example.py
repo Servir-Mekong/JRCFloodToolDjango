@@ -242,8 +242,8 @@ GOOGLE_EARTH_SCOPES = (
 )
 
 GOOGLE_OAUTH2_SCOPES = ('https://www.googleapis.com/auth/drive',
-                        'https://www.googleapis.com/auth/drive.file',
-                        'https://www.googleapis.com/auth/drive.appdata',
+                        #'https://www.googleapis.com/auth/drive.file',
+                        #'https://www.googleapis.com/auth/drive.appdata',
                         'profile',
                         'email',)
 
