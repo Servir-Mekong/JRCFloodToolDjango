@@ -259,8 +259,9 @@ GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'credentials/client_s
 GOOGLE_OAUTH2_CREDENTIALS = oauth2client.service_account.ServiceAccountCredentials.\
                             from_json_keyfile_name(EE_PRIVATE_KEY_FILE,
                                                    ['https://www.googleapis.com/auth/drive',
-                                                    'https://www.googleapis.com/auth/drive.file',
-                                                    'https://www.googleapis.com/auth/drive.appdata'])
+                                                    #'https://www.googleapis.com/auth/drive.file',
+                                                    #'https://www.googleapis.com/auth/drive.appdata'
+                                                    ])
 
 # Filter Date
 EE_START_YEAR = '2000'
