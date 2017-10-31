@@ -69,8 +69,8 @@ angular.module('baseApp').constant('appSettings', {
 			'show': true
 		},
 		{
-			'name': 'Privacy and Usage Policy',
-			'url': 'https://servir.adpc.net/policy',
+			'name': 'Privacy Policy',
+			'url': '/privacy-policy/',
 			'show': true
 		}
 	],

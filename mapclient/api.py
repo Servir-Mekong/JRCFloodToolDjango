@@ -5,6 +5,7 @@ from core import GEEApi
 from django.conf import settings
 from django.http import JsonResponse
 from tasks import export_to_drive_task
+from datetime import datetime
 import time
 
 def api(request):
@@ -34,22 +35,22 @@ def api(request):
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:
                     import json
-                    #from oauth2client.client import OAuth2Credentials
+                    from oauth2client.client import OAuth2Credentials
                     google_oauth2_credentials = json.loads(session_cache['google_oauth2_credentials'])
                     access_token = google_oauth2_credentials['access_token']
                     client_id = google_oauth2_credentials['client_id']
                     client_secret = google_oauth2_credentials['client_secret']
                     refresh_token = google_oauth2_credentials['refresh_token']
-                    token_expiry = google_oauth2_credentials['token_expiry']
+                    token_expiry = datetime.strptime(google_oauth2_credentials['token_expiry'], '%Y-%m-%dT%H:%M:%SZ')
                     token_uri = google_oauth2_credentials['token_uri']
                     user_agent = google_oauth2_credentials['user_agent']
                     revoke_uri = google_oauth2_credentials['revoke_uri']
                     id_token = google_oauth2_credentials['id_token']
                     token_response = google_oauth2_credentials['token_response']
-                    scopes = google_oauth2_credentials['scopes']
+                    scopes = set(google_oauth2_credentials['scopes'])
                     token_info_uri = google_oauth2_credentials['token_info_uri']
                     id_token_jwt = google_oauth2_credentials['id_token_jwt']
-                    #oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
+                    oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
                     user_email = id_token['email']
                     user_id = id_token['sub']
                     # for expiry of tokens see this
