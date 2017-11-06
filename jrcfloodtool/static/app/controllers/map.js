@@ -98,6 +98,7 @@
 			};
 			var mapType = new google.maps.ImageMapType(eeMapOptions);
 			map.overlayMapTypes.push(mapType);
+			$('#layer-opacity').slider('setValue', 1);
 			$scope.showLayerOpacity = true;
 		};
 
@@ -109,14 +110,19 @@
 			$scope.showLoader = true;
 			MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 		    .then(function (data) {
-				$scope.showAlert();
 		    	loadMap(data.eeMapId, data.eeMapToken);
 		    	if (init) {
-					$scope.showInfoAlert();
-					$scope.alertContent = 'The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!';	
+		    		$timeout(function () {
+						$scope.showInfoAlert();
+						$scope.alertContent = 'The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!';
+						$scope.showAlert();
+		    		}, 3500);
 		    	} else {
-					$scope.showSuccessAlert();
-					$scope.alertContent = 'The map view is updated!';
+		    		$timeout(function () { 
+						$scope.showSuccessAlert();
+						$scope.alertContent = 'The map view is updated!';
+						$scope.showAlert();
+		    		}, 3500);
 		    	}
 		    	$scope.showLegend = true;
 		    }, function (error) {
@@ -338,14 +344,14 @@
 
 		$('#datepicker-month-start').datepicker()
 		.on('hide', function (e) {
-			if (e.date && e.date.getMonth() < 2 && $('#datepicker-year-start').val() == '1984') {
+			if (e.date && e.date.getMonth() < 2 && $('#datepicker-year-start').val() === '1984') {
 				$('#datepicker-month-start').val('March');
 			}
 		});
 
 		$('#datepicker-month-end').datepicker()
 		.on('hide', function (e) {
-			if (e.date && e.date.getMonth() > 9 && $('#datepicker-year-end').val() == '2015') {
+			if (e.date && e.date.getMonth() > 9 && $('#datepicker-year-end').val() === '2015') {
 				$('#datepicker-month-end').val('October');
 			}
 		});
@@ -430,7 +436,7 @@
 					endMonth = $scope.getMonthInNumber(endMonth);
 				}
 				
-				if (Number(startYear) == Number(endYear) && Number(startMonth) >= Number(endMonth)) {
+				if (Number(startYear) === Number(endYear) && Number(startMonth) >= Number(endMonth)) {
 					$scope.showDangerAlert();
 					$scope.alertContent = 'End month must be greater than start month!';
 					$scope.showAlert();
@@ -471,6 +477,7 @@
 			if (dateObject) {
 				// Clear before adding
 				map.overlayMapTypes.clear();
+				$scope.showLayerOpacity = false;
 				//$scope.clearOverlays();
 				$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);	
 			}
@@ -530,7 +537,7 @@
 			}
 		};
 
-		$scope.opacityValue;
+		$scope.opacityValue = null;
 		$scope.showLayerOpacity = false;
 
 		$('#layer-opacity').slider({
@@ -539,13 +546,13 @@
 			}
 		});
 
-		$('#layer-opacity').slider().on('slideStart', function(ev){
+		$('#layer-opacity').slider().on('slideStart', function (ev) {
 			$scope.opacityValue = $('#layer-opacity').data('slider').getValue();
 		});
 
-		$('#layer-opacity').slider().on('slideStop', function(value) {
+		$('#layer-opacity').slider().on('slideStop', function (ev) {
 		    var value = $('#layer-opacity').data('slider').getValue();
-		    if (value != $scope.opacityValue) {
+		    if (value !== $scope.opacityValue) {
 		    	map.overlayMapTypes.getAt(0).setOpacity(value);
 		    }
 		});
