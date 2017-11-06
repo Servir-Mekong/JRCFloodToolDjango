@@ -336,6 +336,20 @@
 		    $(this).datepicker('clearDates');
 		});
 
+		$('#datepicker-month-start').datepicker()
+		.on('hide', function (e) {
+			if (e.date && e.date.getMonth() < 2 && $('#datepicker-year-start').val() == '1984') {
+				$('#datepicker-month-start').val('March');
+			}
+		});
+
+		$('#datepicker-month-end').datepicker()
+		.on('hide', function (e) {
+			if (e.date && e.date.getMonth() > 9 && $('#datepicker-year-end').val() == '2015') {
+				$('#datepicker-month-end').val('October');
+			}
+		});
+
 		$scope.getMonthInNumber = function (month) {
 			var monthObject = {
 				January: '01',
@@ -384,13 +398,19 @@
 			var startMonth,
 				endMonth,
 				message = '';
-			// ToDo: Compare Date
+
 			if (!startYear && !endYear) {
 				$scope.showDangerAlert();
 				$scope.alertContent = 'Select the start and end date in order to download the map!';
 				$scope.showAlert();
 				return false;
 			} else {
+				if (Number(startYear) > Number(endYear)) {
+					$scope.showDangerAlert();
+					$scope.alertContent = 'End year must be greater than start year!';
+					$scope.showAlert();
+					return false;
+				}
 				startMonth = $('#datepicker-month-start').val();
 				endMonth = $('#datepicker-month-end').val();
 				if (!startMonth && !endMonth) {
@@ -408,6 +428,13 @@
 				} else {
 					startMonth = $scope.getMonthInNumber(startMonth);
 					endMonth = $scope.getMonthInNumber(endMonth);
+				}
+				
+				if (Number(startYear) == Number(endYear) && Number(startMonth) >= Number(endMonth)) {
+					$scope.showDangerAlert();
+					$scope.alertContent = 'End month must be greater than start month!';
+					$scope.showAlert();
+					return false;
 				}
 
 			}
@@ -441,10 +468,12 @@
 		$scope.updateMap = function () {
 			$scope.closeAlert();
 			var dateObject = $scope.checkBeforeDownload(false, false);
-			// Clear before adding
-			map.overlayMapTypes.clear();
-			//$scope.clearOverlays();
-			$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
+			if (dateObject) {
+				// Clear before adding
+				map.overlayMapTypes.clear();
+				//$scope.clearOverlays();
+				$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);	
+			}
 		};
 
 		$scope.downloadMap = function () {
