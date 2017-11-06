@@ -79,6 +79,8 @@
 		$scope.showLegend = false;
 		$scope.showAlert = false;
 		$scope.timePeriodOption = null;
+		$scope.showPolygonDrawing = false;
+		$scope.checkPolygonDrawing = true;
 
 		/** Updates the image based on the current control panel config. */
 		var loadMap = function (mapId, mapToken) {
@@ -96,13 +98,14 @@
 			};
 			var mapType = new google.maps.ImageMapType(eeMapOptions);
 			map.overlayMapTypes.push(mapType);
+			$scope.showLayerOpacity = true;
 		};
 
 		/**
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
-			if (typeof(init)==='undefined') init = false;
+			if (typeof(init) === 'undefined') init = false;
 			$scope.showLoader = true;
 			MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 		    .then(function (data) {
@@ -122,7 +125,8 @@
 		};
 
 		// Custom Control Google Maps API
-		$scope.overlays = [];
+		//$scope.overlays = [];
+		$scope.overlays = null;
 		$scope.shape = {};
 		var drawingManager = new google.maps.drawing.DrawingManager();
 
@@ -170,9 +174,12 @@
 		// Overlay Listener
 		google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
 			// Clear Layer First
-			$scope.clearOverlays();
+			$scope.clearDrawing();
 			var overlay = event.overlay;
-			$scope.overlays.push(overlay);
+			//$scope.overlays.push(overlay);
+			$scope.overlays = overlay;
+			$scope.showPolygonDrawing = true;
+			$scope.$apply();
 			$scope.shape = {};
 
 			var drawingType = event.type;
@@ -188,8 +195,21 @@
 		});
 
 		$scope.clearOverlays = function () {
-			while ($scope.overlays[0]) {
-				$scope.overlays.pop().setMap(null);
+			$scope.closeAlert();
+			$scope.shape = {};
+			map.overlayMapTypes.clear();
+			$scope.showLayerOpacity = false;
+			$scope.clearDrawing();
+		};
+
+		$scope.clearDrawing = function () {
+			//while ($scope.overlays[0]) {
+			//	$scope.overlays.pop().setMap(null);
+			//}
+			if ($scope.overlays) {
+				$scope.overlays.setMap(null);
+				$scope.overlays = null;
+				$scope.showPolygonDrawing = false;				
 			}
 		};
 
@@ -261,27 +281,6 @@
 		  	}
 		};
 
-		var datepickerYearOptions = {
-			format:'yyyy',
-			autoclose: true,
-			startDate: new Date('1984'),
-			endDate: new Date('2015'),
-			clearBtn: true,
-			startView: 'years',
-			minViewMode: 'years',
-			container: '.datepicker-year-class'
-		};
-		
-		var datepickerMonthOptions = {
-			format:'MM',
-			autoclose: true,
-			clearBtn: true,
-			startView: 'months',
-			minViewMode: 'months',
-			maxViewMode: 'months',
-			container: '.datepicker-month-class'
-		};
-
 		$scope.showDangerAlert = function () {
 			$('.' + $scope.alertClass).removeClass('alert-info');
 			$('.' + $scope.alertClass).removeClass('alert-success');
@@ -300,8 +299,32 @@
 			$('.' + $scope.alertClass).addClass('alert-info');
 		};
 
+		var datepickerYearOptions = {
+			format: 'yyyy',
+			autoclose: true,
+			startDate: new Date('1984'),
+			endDate: new Date('2015'),
+			clearBtn: true,
+			startView: 'years',
+			minViewMode: 'years',
+			container: '.datepicker-year-class'
+		};
+			
+		var datepickerMonthOptions = {
+			format: 'MM',
+			autoclose: true,
+			clearBtn: true,
+			startView: 'months',
+			minViewMode: 'months',
+			maxViewMode: 'months',
+			container: '.datepicker-month-class',
+			templates: {
+				leftArrow: ' ',
+			    rightArrow: ' '
+			}
+		};
+
 		$('#datepicker-year-start').datepicker(datepickerYearOptions);
-		$('#datepicker-year-start').datepicker('update', new Date(2000));
 		$('#datepicker-year-end').datepicker(datepickerYearOptions);
 		$('.input-daterange input').each(function() {
 		    $(this).datepicker('clearDates');
@@ -333,9 +356,10 @@
 
 		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon) {
 
-			if (typeof(needPolygon)==='undefined') needPolygon = true;
+			if (typeof(needPolygon) === 'undefined') needPolygon = true;
 			if (needPolygon){
-				if (!$scope.overlays[0]) {
+				//if (!$scope.overlays[0]) {
+				if (!$scope.overlays) {
 					$scope.showDangerAlert();
 					$scope.alertContent = 'Please draw a polygon to begin downloading!';
 					$scope.showAlert();
@@ -343,10 +367,10 @@
 				}
 			}
 
-			if (typeof(checkAreaLimit)==='undefined') checkAreaLimit = false;
+			if (typeof(checkAreaLimit) === 'undefined') checkAreaLimit = false;
 			if (checkAreaLimit) {
-				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays[0].getPath()) / 1e6;
-
+				//var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays[0].getPath()) / 1e6;
+				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays.getPath()) / 1e6;
 				if (drawnPolygonArea > AREA_LIMIT) {
 					$scope.showDangerAlert();
 					$scope.alertContent = 'The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!';
@@ -415,10 +439,11 @@
 		};
 
 		$scope.updateMap = function () {
+			$scope.closeAlert();
 			var dateObject = $scope.checkBeforeDownload(false, false);
 			// Clear before adding
 			map.overlayMapTypes.clear();
-			$scope.clearOverlays();
+			//$scope.clearOverlays();
 			$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 		};
 
@@ -473,6 +498,36 @@
 			    	$scope.alertContent = error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!' ;
 			        console.log(error);
 			    });		
+			}
+		};
+
+		$scope.opacityValue;
+		$scope.showLayerOpacity = false;
+
+		$('#layer-opacity').slider({
+			formatter: function (value) {				
+				return 'Layer opacity: ' + value;
+			}
+		});
+
+		$('#layer-opacity').slider().on('slideStart', function(ev){
+			$scope.opacityValue = $('#layer-opacity').data('slider').getValue();
+		});
+
+		$('#layer-opacity').slider().on('slideStop', function(value) {
+		    var value = $('#layer-opacity').data('slider').getValue();
+		    if (value != $scope.opacityValue) {
+		    	map.overlayMapTypes.getAt(0).setOpacity(value);
+		    }
+		});
+
+		$scope.clickPolygonDrawing = function () {
+			if ($scope.checkPolygonDrawing) {
+				$scope.checkPolygonDrawing = false;
+				$scope.overlays.setMap(null);
+			} else {
+				$scope.checkPolygonDrawing = true;
+				$scope.overlays.setMap(map);
 			}
 		};
 	

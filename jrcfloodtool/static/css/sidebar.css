@@ -253,3 +253,8 @@
 		margin-left: 42%;
 	}
 }
+
+/* Slider */
+#layer-opacity-slider .slider-selection {
+	background: #BABABA;
+}

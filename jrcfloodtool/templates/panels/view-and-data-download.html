@@ -63,6 +63,32 @@
 							</div>
                         </td>
                     </tr>
+                    <tr ng-show="showLayerOpacity">
+                    	<td>
+                    		<div class="form-group">
+                    			<label for="layer-opacity">Layer Opacity</label>
+	                    		<input name="layer-opacity" id="layer-opacity"
+	                    			   data-slider-id="layer-opacity-slider" type="text"
+	                    			   data-slider-min="0"
+	                    			   data-slider-max="1"
+	                    			   data-slider-step="0.1"
+	                    			   data-slider-value="1" />
+                    		</div>
+                    	</td>
+                    </tr>
+                    <tr ng-show="showPolygonDrawing">
+                    	<td>
+                    		<div class="form-group">
+                    			<label class="checkbox-inline">
+                    				<input type="checkbox"
+                    					   value="" 
+                    					   ng-checked="checkPolygonDrawing"
+                    					   ng-click="clickPolygonDrawing()"/>
+                    				Polygon
+                    			</label>
+                    		</div>
+                    	</td>
+                    </tr>
                 </tbody>
             </table>                    
         </div>

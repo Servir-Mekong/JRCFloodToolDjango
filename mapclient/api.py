@@ -35,7 +35,7 @@ def api(request):
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:
                     import json
-                    #from oauth2client.client import OAuth2Credentials
+                    from oauth2client.client import OAuth2Credentials
                     google_oauth2_credentials = json.loads(session_cache['google_oauth2_credentials'])
                     access_token = google_oauth2_credentials['access_token']
                     client_id = google_oauth2_credentials['client_id']
@@ -50,7 +50,7 @@ def api(request):
                     scopes = set(google_oauth2_credentials['scopes'])
                     token_info_uri = google_oauth2_credentials['token_info_uri']
                     id_token_jwt = google_oauth2_credentials['id_token_jwt']
-                    #oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
+                    oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
                     user_email = id_token['email']
                     user_id = id_token['sub']
                     # for expiry of tokens see this
