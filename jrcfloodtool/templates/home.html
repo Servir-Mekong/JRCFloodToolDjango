@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% load staticfiles %}
+
 {% block main_container %}
 
     <div class="margin-top-maintain main-padding">
@@ -19,8 +21,9 @@
           detection on a month-by-month basis. The collection contains 380
           images, one for each month between March 1984 and October 2015. For
           more information see the associated journal article: High-resolution
-          mapping of global surface water and its long-term changes (Nature,
-          2016) and the online Data Users Guide.
+          mapping of global surface water and its long-term changes 
+          <a href="https://www.nature.com/nature/journal/v540/n7633/full/nature20584.html"
+          	 target="_blank">(Nature, 2016)</a> and the online Data Users Guide.
         <br /><br />
           The historical flood analysis tool presents the occurance of
           surface water for the selected period. A 100% water occurance means
@@ -39,7 +42,14 @@
           complete Landsat archive. Areas which have been flooded in the past
           are also prone to floods in the future.
         </h4>
-
     </div>
+    <br /><br />
+    <div class="main-padding">
+    	<a type="button" role="button" class="btn btn-primary btn-lg btn-block" href="/map/">
+    		Click here to launch the App
+    	</a>
+    	<br /><br />
+		<img src="{% static 'images/map-page.png' %}" class="img-thumbnail" alt="Map Page">
+	</div>
 
 {% endblock main_container %}

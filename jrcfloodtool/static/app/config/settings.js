@@ -3,7 +3,7 @@ angular.module('baseApp').constant('appSettings', {
 		{
 			'name': 'Home',
 			'url': '/home/',
-			'show': true
+			'show': false
 		},
 		{
 			'name': 'About',
