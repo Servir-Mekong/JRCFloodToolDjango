@@ -56,7 +56,8 @@
                             <br />
 							<div class="form-group">
 							    <label for="time-period-method">Select Method for Time Period</label>
-							    <select name="time-period-method" class="form-control"
+							    <select name="time-period-method" title="Time Period Method"
+							    		class="form-control js-tooltip"
 							            ng-init="timePeriodOption = timePeriodOptions[0]"
 							            ng-options="option.name for option in timePeriodOptions"
 							            ng-model="timePeriodOption"></select>
@@ -67,6 +68,7 @@
                     	<td>
                     		<div class="form-group">
                     			<label for="layer-opacity">Layer Opacity</label>
+                    			<br />
 	                    		<input name="layer-opacity" id="layer-opacity"
 	                    			   data-slider-id="layer-opacity-slider" type="text"
 	                    			   data-slider-min="0"

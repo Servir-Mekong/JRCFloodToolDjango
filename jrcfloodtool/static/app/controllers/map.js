@@ -405,7 +405,7 @@
 				endMonth,
 				message = '';
 
-			if (!startYear && !endYear) {
+			if (!(startYear && endYear)) {
 				$scope.showDangerAlert();
 				$scope.alertContent = 'Select the start and end date in order to download the map!';
 				$scope.showAlert();
@@ -479,6 +479,9 @@
 				map.overlayMapTypes.clear();
 				$scope.showLayerOpacity = false;
 				//$scope.clearOverlays();
+				$scope.showInfoAlert();
+				$scope.alertContent = dateObject.message;
+				$scope.showAlert();
 				$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);	
 			}
 		};
