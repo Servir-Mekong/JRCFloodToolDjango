@@ -262,3 +262,4 @@ EE_WATER_PALETTE = 'c10000, d742f4, 001556, b7d2f7'
 # Other Settings
 COUNTRIES_NAME = ['Myanmar (Burma)', 'Thailand', 'Laos', 'Vietnam', 'Cambodia']
 
+EE_USE_CELERY = False

@@ -55,32 +55,36 @@ def api(request):
                     user_id = id_token['sub']
                     # for expiry of tokens see this
                     # https://github.com/google/oauth2client/issues/391
-                    export_to_drive_task.delay(start_year=start_year,
-                                               end_year=end_year,
-                                               start_month=start_month,
-                                               end_month=end_month,
-                                               shape=shape,
-                                               geom=geom,
-                                               radius=radius,
-                                               center=center,
-                                               method=method,
-                                               access_token=access_token,
-                                               client_id=client_id,
-                                               client_secret=client_secret,
-                                               refresh_token=refresh_token,
-                                               token_expiry=token_expiry,
-                                               token_uri=token_uri,
-                                               user_agent=user_agent,
-                                               revoke_uri=revoke_uri,
-                                               id_token=id_token,
-                                               token_response=token_response,
-                                               scopes=scopes,
-                                               token_info_uri=token_info_uri,
-                                               id_token_jwt=id_token_jwt,
-                                               user_email=user_email,
-                                               user_id=user_id,
-                                               file_name=file_name
-                                               )
+                    if settings.EE_USE_CELERY:
+                        export_to_drive_task.delay(start_year=start_year,
+                                                   end_year=end_year,
+                                                   start_month=start_month,
+                                                   end_month=end_month,
+                                                   shape=shape,
+                                                   geom=geom,
+                                                   radius=radius,
+                                                   center=center,
+                                                   method=method,
+                                                   access_token=access_token,
+                                                   client_id=client_id,
+                                                   client_secret=client_secret,
+                                                   refresh_token=refresh_token,
+                                                   token_expiry=token_expiry,
+                                                   token_uri=token_uri,
+                                                   user_agent=user_agent,
+                                                   revoke_uri=revoke_uri,
+                                                   id_token=id_token,
+                                                   token_response=token_response,
+                                                   scopes=scopes,
+                                                   token_info_uri=token_info_uri,
+                                                   id_token_jwt=id_token_jwt,
+                                                   user_email=user_email,
+                                                   user_id=user_id,
+                                                   file_name=file_name
+                                                   )
+                        data = {'info': 'I have started the export! You can check your drive after 5-10 mins to get the exported image!'}
+                    else:
+                        data = core.download_to_drive(user_email, user_id, file_name, oauth2object)
                     #task = export_to_drive_task.delay
                     #work = AsyncResult(task.task_id)
                     #while not work.ready():
@@ -90,8 +94,6 @@ def api(request):
                     #        data = work.get()
                     #    except:
                     #        data = {'error': 'Something went wrong. Please try again later!'}
-                    #data = core.download_to_drive(user_email, user_id, file_name, oauth2object)
-                    data = {'info': 'I have started the export! You can check your drive after 5-10 mins to get the exported image!'}
                 else:
                     # default fallback
                     data = {'error': 'You have not allowed the tool to use your google drive to upload file! Allow it first and try again!'}
