@@ -1,5 +1,5 @@
 #!/bin/sh
-
+cd /home/jrcfloodtool/jrcfloodtool
 git reset --hard HEAD
 git pull
-python /home/jrcfloodtool/manage.py collectstatic
+python manage.py collectstatic
