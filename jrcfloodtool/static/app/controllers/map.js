@@ -165,10 +165,10 @@
 				if (dateObject) {
 					if (dateObject.message) {
 						showInfoAlert(dateObject.message);
-						// Clear before adding
-						clearLayers('map');
-						$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 					}
+					// Clear before adding
+					clearLayers('map');
+					$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
 
@@ -573,7 +573,6 @@
 			// @ToDo: Sanitize input and do proper check of dateobject
 			var fileName = $('#gdrive-file-name').val() || '';
 			if (dateObject) {
-				$scope.alertContent = 
 				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!');
 				MapService.saveToDrive(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape, fileName)
 			    .then(function (data) {
