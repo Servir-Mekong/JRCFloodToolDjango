@@ -10,6 +10,7 @@ def index(request):
     oauth = request.oauth
     try:
         oauth.credentials.get_access_token(httplib2.Http())
-        return render(request, 'map.html', {})
     except Exception as e:
         oauth.get_authorize_redirect()
+
+    return render(request, 'map.html', {})
