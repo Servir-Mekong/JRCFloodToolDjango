@@ -568,7 +568,7 @@
 		};
 
 		$scope.saveToDrive = function () {
-			var dateObject = $scope.checkBeforeDownload();
+			var dateObject = $scope.checkBeforeDownload(true);
 			// Check if filename is provided, if not use the default one
 			// @ToDo: Sanitize input and do proper check of dateobject
 			var fileName = $('#gdrive-file-name').val() || '';
