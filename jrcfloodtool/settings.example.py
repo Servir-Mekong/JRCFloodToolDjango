@@ -249,18 +249,17 @@ GOOGLE_OAUTH2_CREDENTIALS = oauth2client.service_account.ServiceAccountCredentia
                                                     #'https://www.googleapis.com/auth/drive.appdata'
                                                     ])
 
-# Filter Date
-EE_START_YEAR = '2000'
-EE_END_YEAR = '2012'
-
 # Filter Image Collection
 EE_IMAGE_COLLECTION_ID = 'JRC/GSW1_0/MonthlyHistory'
 
 EE_MEKONG_FEATURE_COLLECTION_ID = 'ft:1tdSwUL7MVpOauSgRzqVTOwdfy17KDbw-1d9omPw'
 
+EE_WORLD_POP_ID = 'WorldPop/POP'
+
 EE_WATER_PALETTE = 'c10000, d742f4, 001556, b7d2f7'
 
 # Other Settings
 COUNTRIES_NAME = ['Myanmar (Burma)', 'Thailand', 'Laos', 'Vietnam', 'Cambodia']
+COUNTRIES_NAME_WORLD_POP = ['MMR', 'THA', 'LAO', 'VNM', 'KHM']
 
 EE_USE_CELERY = False
