@@ -32,12 +32,12 @@ class GEEApi():
         if shape:
             if shape == 'rectangle':
                 _geom = self.geom.split(',')
-                coor_list = [float(_geom_) for _geom_ in self.geom]
+                coor_list = [float(_geom_) for _geom_ in _geom]
                 geometry = ee.Geometry.Rectangle(coor_list)
             elif shape == 'circle':
                 _geom = self.center.split(',')
-                coor_list = [float(_geom_) for _geom_ in self.geom]
-                geometry = ee.Geometry.Point(coor_list).buffer(float(radius))
+                coor_list = [float(_geom_) for _geom_ in _geom]
+                geometry = ee.Geometry.Point(coor_list).buffer(float(self.radius))
             elif shape == 'polygon':
                 _geom = self.geom.split(',')
                 coor_list = [float(_geom_) for _geom_ in _geom]
@@ -120,6 +120,48 @@ class GEEApi():
         return {
             'eeMapId': str(map_id['mapid']),
             'eeMapToken': str(map_id['token'])
+        }
+
+    # -------------------------------------------------------------------------
+    @staticmethod
+    def _get_world_pop_image():
+
+        WORLD_POP = ee.ImageCollection(settings.EE_WORLD_POP_ID)
+        filtered = WORLD_POP.filter(\
+                        ee.Filter.inList('country', settings.COUNTRIES_NAME_WORLD_POP))
+        filtered = filtered.filterMetadata('year', 'equals', 2015)
+        filtered = filtered.filterMetadata('UNadj', 'equals', 'yes')
+
+        return filtered.mosaic()
+
+    # -------------------------------------------------------------------------
+    def get_world_pop_id(self):
+
+        image = GEEApi._get_world_pop_image()
+        image = image.updateMask(image).clip(self.geometry)
+        map_id = image.getMapId({
+            'min': '0',
+            'max': '100',
+            'bands': 'population',
+            #'palette': 'fcbda4, fb7050, d32020, 67000d',
+            'gamma': '4'
+        })
+
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
+
+    # -------------------------------------------------------------------------
+    def get_world_pop_number(self):
+
+        image = GEEApi._get_world_pop_image()
+        region = image.reduceRegion(ee.Reducer.mean(), self.geometry, 100)
+        number = ee.Number(region.get('population')).\
+                    multiply(self.geometry.area()).divide(100*100)
+
+        return {
+            'populationNumber': int(number.getInfo())
         }
 
     # -------------------------------------------------------------------------

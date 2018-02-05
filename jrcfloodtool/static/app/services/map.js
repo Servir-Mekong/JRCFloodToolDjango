@@ -95,6 +95,55 @@
 			});
 			return promise;
 		};
+
+		this.getWorldPopId = function (shape) {
+
+			var config = {
+				params: {
+					action: 'get-world-pop-id'
+				}
+			};
+
+			var shapeType = shape.type;
+			if (shapeType === 'rectangle' || shapeType === 'polygon') {
+				config.params.shape = shapeType;
+				config.params.geom = shape.geom.toString();
+			} else if (shapeType === 'circle') {
+				config.params.shape = shapeType;
+				config.params.radius = shape.radius;
+				config.params.center = shape.center.toString();
+			}
+
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+		this.getWorldPopNumber = function (shape) {
+			var config = {
+				params: {
+					action: 'get-world-pop-number',
+				}
+			};
+
+			var shapeType = shape.type;
+			if (shapeType === 'rectangle' || shapeType === 'polygon') {
+				config.params.shape = shapeType;
+				config.params.geom = shape.geom.toString();
+			} else if (shapeType === 'circle') {
+				config.params.shape = shapeType;
+				config.params.radius = shape.radius;
+				config.params.center = shape.center.toString();
+			}
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+
+		};
 		
 	});
 	

@@ -14,7 +14,9 @@ def api(request):
     action = get('action', '')
 
     if action:
-        public_methods = ['get-map-id', 'download-url', 'download-to-drive']
+        public_methods = ['get-map-id', 'download-url', 'download-to-drive',
+                          'get-world-pop-id', 'get-world-pop-number'
+                          ]
         if action in public_methods:
             start_year = get('startYear', '2000')
             end_year = get('endYear', '2012')
@@ -27,10 +29,14 @@ def api(request):
             file_name = get('file', '')
             method = get('method', '')
             core = GEEApi(start_year, end_year, start_month, end_month, shape, geom, radius, center, method)
-            if action == 'get-map-id':
+            if action == 'get-world-pop-id':
+                data = core.get_world_pop_id()
+            elif action == 'get-map-id':
                 data = core.get_map_id()
             elif action == 'download-url':
                 data = core.get_download_url()
+            elif action == 'get-world-pop-number':
+                data = core.get_world_pop_number()
             elif action == 'download-to-drive':
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:

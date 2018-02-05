@@ -9,48 +9,29 @@
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
 		
 		// Sidebar Menu controller
-		$scope.toggleButtonClass = 'toggle-sidebar-button is-closed';
+		/*$scope.toggleButtonClass = 'toggle-sidebar-button is-close';
 		$scope.sidebarClass = 'display-none';
 		$scope.mapClass = 'col-md-12 col-sm-12 col-lg-12';
-		
 		$scope.alertClass = 'custom-alert-full';
+		$scope.toggleButtonClass = 'toggle-sidebar-button is-open';
+		$scope.sidebarClass = 'col-sm-5 col-md-3 col-lg-3 sidebar';
+		$scope.mapClass = 'col-md-12 col-sm-12 col-lg-9';
+		$scope.alertClass = 'custom-alert';
 		
 		$scope.openSidebar = function () {
 			
 			if ($scope.toggleButtonClass === 'toggle-sidebar-button is-closed') {
-				$scope.mapClass = 'col-sm-7 col-md-9 col-lg-9';
-				$scope.sidebarClass = 'col-sm-5 col-md-3 col-lg-3 sidebar';
+				$scope.mapClass = 'col-sm-12 col-md-12 col-lg-12';
+				$scope.sidebarClass = 'display-none';
 				$scope.toggleButtonClass = 'toggle-sidebar-button is-open';
 				$scope.alertClass = 'custom-alert';
-				//$scope.broadcastTimeSlider();
 			} else {
-				$scope.mapClass = 'col-md-12 col-sm-12 col-lg-12';
-				$scope.sidebarClass = 'display-none';
+				$scope.mapClass = 'col-sm-7 col-md-9 col-lg-9';
+				$scope.sidebarClass = 'col-sm-5 col-md-3 col-lg-3 sidebar';
 				$scope.toggleButtonClass = 'toggle-sidebar-button is-closed';
 				$scope.alertClass = 'custom-alert-full';
 			}
 			
-		};
-
-		// Date Range Slider
-		$scope.broadcastTimeSlider = function () {
-			$timeout(function () {
-				$scope.$broadcast('rzSliderForceRender');
-			});
-		};
-
-		/*$scope.startYear = 2000;
-		$scope.endYear = 2012;
-		$scope.startMonth = 1;
-		$scope.endMonth = 10;
-		$scope.dateSlider = {
-				startHandle: $scope.startYear,
-				endHandle: $scope.endYear,
-				options: {
-					floor: 1984,
-					ceil: (new Date()).getFullYear() - 1,
-					step: 1
-				}
 		};*/
 		
 		// Earth Engine
@@ -59,7 +40,6 @@
 			DEFAULT_ZOOM = 6,
 			MAX_ZOOM = 25,
 			DEFAULT_CENTER = { lng: 102.93, lat: 16.4 },
-			MAP_TYPE = 'satellite',
 			AREA_LIMIT = 20000,
 			// Map options
 			mapOptions = {
@@ -67,7 +47,6 @@
 				zoom: DEFAULT_ZOOM,
 				maxZoom: MAX_ZOOM,
 				streetViewControl: false,
-				mapTypeId: MAP_TYPE,
 				mapTypeControlOptions: {
 					style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
 		            position: google.maps.ControlPosition.TOP_CENTER
@@ -81,9 +60,52 @@
 		$scope.timePeriodOption = null;
 		$scope.showPolygonDrawing = false;
 		$scope.checkPolygonDrawing = true;
+		$scope.checkWorldPop = false;
+		$scope.checkMapData = true;
+		// Custom Control Google Maps API
+		$scope.overlays = {};
+		$scope.shape = {};
+
+		$('.js-tooltip').tooltip();
+
+		/**
+		 * Alert
+		 */
+
+		$scope.closeAlert = function () {
+			$('.custom-alert').addClass('display-none');
+			$scope.alertContent = '';
+		};
+
+		var showErrorAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-success').addClass('alert-danger');
+		};
+
+		var showSuccessAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-danger').addClass('alert-success');
+		};
+
+		var showInfoAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-success').removeClass('alert-danger').addClass('alert-info');
+		};
+
+		// Map Functionality
+
+		var clearLayers = function (name) {
+
+			map.overlayMapTypes.forEach (function (layer, index) {
+				if ((layer) && (layer.name === name)) {
+					map.overlayMapTypes.removeAt(index);
+				}
+			});
+		};
 
 		/** Updates the image based on the current control panel config. */
-		var loadMap = function (mapId, mapToken) {
+		var loadMap = function (mapId, mapToken, type) {
+			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
 					var url = EE_URL + '/map/';
@@ -92,48 +114,139 @@
 						return url;
 					},
 				tileSize: new google.maps.Size(256, 256),
-				name: 'FloodViewer',
-				opacity: 1.0,
-				mapTypeId: MAP_TYPE
+				name: type,
+				opacity: 1.0
 			};
 			var mapType = new google.maps.ImageMapType(eeMapOptions);
 			map.overlayMapTypes.push(mapType);
-			$('#layer-opacity').slider('setValue', 1);
-			$scope.showLayerOpacity = true;
+			$scope.overlays[type] = mapType;
 		};
 
 		/**
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
-			if (typeof(init) === 'undefined') init = false;
+			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
 			MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 		    .then(function (data) {
 		    	loadMap(data.eeMapId, data.eeMapToken);
 		    	if (init) {
 		    		$timeout(function () {
-						$scope.showInfoAlert();
-						$scope.alertContent = 'The map view shows the data from 2000 January to 2012 December. You can change the map view with the ☰  provided in the left side!';
-						$scope.showAlert();
+						showInfoAlert('The map data shows the data from 2000 January to 2012 December. You can change the map data with the ☰  provided in the left side!');
 		    		}, 3500);
 		    	} else {
-		    		$timeout(function () { 
-						$scope.showSuccessAlert();
-						$scope.alertContent = 'The map view is updated!';
-						$scope.showAlert();
+		    		$timeout(function () {
+						showSuccessAlert('The map data is updated!');
 		    		}, 3500);
 		    	}
 		    	$scope.showLegend = true;
 		    }, function (error) {
 		        console.log(error);
+		        showErrorAlert(error.statusText);
 		    });
 		};
 
-		// Custom Control Google Maps API
-		//$scope.overlays = [];
-		$scope.overlays = null;
-		$scope.shape = {};
+		$scope.clickMapData = function () {
+			if ($scope.checkMapData) {
+				$scope.checkMapData = false;
+				$scope.overlays.map.setOpacity(0);
+			} else {
+				$scope.checkMapData = true;
+				$scope.overlays.map.setOpacity(1);
+			}
+		};
+
+		$scope.updateMap = function () {
+			$scope.closeAlert();
+			if ($scope.checkMapData) {
+				var dateObject = $scope.checkBeforeDownload(false, false);
+				if (dateObject) {
+					if (dateObject.message) {
+						showInfoAlert(dateObject.message);
+						// Clear before adding
+						clearLayers('map');
+						$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
+					}
+				}
+			}
+
+			if ($scope.checkWorldPop) {
+				clearLayers('worldPop');
+				$scope.getWorldPopId();
+			}
+		};
+
+		$scope.downloadMap = function () {
+
+			var dateObject = $scope.checkBeforeDownload(true);
+			// @ToDo: Do proper check
+			if (dateObject) {
+				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
+				MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
+			    .then(function (data) {
+					showSuccessAlert('Your Download Link is ready. Enjoy!');
+			    	$scope.downloadURL = data.downloadUrl;
+			    	$scope.showDownloadUrl();
+			    }, function (error) {
+			    	showErrorAlert(error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
+			        console.log(error);
+			    });
+			}
+		};
+
+		// Map Layers
+
+		$scope.clickPolygonDrawing = function () {
+			if ($scope.checkPolygonDrawing) {
+				$scope.checkPolygonDrawing = false;
+				$scope.overlays.polygon.setMap(null);
+			} else {
+				$scope.checkPolygonDrawing = true;
+				$scope.overlays.polygon.setMap(map);
+			}
+		};
+
+		$scope.getWorldPopId = function () {
+
+			MapService.getWorldPopId($scope.shape)
+		    .then(function (data) {
+		    	loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
+		    	showSuccessAlert('The World Pop Layer is updated!');
+		    }, function (error) {
+		    	showErrorAlert('Something went wrong! Please try again later!');
+		        console.log(error);
+		    });
+		};
+
+		$scope.clickWorldPop = function () {
+			if ($scope.checkWorldPop) {
+				$scope.checkWorldPop = false;
+				$scope.overlays.worldPop.setOpacity(0);
+			} else {
+				$scope.checkWorldPop = true;
+				if ($scope.overlays.worldPop) {
+					$scope.overlays.worldPop.setOpacity(1);
+				} else {
+					$scope.getWorldPopId();
+				}
+			}
+		};
+
+		$scope.getWorlPopNumber = function () {
+			var _object = $scope.checkBeforeDownload(false, true, false);
+			if (_object) {
+				MapService.getWorldPopNumber($scope.shape)
+				.then(function (data) {
+					console.log(data.populationNumber);
+				});
+			}
+		};
+
+		/**
+		 * Drawing Tool Manager
+		 **/
+
 		var drawingManager = new google.maps.drawing.DrawingManager();
 
 		var getDrawingManagerOptions = function (type) {
@@ -153,13 +266,35 @@
 		    drawingManagerOptions.drawingMode = type;
 		    drawingManagerOptions[typeOptions] = {
 	    		'strokeColor': '#ff0000',
-				'strokeWeight': 3.5,
+				'strokeWeight': 5,
 				'fillColor': 'yellow',
-				'fillOpacity': 0.6
+				'fillOpacity': 0,
+				'editable': true
 		    };
 			
 			return drawingManagerOptions;
 				
+		};
+
+		$scope.drawShape = function (type) {
+
+			drawingManager.setOptions(getDrawingManagerOptions(type));
+			// Loading the drawing Tool in the Map.
+			drawingManager.setMap(map);
+			
+		};
+
+		$scope.stopDrawing = function () {
+
+			drawingManager.setDrawingMode(null);
+			
+		};
+
+		$scope.clearDrawing = function () {
+			if ($scope.overlays.polygon) {
+				$scope.overlays.polygon.setMap(null);
+				$scope.showPolygonDrawing = false;				
+			}
 		};
 
 		var getRectangleArray = function (bounds) {
@@ -182,8 +317,7 @@
 			// Clear Layer First
 			$scope.clearDrawing();
 			var overlay = event.overlay;
-			//$scope.overlays.push(overlay);
-			$scope.overlays = overlay;
+			$scope.overlays.polygon = overlay;
 			$scope.showPolygonDrawing = true;
 			$scope.$apply();
 			$scope.shape = {};
@@ -192,74 +326,39 @@
 			$scope.shape.type = drawingType;
 			if (drawingType === 'rectangle') {
 				$scope.shape.geom = getRectangleArray(overlay.getBounds());
+				// Change Event
+				google.maps.event.addListener(overlay, 'bounds_changed', function () {
+					$scope.shape.geom = getRectangleArray(event.overlay.getBounds());
+				});
 			} else if (drawingType === 'circle') {
 				$scope.shape.center = [overlay.getCenter().lng().toFixed(2), overlay.getCenter().lat().toFixed(2)];
 				$scope.shape.radius = overlay.getRadius().toFixed(2); // unit: meter
+				// Change event
+				google.maps.event.addListener(overlay, 'radius_changed', function () {
+					$scope.shape.radius = event.overlay.getRadius().toFixed(2);
+				});
+				google.maps.event.addListener(overlay, 'center_changed', function () {
+					$scope.shape.center = [event.overlay.getCenter().lng().toFixed(2), event.overlay.getCenter().lat().toFixed(2)];
+				});
 			} else if (drawingType === 'polygon') {
-				$scope.shape.geom = getPolygonArray(overlay.getPath().getArray());
+				var path = overlay.getPath();
+				$scope.shape.geom = getPolygonArray(path.getArray());
+				// Change event
+				google.maps.event.addListener(path, 'insert_at', function () {
+					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+				});
+				google.maps.event.addListener(path, 'remove_at', function () {
+					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+				});
+				google.maps.event.addListener(path, 'set_at', function () {
+					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+				});
 			}
+			$scope.stopDrawing();
 		});
 
-		$scope.clearOverlays = function () {
-			$scope.closeAlert();
-			$scope.shape = {};
-			map.overlayMapTypes.clear();
-			$scope.showLayerOpacity = false;
-			$scope.clearDrawing();
-		};
-
-		$scope.clearDrawing = function () {
-			//while ($scope.overlays[0]) {
-			//	$scope.overlays.pop().setMap(null);
-			//}
-			if ($scope.overlays) {
-				$scope.overlays.setMap(null);
-				$scope.overlays = null;
-				$scope.showPolygonDrawing = false;				
-			}
-		};
-
-		$scope.drawRectangle = function () {
-
-			drawingManager.setOptions(getDrawingManagerOptions('rectangle'));
-			// Loading the drawing Tool in the Map.
-			drawingManager.setMap(map);
-			
-		};
-
-		$scope.drawCircle = function () {
-
-			drawingManager.setOptions(getDrawingManagerOptions('circle'));
-			// Loading the drawing Tool in the Map.
-			drawingManager.setMap(map);
-			
-		};
-
-		$scope.drawPolygon = function () {
-
-			drawingManager.setOptions(getDrawingManagerOptions('polygon'));
-			// Loading the drawing Tool in the Map.
-			drawingManager.setMap(map);
-			
-		};
-
-		$scope.stopDrawing = function () {
-
-			drawingManager.setDrawingMode(null);
-			
-		};
-
 		// Map Downloader
-		$('.js-tooltip').tooltip();
 		$scope.alertContent = '';
-		
-		$scope.closeAlert = function () {
-			$('.' + $scope.alertClass).addClass('display-none');
-		};
-
-		$scope.showAlert = function () {
-			$('.' + $scope.alertClass).removeClass('display-none');
-		};
 
 		$scope.copyToClipBoard = function () {
 			// Function taken from https://codepen.io/nathanlong/pen/ZpAmjv?editors=0010
@@ -285,24 +384,6 @@
 		    	// Fallback if browser doesn't support .execCommand('copy')
 		    	window.prompt("Copy to clipboard: Ctrl+C or Command+C");
 		  	}
-		};
-
-		$scope.showDangerAlert = function () {
-			$('.' + $scope.alertClass).removeClass('alert-info');
-			$('.' + $scope.alertClass).removeClass('alert-success');
-			$('.' + $scope.alertClass).addClass('alert-danger');
-		};
-
-		$scope.showSuccessAlert = function () {
-			$('.' + $scope.alertClass).removeClass('alert-info');
-			$('.' + $scope.alertClass).removeClass('alert-danger');
-			$('.' + $scope.alertClass).addClass('alert-success');
-		};
-
-		$scope.showInfoAlert = function () {
-			$('.' + $scope.alertClass).removeClass('alert-success');
-			$('.' + $scope.alertClass).removeClass('alert-danger');
-			$('.' + $scope.alertClass).addClass('alert-info');
 		};
 
 		var datepickerYearOptions = {
@@ -374,15 +455,12 @@
 			return monthObject[month];
 		};
 
-		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon) {
+		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon, needDate) {
 
 			if (typeof(needPolygon) === 'undefined') needPolygon = true;
 			if (needPolygon){
-				//if (!$scope.overlays[0]) {
-				if (!$scope.overlays) {
-					$scope.showDangerAlert();
-					$scope.alertContent = 'Please draw a polygon to begin downloading!';
-					$scope.showAlert();
+				if (!$scope.overlays.polygon) {
+					showErrorAlert('Please draw a polygon first!');
 					return false;
 				}
 			}
@@ -390,68 +468,63 @@
 			if (typeof(checkAreaLimit) === 'undefined') checkAreaLimit = false;
 			if (checkAreaLimit) {
 				//var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays[0].getPath()) / 1e6;
-				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays.getPath()) / 1e6;
+				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays.polygon.getPath()) / 1e6;
 				if (drawnPolygonArea > AREA_LIMIT) {
-					$scope.showDangerAlert();
-					$scope.alertContent = 'The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!';
-					$scope.showAlert();
-					return false;
-				}	
-			}
-			
-			var startYear = $('#datepicker-year-start').val();
-			var endYear = $('#datepicker-year-end').val();
-			var startMonth,
-				endMonth,
-				message = '';
-
-			if (!(startYear && endYear)) {
-				$scope.showDangerAlert();
-				$scope.alertContent = 'Select the start and end date in order to download the map!';
-				$scope.showAlert();
-				return false;
-			} else {
-				if (Number(startYear) > Number(endYear)) {
-					$scope.showDangerAlert();
-					$scope.alertContent = 'End year must be greater than start year!';
-					$scope.showAlert();
+					showErrorAlert('The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!');
 					return false;
 				}
-				startMonth = $('#datepicker-month-start').val();
-				endMonth = $('#datepicker-month-end').val();
-				if (!startMonth && !endMonth) {
-					message = 'No start and end month provided. Using January as start month and December as end month!';
-					startMonth = $scope.getMonthInNumber('January');
-					endMonth = $scope.getMonthInNumber('December');
-				} else if (startMonth && !endMonth) {
-					message = 'No end month provided. Using December as end month!';
-					startMonth = $scope.getMonthInNumber(startMonth);
-					endMonth = $scope.getMonthInNumber('December');
-				} else if (!startMonth && endMonth) {
-					message = 'No start month provided. Using January as start month!';
-					startMonth = $scope.getMonthInNumber('January');
-					endMonth = $scope.getMonthInNumber(endMonth);
+			}
+
+			if (typeof(needDate) === 'undefined') needDate = true;
+			if (needDate) {
+				var startYear = $('#datepicker-year-start').val();
+				var endYear = $('#datepicker-year-end').val();
+				var startMonth,
+					endMonth,
+					message = '';
+
+				if (!(startYear && endYear)) {
+					showErrorAlert('Select the start and end date in order to download the ma data!');
+					return false;
 				} else {
-					startMonth = $scope.getMonthInNumber(startMonth);
-					endMonth = $scope.getMonthInNumber(endMonth);
-				}
-				
-				if (Number(startYear) === Number(endYear) && Number(startMonth) >= Number(endMonth)) {
-					$scope.showDangerAlert();
-					$scope.alertContent = 'End month must be greater than start month!';
-					$scope.showAlert();
-					return false;
-				}
+					if (Number(startYear) > Number(endYear)) {
+						showErrorAlert('End year must be greater than start year!');
+						return false;
+					}
+					startMonth = $('#datepicker-month-start').val();
+					endMonth = $('#datepicker-month-end').val();
+					if (!startMonth && !endMonth) {
+						message = 'No start and end month provided. Using January as start month and December as end month!';
+						startMonth = $scope.getMonthInNumber('January');
+						endMonth = $scope.getMonthInNumber('December');
+					} else if (startMonth && !endMonth) {
+						message = 'No end month provided. Using December as end month!';
+						startMonth = $scope.getMonthInNumber(startMonth);
+						endMonth = $scope.getMonthInNumber('December');
+					} else if (!startMonth && endMonth) {
+						message = 'No start month provided. Using January as start month!';
+						startMonth = $scope.getMonthInNumber('January');
+						endMonth = $scope.getMonthInNumber(endMonth);
+					} else {
+						startMonth = $scope.getMonthInNumber(startMonth);
+						endMonth = $scope.getMonthInNumber(endMonth);
+					}
+					
+					if (Number(startYear) === Number(endYear) && Number(startMonth) >= Number(endMonth)) {
+						showErrorAlert('End month must be greater than start month!');
+						return false;
+					}
 
+					return {
+						startYear: startYear,
+						endYear: endYear,
+						startMonth: startMonth,
+						endMonth: endMonth,
+						message: message
+					};
+
+				}
 			}
-
-			return {
-				startYear: startYear,
-				endYear: endYear,
-				startMonth: startMonth,
-				endMonth: endMonth,
-				message: message
-			};
 			
 		};
 
@@ -471,70 +544,28 @@
 			$scope.gDriveFileName = false;
 		};
 
-		$scope.updateMap = function () {
-			$scope.closeAlert();
-			var dateObject = $scope.checkBeforeDownload(false, false);
-			if (dateObject) {
-				// Clear before adding
-				map.overlayMapTypes.clear();
-				$scope.showLayerOpacity = false;
-				//$scope.clearOverlays();
-				$scope.showInfoAlert();
-				$scope.alertContent = dateObject.message;
-				$scope.showAlert();
-				$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);	
-			}
-		};
-
-		$scope.downloadMap = function () {
-
-			var dateObject = $scope.checkBeforeDownload(true);
-			// @ToDo: Do proper check
-			if (dateObject) {
-				$scope.showInfoAlert();
-				$scope.alertContent = dateObject.message + ' Please wait while I prepare the download link for you!';
-				$scope.showAlert();
-				MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
-			    .then(function (data) {
-					$scope.showSuccessAlert();
-					$scope.alertContent = 'Your Download Link is ready. Enjoy!';
-			    	$scope.downloadURL = data.downloadUrl;
-			    	$scope.showDownloadUrl();
-			    }, function (error) {
-			    	$scope.showDangerAlert();
-			    	$scope.alertContent = error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!';
-			        console.log(error);
-			    });		
-			}
-		};
-
 		$scope.saveToDrive = function () {
 			var dateObject = $scope.checkBeforeDownload();
 			// Check if filename is provided, if not use the default one
 			// @ToDo: Sanitize input and do proper check of dateobject
 			var fileName = $('#gdrive-file-name').val() || '';
 			if (dateObject) {
-				$scope.showInfoAlert();
-				$scope.alertContent = dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!';
-				$scope.showAlert();
+				$scope.alertContent = 
+				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!');
 				MapService.saveToDrive(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape, fileName)
 			    .then(function (data) {
 			    	if (data.error) {
-				    	$scope.showDangerAlert();
-				    	$scope.alertContent = data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!';
+				    	showErrorAlert(data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
 				        console.log(data.error);
 			    	} else {
-						$scope.showInfoAlert();
-						$scope.alertContent = data.info;
-						$scope.showAlert();
+						showInfoAlert(data.info);
 				    	//$scope.downloadURL = data.driveLink;
 				    	//$scope.showDownloadUrl();
 				    	$scope.hideGDriveFileName();
 				    	$('#gdrive-file-name').val('');
 			    	}
 			    }, function (error) {
-			    	$scope.showDangerAlert();
-			    	$scope.alertContent = error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!' ;
+			    	showErrorAlert(error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
 			        console.log(error);
 			    });		
 			}
@@ -543,7 +574,7 @@
 		$scope.opacityValue = null;
 		$scope.showLayerOpacity = false;
 
-		$('#layer-opacity').slider({
+		/*$('#layer-opacity').slider({
 			formatter: function (value) {				
 				return 'Layer opacity: ' + value;
 			}
@@ -558,17 +589,8 @@
 		    if (value !== $scope.opacityValue) {
 		    	map.overlayMapTypes.getAt(0).setOpacity(value);
 		    }
-		});
+		});*/
 
-		$scope.clickPolygonDrawing = function () {
-			if ($scope.checkPolygonDrawing) {
-				$scope.checkPolygonDrawing = false;
-				$scope.overlays.setMap(null);
-			} else {
-				$scope.checkPolygonDrawing = true;
-				$scope.overlays.setMap(map);
-			}
-		};
-	
 	});
+
 })();

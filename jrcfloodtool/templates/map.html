@@ -7,38 +7,19 @@
     <div class="row" ng-controller="mapCtrl">
 
         <!-- Toggle Button -->
-        <button type="button" ng-click="openSidebar()" ng-class="toggleButtonClass" data-toggle="offcanvas">
+        <!--<button type="button" ng-click="openSidebar()" ng-class="toggleButtonClass" data-toggle="offcanvas">
             <span class="ts-top"></span>
             <span class="ts-middle"></span>
             <span class="ts-bottom"></span>
-        </button>
+        </button>-->
 
         <!-- Sidebar Container -->
-        <div ng-class="sidebarClass">            
-            <!-- <ul class="nav nav-sidebar">
-                <li>
-					<rzslider class="date-slider"
-					          rz-slider-model="dateSlider.minValue"
-					          rz-slider-high="dateSlider.maxValue"
-					          rz-slider-options="dateSlider.options"></rzslider>                    
-
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">Team</a>
-                </li>            
-            </ul> -->
-
+        <div class="col-sm-5 col-md-3 col-lg-3 sidebar">
             {% include "panels/view-and-data-download.html" %}
         </div>
 
         <!-- Alert Container -->
-        <div class="alert alert-dismissible text-center display-none" ng-Class="alertClass" role="alert">
+        <div class="alert alert-dismissible text-center display-none custom-alert" role="alert">
             <button type="button" class="close" ng-click="closeAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>[[alertContent]]</strong>
         </div>
@@ -72,7 +53,7 @@
         </div>
 
         <!-- Map Container -->
-        <div class="map" ng-class="mapClass" id="map" ng-init="initMap('2000', '2012', '01', '12', 'continuous', true)"></div>
+        <div class="map col-sm-7 col-md-9 col-lg-9" id="map" ng-init="initMap('2000', '2012', '01', '12', 'continuous', true)"></div>
         
     </div>
 

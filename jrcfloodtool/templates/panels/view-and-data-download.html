@@ -9,7 +9,7 @@
                href="#data-download-and-view-filter">View and Download Data</a>
         </h4>
     </div>
-    <div id="data-download-and-view-filter" class="panel-collapse collapse out text-center">
+    <div id="data-download-and-view-filter" class="panel-collapse collapse in text-center">
         <div class="panel-body">
             <table class="sidebar-table">
                 <tbody>
@@ -23,36 +23,72 @@
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="" ng-click="drawPolygon()">Polygon</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="" ng-click="clearOverlays()">Clear Drawing</a></li>
-                                    <li><a href="" ng-click="stopDrawing()">Stop Drawing</a></li>
+                                    <li><a href="" ng-click="drawShape('polygon')">Polygon</a></li>
+                                    <li><a href="" ng-click="drawShape('rectangle')">Rectangle</a></li>
+                                    <li><a href="" ng-click="drawShape('circle')">Circle</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
-                    <tr><td><h5><b>Select Years</b></h5></td></tr>
-                    <tr>
+                    <tr><td><h5><b>Overlay Layers</b></h5></td></tr>
+                    <tr class="border-bottom">
                         <td>
+                            <div class="shadow">
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkMapData"
+                                               ng-click="clickMapData()"/>
+                                        Map Data
+                                    </label>
+                                </div>
+                                <!--<div class="form-group" ng-show="showLayerOpacity">
+                                    <label for="layer-opacity">Opacity: </label>
+                                    <input name="layer-opacity" id="layer-opacity"
+                                           data-slider-id="layer-opacity-slider" type="text"
+                                           data-slider-min="0"
+                                           data-slider-max="1"
+                                           data-slider-step="0.1" />
+                                </div>-->
+                                <div class="border-bottom"></div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkWorldPop"
+                                               ng-click="clickWorldPop()"/>
+                                        World Pop Data
+                                    </label>
+                                </div>
+                                <div class="border-bottom"></div>
+                                <div class="form-group" ng-show="showPolygonDrawing">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkPolygonDrawing"
+                                               ng-click="clickPolygonDrawing()"/>
+                                        Polygon
+                                    </label>
+                                </div>
+                                <div class="border-bottom"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><td>
+                        <div ng-show="checkMapData">
+                            <h5><b>Select Years</b></h5>
                             <div class="input-group input-daterange datepicker-year-class">
                                 <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-start">
                                 <div class="input-group-addon">to</div>
                                 <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-end">
                             </div>
-                        </td>
-                    </tr>
-                    <tr><td><h5><b>Select Months</b></h5></td></tr>
-                    <tr>
-                        <td>
+                            <h5><b>Select Months</b></h5>
                             <div class="input-group input-monthrange datepicker-month-class">
                                 <input type="text" data-provide="datepicker" class="form-control" value="01" id="datepicker-month-start">
                                 <div class="input-group-addon">to</div>
                                 <input type="text" data-provide="datepicker" class="form-control" value="12" id="datepicker-month-end">
                             </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             <br />
 							<div class="form-group">
 							    <label for="time-period-method">Select Method for Time Period</label>
@@ -62,9 +98,9 @@
 							            ng-options="option.name for option in timePeriodOptions"
 							            ng-model="timePeriodOption"></select>
 							</div>
-                        </td>
-                    </tr>
-                    <tr ng-show="showLayerOpacity">
+                        </div>
+                    </td></tr>
+                    <!--<tr ng-show="showLayerOpacity">
                     	<td>
                     		<div class="form-group">
                     			<label for="layer-opacity">Layer Opacity</label>
@@ -89,16 +125,17 @@
                     			</label>
                     		</div>
                     	</td>
-                    </tr>
+                    </tr>-->
                 </tbody>
             </table>                    
         </div>
         <!-- End Panel Body -->
         <div class="panel-footer">
-            <div class="text-center">
+            <div class="row text-center">
                 <button type="button" class="btn btn-primary" ng-click="updateMap()">Update Map</button>
+                <hr />
                 <div class="btn-group">
-	                <button type="button" class="btn btn-primary">Download</button>
+	                <button type="button" class="btn btn-primary">Download Map Data</button>
 	                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	                    <span class="caret"></span>
 	                    <span class="sr-only">Toggle Dropdown</span>
@@ -109,6 +146,8 @@
 	                </ul>
                 </div>
             </div>
+            <hr />
+            <!--<button type="button" class="btn btn-primary" ng-click="getWorlPopNumber()">Show Affected People</button>-->
             <div ng-show="downloadUrl" class="input-group">
                 <hr>
                 <input type="text" class="form-control" value="[[downloadURL]]">

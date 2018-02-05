@@ -177,3 +177,9 @@
 .panel-heading .legend-toggle.collapsed:after {
     content: "\f196";
 }
+
+.shadow {
+    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
