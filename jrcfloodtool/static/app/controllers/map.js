@@ -65,6 +65,7 @@
 		// Custom Control Google Maps API
 		$scope.overlays = {};
 		$scope.shape = {};
+		$scope.drawingArea = null;
 
 		$('.js-tooltip').tooltip();
 
@@ -189,7 +190,7 @@
 			    	$scope.downloadURL = data.downloadUrl;
 			    	$scope.showDownloadUrl();
 			    }, function (error) {
-			    	showErrorAlert(error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
+			    	showErrorAlert(error.message);
 			        console.log(error);
 			    });
 			}
@@ -312,6 +313,21 @@
 			return geom;
 		};
 
+		var computeRectangleArea = function (bounds) {
+
+			if (!bounds) {
+				return 0;
+			}
+
+			var sw = bounds.getSouthWest();
+			var ne = bounds.getNorthEast();
+			var southWest = new google.maps.LatLng(sw.lat(), sw.lng());
+			var northEast = new google.maps.LatLng(ne.lat(), ne.lng());
+			var southEast = new google.maps.LatLng(sw.lat(), ne.lng());
+			var northWest = new google.maps.LatLng(ne.lat(), sw.lng());
+			return google.maps.geometry.spherical.computeArea([northEast, northWest, southWest, southEast]) / 1e6;
+		};
+
 		// Overlay Listener
 		google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
 			// Clear Layer First
@@ -326,32 +342,41 @@
 			$scope.shape.type = drawingType;
 			if (drawingType === 'rectangle') {
 				$scope.shape.geom = getRectangleArray(overlay.getBounds());
+				$scope.drawingArea = computeRectangleArea(overlay.getBounds());
 				// Change Event
 				google.maps.event.addListener(overlay, 'bounds_changed', function () {
 					$scope.shape.geom = getRectangleArray(event.overlay.getBounds());
+					$scope.drawingArea = computeRectangleArea(event.overlay.getBounds());
 				});
 			} else if (drawingType === 'circle') {
 				$scope.shape.center = [overlay.getCenter().lng().toFixed(2), overlay.getCenter().lat().toFixed(2)];
 				$scope.shape.radius = overlay.getRadius().toFixed(2); // unit: meter
+				$scope.drawingArea = Math.PI * Math.pow(overlay.getRadius()/1000, 2);
 				// Change event
 				google.maps.event.addListener(overlay, 'radius_changed', function () {
 					$scope.shape.radius = event.overlay.getRadius().toFixed(2);
+					$scope.drawingArea = Math.PI * Math.pow(event.overlay.getRadius()/1000, 2);
 				});
 				google.maps.event.addListener(overlay, 'center_changed', function () {
 					$scope.shape.center = [event.overlay.getCenter().lng().toFixed(2), event.overlay.getCenter().lat().toFixed(2)];
+					$scope.drawingArea = Math.PI * Math.pow(event.overlay.getRadius()/1000, 2);
 				});
 			} else if (drawingType === 'polygon') {
 				var path = overlay.getPath();
 				$scope.shape.geom = getPolygonArray(path.getArray());
+				$scope.drawingArea = google.maps.geometry.spherical.computeArea(path) / 1e6;
 				// Change event
 				google.maps.event.addListener(path, 'insert_at', function () {
 					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+					$scope.drawingArea = google.maps.geometry.spherical.computeArea(event.overlay.getPath()) / 1e6;
 				});
 				google.maps.event.addListener(path, 'remove_at', function () {
 					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+					$scope.drawingArea = google.maps.geometry.spherical.computeArea(event.overlay.getPath()) / 1e6;
 				});
 				google.maps.event.addListener(path, 'set_at', function () {
 					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
+					$scope.drawingArea = google.maps.geometry.spherical.computeArea(event.overlay.getPath()) / 1e6;
 				});
 			}
 			$scope.stopDrawing();
@@ -467,9 +492,7 @@
 
 			if (typeof(checkAreaLimit) === 'undefined') checkAreaLimit = false;
 			if (checkAreaLimit) {
-				//var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays[0].getPath()) / 1e6;
-				var drawnPolygonArea = google.maps.geometry.spherical.computeArea($scope.overlays.polygon.getPath()) / 1e6;
-				if (drawnPolygonArea > AREA_LIMIT) {
+				if ($scope.drawingArea > AREA_LIMIT) {
 					showErrorAlert('The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!');
 					return false;
 				}
@@ -570,26 +593,6 @@
 			    });		
 			}
 		};
-
-		$scope.opacityValue = null;
-		$scope.showLayerOpacity = false;
-
-		/*$('#layer-opacity').slider({
-			formatter: function (value) {				
-				return 'Layer opacity: ' + value;
-			}
-		});
-
-		$('#layer-opacity').slider().on('slideStart', function (ev) {
-			$scope.opacityValue = $('#layer-opacity').data('slider').getValue();
-		});
-
-		$('#layer-opacity').slider().on('slideStop', function (ev) {
-		    var value = $('#layer-opacity').data('slider').getValue();
-		    if (value !== $scope.opacityValue) {
-		    	map.overlayMapTypes.getAt(0).setOpacity(value);
-		    }
-		});*/
 
 	});
 

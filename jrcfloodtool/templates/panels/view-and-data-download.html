@@ -17,7 +17,8 @@
                         <td>
                             <!-- Split button dropdowns -->
                             <div class="btn-group maintain-padding">
-                                <button type="button" class="btn btn-primary">Area Filter</button>
+                                <button type="button" class="btn btn-primary" ng-click="drawShape('polygon')">Draw Polygon</button>
+                                <!--<button type="button" class="btn btn-primary">Area Filter</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -26,7 +27,7 @@
                                     <li><a href="" ng-click="drawShape('polygon')">Polygon</a></li>
                                     <li><a href="" ng-click="drawShape('rectangle')">Rectangle</a></li>
                                     <li><a href="" ng-click="drawShape('circle')">Circle</a></li>
-                                </ul>
+                                </ul>-->
                             </div>
                         </td>
                     </tr>
@@ -146,7 +147,6 @@
 	                </ul>
                 </div>
             </div>
-            <hr />
             <!--<button type="button" class="btn btn-primary" ng-click="getWorlPopNumber()">Show Affected People</button>-->
             <div ng-show="downloadUrl" class="input-group">
                 <hr>

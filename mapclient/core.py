@@ -168,12 +168,14 @@ class GEEApi():
     def get_download_url(self):
 
         water_percent_image = self._calculate_water_percent_image()
-        url = water_percent_image.getDownloadURL({
-            'name': 'water_extract',
-            'scale': 30
-        })
-
-        return {'downloadUrl': url}
+        try:
+            url = water_percent_image.getDownloadURL({
+                'name': 'water_extract',
+                'scale': 30
+            })
+            return {'downloadUrl': url}
+        except Exception as e:
+            return {'error': e.message}
 
     # -------------------------------------------------------------------------
     def download_to_drive(self, user_email, user_id, file_name, oauth2object):
