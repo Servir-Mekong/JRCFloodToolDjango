@@ -14,8 +14,33 @@
         </button>-->
 
         <!-- Sidebar Container -->
-        <div class="col-sm-5 col-md-3 col-lg-3 sidebar">
-            {% include "panels/view-and-data-download.html" %}
+        <div id="tabList" class="col-sm-5 col-md-3 col-lg-3 sidebar">
+            <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href ng-click="page='first'">View Data</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href ng-click="page='second'">Analysis</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href ng-click="page='third'">Result</a>
+                    </li>
+            </ul>
+
+        <div class="tab-content">    
+            <div ng-init="page='first'"></div>
+            <div ng-show="page === 'first'">
+                {% include "panels/view-and-data-download.html" %}
+            </div>
+
+            <div ng-show="page === 'second'">
+                {% include "panels/analysis.html" %}
+            </div>
+
+            <div ng-show="page === 'third'">
+                    {% include "panels/result.html" %}
+            </div>
+        </div>
         </div>
 
         <!-- Alert Container -->

@@ -62,6 +62,32 @@
 		$scope.checkPolygonDrawing = true;
 		$scope.checkWorldPop = false;
 		$scope.checkMapData = true;
+
+		//New added controls in View Data
+		$scope.checkStateBoundary = false;
+		$scope.checkTSBoundary = true;
+		$scope.checkRdNet = false;
+		$scope.checkShLoc = true;
+		$scope.checkWhLoc = false;
+		$scope.checkActualFF = true;
+		$scope.checkAggFH = false;
+
+		//New added controls in analysis
+		$scope.analysisStateBoundary = false;
+		$scope.analysisTSBoundary = true;
+		$scope.analysisRdNet = false;
+		$scope.analysisShLoc = true;
+		$scope.analysisWhLoc = false;
+		$scope.analysisExposure = true;
+		$scope.analysisRisk = false;
+
+		//New added controls in Result
+		$scope.resultDisplay = false;
+		$scope.resultDownload = true;
+		$scope.resultActualFF = false;
+		$scope.resultAggFH = true;
+		$scope.resultRisk = false;
+
 		// Custom Control Google Maps API
 		$scope.overlays = {};
 		$scope.shape = {};

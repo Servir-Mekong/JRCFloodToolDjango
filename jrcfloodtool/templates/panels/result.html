@@ -1,0 +1,80 @@
+<!-- Data Download Panel -->
+<div class="panel panel-primary">
+        <div id="data-download-and-view-filter" class="panel-collapse collapse in text-center">
+            <div class="panel-body">
+                <table class="sidebar-table">
+                    <tbody>
+                        <tr><td><h5><b>Exposure results</b></h5></td></tr>
+                        <tr class="border-bottom">
+                            <td>    
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   value="" 
+                                                   ng-checked="resultDisplay"
+                                                   ng-click="clickResultDisplay()"/>
+                                            Display result as table
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   value="" 
+                                                   ng-checked="resultDownload"
+                                                   ng-click="clickResultDownload()"/>
+                                            Download result as excel file
+                                        </label>
+                                    </div>
+                                    <div class="row text-center">
+                                            <button type="button" class="btn btn-primary" ng-click="execProcess()">Click to Process</button>
+                                            <hr />
+                                    </div>
+                            </td>
+                        </tr>
+                        <tr><td><h5><b>Map Results</b></h5></td></tr>
+                        <tr class="border-bottom">
+                            <td>
+    
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   value="" 
+                                                   ng-checked="resultActualFF"
+                                                   ng-click="clickResultActualFF()"/>
+                                            Actual Flood Frequency
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   value="" 
+                                                   ng-checked="resultAggFH"
+                                                   ng-click="clickResultAggFH()"/>
+                                            Aggregate Flood Hazard
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox"
+                                                       value="" 
+                                                       ng-checked="resultRisk"
+                                                       ng-click="clickResultRisk()"/>
+                                                Risk Result
+                                            </label>
+                                        </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>                    
+            </div>
+            <!-- End Panel Body -->
+            <div class="panel-footer">
+                <div class="row text-center">
+                    <button type="button" class="btn btn-primary" ng-click="download()">Download</button>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>

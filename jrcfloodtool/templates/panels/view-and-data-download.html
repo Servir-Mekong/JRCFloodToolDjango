@@ -1,24 +1,23 @@
 <!-- Data Download Panel -->
 <div class="panel panel-primary">
-    <div class="panel-heading">
+    <!-- <div class="panel-heading">
         <h4>
             <a class="accordion-toggle" 
                data-toggle="collapse"
                data-parent="#accordion"
                ng-click="broadcastTimeSlider()"
-               href="#data-download-and-view-filter">View and Download Data</a>
+               href="#data-download-and-view-filter">View Data</a>
         </h4>
-    </div>
+    </div> -->
     <div id="data-download-and-view-filter" class="panel-collapse collapse in text-center">
         <div class="panel-body">
             <table class="sidebar-table">
                 <tbody>
-                    <tr class="border-bottom">
+                    <!-- <tr class="border-bottom">
                         <td>
-                            <!-- Split button dropdowns -->
                             <div class="btn-group maintain-padding">
                                 <button type="button" class="btn btn-primary" ng-click="drawShape('polygon')">Draw Polygon</button>
-                                <!--<button type="button" class="btn btn-primary">Area Filter</button>
+                                <button type="button" class="btn btn-primary">Area Filter</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -27,15 +26,14 @@
                                     <li><a href="" ng-click="drawShape('polygon')">Polygon</a></li>
                                     <li><a href="" ng-click="drawShape('rectangle')">Rectangle</a></li>
                                     <li><a href="" ng-click="drawShape('circle')">Circle</a></li>
-                                </ul>-->
+                                </ul>
                             </div>
                         </td>
-                    </tr>
-                    <tr><td><h5><b>Overlay Layers</b></h5></td></tr>
+                    </tr> -->
+                    <tr><td><h5><b>Select element to display</b></h5></td></tr>
                     <tr class="border-bottom">
                         <td>
-                            <div class="shadow">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
                                                value="" 
@@ -43,7 +41,8 @@
                                                ng-click="clickMapData()"/>
                                         Map Data
                                     </label>
-                                </div>
+                                </div> -->
+
                                 <!--<div class="form-group" ng-show="showLayerOpacity">
                                     <label for="layer-opacity">Opacity: </label>
                                     <input name="layer-opacity" id="layer-opacity"
@@ -52,17 +51,67 @@
                                            data-slider-max="1"
                                            data-slider-step="0.1" />
                                 </div>-->
-                                <div class="border-bottom"></div>
+
+                                <!-- <div class="border-bottom"></div>
                                 <div class="form-group">
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
                                                value="" 
                                                ng-checked="checkWorldPop"
                                                ng-click="clickWorldPop()"/>
-                                        World Pop Data
+                                        Word Pop Data
+                                    </label>
+                                </div> -->
+
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkStateBoundary"
+                                               ng-click="clickStateBound()"/>
+                                        State/Region Boundary
                                     </label>
                                 </div>
-                                <div class="border-bottom"></div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkTSBoundary"
+                                               ng-click="clickTSBoundary()"/>
+                                        Township Boundary
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkRdNet"
+                                               ng-click="clickRdNet()"/>
+                                        Road Network
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkShLoc"
+                                               ng-click="clickShLoc()"/>
+                                        Shealter Location
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkWhLoc"
+                                               ng-click="clickWhLoc()"/>
+                                        Warehouse Location
+                                    </label>
+                                </div>
+                                
                                 <div class="form-group" ng-show="showPolygonDrawing">
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
@@ -72,12 +121,46 @@
                                         Polygon
                                     </label>
                                 </div>
-                                <div class="border-bottom"></div>
-                            </div>
+                                
+                        </td>
+                    </tr>
+                    <tr><td><h5><b>Select hazard to display</b></h5></td></tr>
+                    <tr class="border-bottom">
+                        <td>
+
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkActualFF"
+                                               ng-click="clickActualFF()"/>
+                                        Actual Flood Frequency
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkAggFH"
+                                               ng-click="clickAffFH()"/>
+                                        Aggregate Flood Hazard
+                                    </label>
+                                </div>
+                                
                         </td>
                     </tr>
                     <tr><td>
                         <div ng-show="checkMapData">
+                            <br />
+                            <div class="form-group">
+                                    <label for="time-period-method">Select Method for Time Period</label>
+                                    <select name="time-period-method" title="Time Period Method"
+                                            class="form-control js-tooltip"
+                                            ng-init="timePeriodOption = timePeriodOptions[0]"
+                                            ng-options="option.name for option in timePeriodOptions"
+                                            ng-model="timePeriodOption"></select>
+                            </div>
                             <h5><b>Select Years</b></h5>
                             <div class="input-group input-daterange datepicker-year-class">
                                 <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-start">
@@ -90,15 +173,6 @@
                                 <div class="input-group-addon">to</div>
                                 <input type="text" data-provide="datepicker" class="form-control" value="12" id="datepicker-month-end">
                             </div>
-                            <br />
-							<div class="form-group">
-							    <label for="time-period-method">Select Method for Time Period</label>
-							    <select name="time-period-method" title="Time Period Method"
-							    		class="form-control js-tooltip"
-							            ng-init="timePeriodOption = timePeriodOptions[0]"
-							            ng-options="option.name for option in timePeriodOptions"
-							            ng-model="timePeriodOption"></select>
-							</div>
                         </div>
                     </td></tr>
                     <!--<tr ng-show="showLayerOpacity">

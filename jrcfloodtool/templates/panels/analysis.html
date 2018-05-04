@@ -1,0 +1,103 @@
+<!-- Data Download Panel -->
+<div class="panel panel-primary">
+    <div id="data-download-and-view-filter" class="panel-collapse collapse in text-center">
+        <div class="panel-body">
+            <table class="sidebar-table">
+                <tbody>
+                    <tr><td><h5><b>Select element to analyze</b></h5></td></tr>
+                    <tr class="border-bottom">
+                        <td>
+                                <div>
+                                    Administrative Boundary
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisStateBoundary"
+                                               ng-click="clickAnalysisStateBound()"/>
+                                        State/Region
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisTSBoundary"
+                                               ng-click="clickAnalysisTSBound()"/>
+                                        Township
+                                    </label>
+                                </div>
+                                <div>
+                                    Elements
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisRdNet"
+                                               ng-click="clickAnalysisRdNet()"/>
+                                        Road Network
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisShLoc"
+                                               ng-click="clickAnalysisShLoc()"/>
+                                        Shealter Location
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisWhLoc"
+                                               ng-click="clickAnalysisWhLoc()"/>
+                                        Warehouse Location
+                                    </label>
+                                </div>
+                        </td>
+                    </tr>
+                    <tr><td><h5><b>Select type of Analysis</b></h5></td></tr>
+                    <tr class="border-bottom">
+                        <td>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisExposure"
+                                               ng-click="clickAnalysisExposure()"/>
+                                        Exposure
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="analysisRisk"
+                                               ng-click="clickAnalysisRisk()"/>
+                                        Risk
+                                    </label>
+                                </div>
+                                
+                        </td>
+                    </tr>
+                </tbody>
+            </table>                    
+        </div>
+        <!-- End Panel Body -->
+        <div class="panel-footer">
+            <div class="row text-center">
+                <button type="button" class="btn btn-primary" ng-click="analyzeProcess()">Process to analyze</button>
+                <hr />
+            </div>
+        </div>
+    </div>
+</div>
