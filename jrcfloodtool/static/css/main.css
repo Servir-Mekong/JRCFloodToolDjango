@@ -183,3 +183,11 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
+
+.fa-info-circle {
+    color: rgb(0, 159, 252);
+    font: 18px;
+    border-radius: 50%;
+    height: 2em;
+    width: 2em;
+  }
