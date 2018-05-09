@@ -60,6 +60,12 @@
 		<link href="{% static 'vendor/normalize-css/normalize.css' %}" rel="stylesheet">
 		<!-- Fonts -->
 		<link href="{% static 'vendor/components-font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+		<!-- toot-tip -->
+		<link href="{% static 'vendor/angular-tooltips/dist/angular-tooltips.css' %}" rel="stylesheet">
+		<!-- ng-Dialog -->
+		<link href="{% static 'vendor/ng-dialog/css/ngDialog.min.css' %}" rel="stylesheet">
+		<link href="{% static 'vendor/ng-dialog/css/ngDialog-theme-default.min.css' %}" rel="stylesheet">
+		
 	{% endaddtoblock %}
 
 	{% render_block "css" %}
@@ -112,6 +118,16 @@
 
 		<!-- Bootstrap Slider -->
 		<script src="{% static 'vendor/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+
+		<!--Angular tooltips -->
+		<script src="{% static 'vendor/angular-tooltips/dist/angular-tooltips.js' %}"></script>
+
+		<!--Angular Dialogue -->
+		<script src="{% static 'vendor/ng-dialog/js/ngDialog.min.js' %}"></script>
+
+		<!--Angular Strap -->
+		<script src="{% static 'vendor/angular-strap/dist/angular-strap.min.js' %}"></script>
+		<script src="{% static 'vendor/angular-strap/dist/angular-strap.tpl.min.js' %}"></script>
 
 	
 		{% if debug %}

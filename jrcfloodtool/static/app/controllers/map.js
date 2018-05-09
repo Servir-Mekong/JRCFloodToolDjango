@@ -3,7 +3,7 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl', function ($scope, $timeout, MapService, appSettings) {
+	.controller('mapCtrl', function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog) {
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
@@ -617,6 +617,21 @@
 			        console.log(error);
 			    });		
 			}
+		};
+
+		$scope.showInfoTooltip = function($event, $index) { 
+			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map'});
+		};
+
+		$scope.showInfoBox = function() {
+			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
+			ngDialog.open({
+				template: `<p><b>Information</b></p>
+						   <div><p>Township ID: 0014<br/> Name: Five star</p>
+						   <p>pop affected: 5412</br> Hazard level: Moderate
+						   </br> Risk Level: High</p></div>`,
+				plain: true
+			});
 		};
 
 	});

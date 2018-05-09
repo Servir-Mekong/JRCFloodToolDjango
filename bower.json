@@ -22,6 +22,7 @@
     "angularjs-slider": "^6.4.0",
     "bootstrap-datepicker": "^1.7.1",
     "normalize-css": "^7.0.0",
-    "seiyria-bootstrap-slider": "^9.9.0"
+    "seiyria-bootstrap-slider": "^9.9.0",
+    "angular-strap": "^2.3.12"
   }
 }
