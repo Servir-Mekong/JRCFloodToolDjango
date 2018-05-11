@@ -69,8 +69,8 @@
 		$scope.checkRdNet = false;
 		$scope.checkShLoc = true;
 		$scope.checkWhLoc = false;
-		$scope.checkActualFF = true;
-		$scope.checkAggFH = false;
+		$scope.checkActualFF = false;
+		$scope.checkAggFH = true;
 
 		//New added controls in analysis
 		$scope.analysisStateBoundary = false;

@@ -50,7 +50,7 @@
         </div>
 
         <!-- Legend Container -->
-        <div class="panel panel-default legend" ng-show="showLegend">
+        <div class="panel panel-default legend" ng-show="checkActualFF">
 		    <div class="panel-heading">
 		        <h4>
 		            <a class="legend-toggle"
@@ -74,6 +74,34 @@
 		                </table>
 		            </div>
 	            </div>
+            </div>
+        </div>
+
+        <!-- Legend Container -->
+        <div class="panel panel-default legend" ng-show="checkAggFH">
+            <div class="panel-heading">
+                <h4>
+                    <a class="legend-toggle"
+                        data-toggle="collapse"
+                        data-parent="#accordion"
+                        href="#legend-body1"></a>
+                    Legend
+                    </h4>
+            </div>
+            <div class="panel-collapse collapse out" id="legend-body1">
+                <div class="panel-body">
+                    <span class="text-center"><h5><b>Hazard Level</b></h5></span>
+                    <div>
+                        <table>
+                            <tbody>
+                                <tr><td rowspan="4"><img src="{% static 'images/hazard.png' %}" alt="Hazard Level"/></td></tr>
+                                <tr><td>High</td></tr>
+                                <tr><td>Moderate</td></tr>
+                                <tr><td>Low</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
