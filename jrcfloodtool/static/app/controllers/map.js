@@ -69,7 +69,7 @@
 		$scope.checkRdNet = false;
 		$scope.checkShLoc = true;
 		$scope.checkWhLoc = false;
-		$scope.checkActualFF = false;
+		//$scope.checkActualFF = false;
 		$scope.checkAggFH = true;
 
 		//New added controls in analysis
@@ -171,7 +171,17 @@
 		    }, function (error) {
 		        console.log(error);
 		        showErrorAlert(error.statusText);
-		    });
+			});
+			
+			MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, init)
+			.then(function (data) {
+				console.log(data);
+				loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
+				showSuccessAlert('The Hazard Level Layer is updated!');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error.statusText);
+			});
 		};
 
 		$scope.clickMapData = function () {
@@ -183,6 +193,18 @@
 				$scope.overlays.map.setOpacity(1);
 			}
 		};
+
+		$scope.clickAffFH = function () {
+			if ($scope.checkAggFH) {
+				$scope.checkAggFH = false;
+				$scope.overlays['flood-hazard'].setOpacity(0);
+			} else {
+				$scope.checkAggFH = true;
+				$scope.overlays['flood-hazard'].setOpacity(1);
+			}
+		};
+
+
 
 		$scope.updateMap = function () {
 			$scope.closeAlert();
@@ -238,6 +260,7 @@
 
 			MapService.getWorldPopId($scope.shape)
 		    .then(function (data) {
+				console.log(data);
 		    	loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
 		    	showSuccessAlert('The World Pop Layer is updated!');
 		    }, function (error) {

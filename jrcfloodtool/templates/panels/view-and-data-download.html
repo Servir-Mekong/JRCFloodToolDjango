@@ -132,8 +132,8 @@
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
                                                value="" 
-                                               ng-model="checkActualFF"
-                                               ng-click="clickActualFF()"/>
+                                               ng-checked="checkMapData"
+                                               ng-click="clickMapData()"/>
                                         Actual Flood Frequency
                                     </label>
                                 </div>
@@ -142,7 +142,7 @@
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
                                                value="" 
-                                               ng-model="checkAggFH"
+                                               ng-checked="checkAggFH"
                                                ng-click="clickAffFH()"/>
                                         Aggregate Flood Hazard
                                     </label>
@@ -151,7 +151,7 @@
                         </td>
                     </tr>
                     <tr><td>
-                        <div ng-show="checkMapData">
+                        <div ng-show="checkMapData || checkAggFH">
                             <br />
                             <div class="form-group">
                                     <label for="time-period-method">Select Method for Time Period</label>

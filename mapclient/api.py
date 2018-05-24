@@ -9,14 +9,15 @@ from datetime import datetime
 import time
 
 def api(request):
-
+    
     get = request.GET.get
     action = get('action', '')
 
     if action:
-        public_methods = ['get-map-id', 'download-url', 'download-to-drive',
+        public_methods = ['get-map-id', 'get-hazard-id', 'download-url', 'download-to-drive',
                           'get-world-pop-id', 'get-world-pop-number'
                           ]
+
         if action in public_methods:
             start_year = get('startYear', '2000')
             end_year = get('endYear', '2012')
@@ -33,6 +34,8 @@ def api(request):
                 data = core.get_world_pop_id()
             elif action == 'get-map-id':
                 data = core.get_map_id()
+            elif action == 'get-hazard-id':
+                data = core.get_hazard_map_id()
             elif action == 'download-url':
                 data = core.get_download_url()
             elif action == 'get-world-pop-number':

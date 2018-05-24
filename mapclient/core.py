@@ -14,6 +14,7 @@ class GEEApi():
         ee.Initialize(settings.EE_CREDENTIALS)
         self.IMAGE_COLLECTION = ee.ImageCollection(settings.EE_IMAGE_COLLECTION_ID)
         self.FEATURE_COLLECTION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID)
+        self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
         self.start_year = start_year
@@ -121,6 +122,50 @@ class GEEApi():
             'eeMapId': str(map_id['mapid']),
             'eeMapToken': str(map_id['token'])
         }
+
+    def get_hazard_map_id(self):
+
+        water_percent_image = self._calculate_water_percent_image()
+        empty = ee.Image().float()
+        sumfeatures = water_percent_image.reduceRegions(
+                reducer=ee.Reducer.sum(),
+                collection=self.TS,
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+        fills_image = empty.paint(FloodIndex,'Findex')
+        floodIndexfills = empty.paint(Floodreclass2,'Findex2')
+        FloodReclassfills = empty.paint(Floodreclass2, 'Freclass')
+        outline = empty.paint(self.TS, 1, 1.5)
+        # print "outline==",outline.__dict__
+        # map_id = outline.getMapId({
+        #     'palette': 'black'
+        # })
+        map_id = FloodReclassfills.getMapId({
+            'min': '1',
+            'max': '3',
+            'palette': '045b06, fafb27, d20504'
+        })
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
+
+    def Floodindexcal(self,feature):
+        findex = ee.Number(feature.get('sum')).\
+                        divide(feature.geometry().area().divide(1000000))
+        return feature.set('Findex', findex)
+
+    def Floodreclass1(self,feature):
+        myClass = ee.Number(2)
+        myNumber = ee.Number(feature.get('Findex')).\
+                        divide(self.maximum).multiply(100)
+        myClass = myClass.subtract(myNumber.lt(5.0))
+        myClass = myClass.add(myNumber.gt(10.0))
+        return feature.set('Findex2', myNumber).set('Freclass', myClass)
+
 
     # -------------------------------------------------------------------------
     @staticmethod
