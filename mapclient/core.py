@@ -123,6 +123,18 @@ class GEEApi():
             'eeMapToken': str(map_id['token'])
         }
 
+    def get_township_id(self):
+        empty = ee.Image().float()
+        outline = empty.paint(self.TS, 1, 1.5)
+        map_id = outline.getMapId({
+            'palette': 'black'
+        })
+
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
+
     def get_hazard_map_id(self):
 
         water_percent_image = self._calculate_water_percent_image()

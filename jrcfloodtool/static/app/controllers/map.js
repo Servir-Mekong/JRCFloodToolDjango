@@ -65,7 +65,7 @@
 
 		//New added controls in View Data
 		$scope.checkStateBoundary = false;
-		$scope.checkTSBoundary = true;
+		$scope.checkTSBoundary = false;
 		$scope.checkRdNet = false;
 		$scope.checkShLoc = true;
 		$scope.checkWhLoc = false;
@@ -269,6 +269,34 @@
 			} else {
 				$scope.checkPolygonDrawing = true;
 				$scope.overlays.polygon.setMap(map);
+			}
+		};
+
+
+		$scope.getTownShipId = function () {
+			
+			MapService.getTownShipId($scope.shape)
+			.then(function (data) {
+				console.log(data);
+				loadMap(data.eeMapId, data.eeMapToken, 'township');
+				showSuccessAlert('The Township Layer is updated!');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+		$scope.clickTSBoundary = function () {
+			if ($scope.checkTSBoundary) {
+				$scope.checkTSBoundary = false;
+				$scope.overlays.township.setOpacity(0);
+			} else {
+				$scope.checkTSBoundary = true;
+				if ($scope.overlays.township) {
+					$scope.overlays.township.setOpacity(1);
+				} else {
+					$scope.getTownShipId();
+				}
 			}
 		};
 

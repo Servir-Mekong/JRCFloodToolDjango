@@ -15,7 +15,7 @@ def api(request):
 
     if action:
         public_methods = ['get-map-id', 'get-hazard-id', 'download-url', 'download-to-drive',
-                          'get-world-pop-id', 'get-world-pop-number'
+                          'get-world-pop-id', 'get-township-id', 'get-world-pop-number'
                           ]
 
         if action in public_methods:
@@ -36,6 +36,8 @@ def api(request):
                 data = core.get_map_id()
             elif action == 'get-hazard-id':
                 data = core.get_hazard_map_id()
+            elif action == 'get-township-id':
+                data = core.get_township_id()
             elif action == 'download-url':
                 data = core.get_download_url()
             elif action == 'get-world-pop-number':

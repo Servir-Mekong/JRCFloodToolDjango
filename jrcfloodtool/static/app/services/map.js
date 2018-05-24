@@ -126,6 +126,32 @@
 			return promise;
 		};
 
+		this.getTownShipId = function (shape) {
+			
+			var config = {
+				params: {
+					action: 'get-township-id'
+				}
+			};
+
+			var shapeType = shape.type;
+			if (shapeType === 'rectangle' || shapeType === 'polygon') {
+				config.params.shape = shapeType;
+				config.params.geom = shape.geom.toString();
+			} else if (shapeType === 'circle') {
+				config.params.shape = shapeType;
+				config.params.radius = shape.radius;
+				config.params.center = shape.center.toString();
+			}
+
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+
 		this.getWorldPopId = function (shape) {
 
 			var config = {

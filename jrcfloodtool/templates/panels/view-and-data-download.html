@@ -154,7 +154,7 @@
                         <div ng-show="checkMapData || checkAggFH">
                             <br />
                             <div class="form-group">
-                                    <label for="time-period-method">Select Method for Time Period</label>
+                                    <label for="time-period-method">Select Time Period To Display</label>
                                     <select name="time-period-method" title="Time Period Method"
                                             class="form-control js-tooltip"
                                             ng-init="timePeriodOption = timePeriodOptions[0]"
@@ -163,15 +163,15 @@
                             </div>
                             <h5><b>Select Years</b></h5>
                             <div class="input-group input-daterange datepicker-year-class">
-                                <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-start">
+                                <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-start" placeholder="Start Year" ng-model="startyr">
                                 <div class="input-group-addon">to</div>
-                                <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-end">
+                                <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-end" placeholder="End Year" ng-model="endyr">
                             </div>
                             <h5><b>Select Months</b></h5>
                             <div class="input-group input-monthrange datepicker-month-class">
-                                <input type="text" data-provide="datepicker" class="form-control" value="01" id="datepicker-month-start">
+                                <input type="text" data-provide="datepicker" class="form-control" value="01" id="datepicker-month-start" placeholder="Start Month" ng-model="startmt">
                                 <div class="input-group-addon">to</div>
-                                <input type="text" data-provide="datepicker" class="form-control" value="12" id="datepicker-month-end">
+                                <input type="text" data-provide="datepicker" class="form-control" value="12" id="datepicker-month-end" placeholder="End Month" ng-model="endmt">
                             </div>
                         </div>
                     </td></tr>
