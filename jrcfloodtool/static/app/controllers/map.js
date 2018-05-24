@@ -155,33 +155,37 @@
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
 			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
-			MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
-		    .then(function (data) {
-		    	loadMap(data.eeMapId, data.eeMapToken);
-		    	if (init) {
-		    		$timeout(function () {
-						showInfoAlert('The map data shows the data from 2000 January to 2012 December. You can change the map data with the ☰  provided in the left side!');
-		    		}, 3500);
-		    	} else {
-		    		$timeout(function () {
-						showSuccessAlert('The map data is updated!');
-		    		}, 3500);
-		    	}
-		    	$scope.showLegend = true;
-		    }, function (error) {
-		        console.log(error);
-		        showErrorAlert(error.statusText);
-			});
+			if ($scope.checkMapData) {
+				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
+				.then(function (data) {
+					loadMap(data.eeMapId, data.eeMapToken);
+					if (init) {
+						$timeout(function () {
+							showInfoAlert('The map data shows the data from 2000 January to 2012 December. You can change the map data with the ☰  provided in the left side!');
+						}, 3500);
+					} else {
+						$timeout(function () {
+							showSuccessAlert('The map data is updated!');
+						}, 3500);
+					}
+					$scope.showLegend = true;
+				}, function (error) {
+					console.log(error);
+					showErrorAlert(error.statusText);
+				});
+			}
 			
-			MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, init)
-			.then(function (data) {
-				console.log(data);
-				loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
-				showSuccessAlert('The Hazard Level Layer is updated!');
-			}, function (error) {
-				showErrorAlert('Something went wrong! Please try again later!');
-				console.log(error.statusText);
-			});
+			if ($scope.checkAggFH) {
+				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, init)
+				.then(function (data) {
+					console.log(data);
+					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
+					showSuccessAlert('The Hazard Level Layer is updated!');
+				}, function (error) {
+					showErrorAlert('Something went wrong! Please try again later!');
+					console.log(error.statusText);
+				});
+			}
 		};
 
 		$scope.clickMapData = function () {
@@ -216,6 +220,18 @@
 					}
 					// Clear before adding
 					clearLayers('map');
+					$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
+				}
+			}
+
+			if ($scope.checkAggFH) {
+				var dateObject = $scope.checkBeforeDownload(false, false);
+				if (dateObject) {
+					if (dateObject.message) {
+						showInfoAlert(dateObject.message);
+					}
+					// Clear before adding
+					clearLayers('flood-hazard');
 					$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
