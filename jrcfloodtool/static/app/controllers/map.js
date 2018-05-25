@@ -39,7 +39,7 @@
 		var EE_URL = 'https://earthengine.googleapis.com',
 			DEFAULT_ZOOM = 6,
 			MAX_ZOOM = 25,
-			DEFAULT_CENTER = { lng: 102.93, lat: 16.4 },
+			DEFAULT_CENTER = { lng: 96.19, lat: 20.87 },
 			AREA_LIMIT = 20000,
 			// Map options
 			mapOptions = {
@@ -67,7 +67,7 @@
 		$scope.checkStateBoundary = false;
 		$scope.checkTSBoundary = false;
 		$scope.checkRdNet = false;
-		$scope.checkShLoc = true;
+		$scope.checkShLoc = false;
 		$scope.checkWhLoc = false;
 		//$scope.checkActualFF = false;
 		$scope.checkAggFH = true;
