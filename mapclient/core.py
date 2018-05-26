@@ -13,6 +13,7 @@ class GEEApi():
 
         ee.Initialize(settings.EE_CREDENTIALS)
         self.IMAGE_COLLECTION = ee.ImageCollection(settings.EE_IMAGE_COLLECTION_ID)
+        self.MAYANMAR = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_MAYANMAR)
         self.FEATURE_COLLECTION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
@@ -67,45 +68,101 @@ class GEEApi():
         return ee.Image(img.select('water').eq(2)).set('system:time_start', img.get('system:time_start'))
 
     # -------------------------------------------------------------------------
+    # def _get_filtered_image_collection(self):
+    #     """ 
+    #         Returns the filtered image collection based on the type of method
+    #         selected for the time - continuous and discrete
+    #     """
+
+    #     if self.method == 'discrete':
+    #         return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
+    #                 filter(ee.Filter.calendarRange(int(self.start_year), int(self.end_year), 'year')).\
+    #                 filter(ee.Filter.calendarRange(int(self.start_month), int(self.end_month), 'month'))
+    #     else:
+    #         return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
+    #                                     filterDate(self.start_year + '-' + self.start_month,
+    #                                                self.end_year + '-' + self.end_month)
+
+    # -------------------------------------------------------------------------
+    # def _calculate_water_percent_image(self):
+
+    #     filtered_image_collection = self._get_filtered_image_collection()
+
+    #     observation_image_collection = filtered_image_collection.map(self._get_observations_image)
+
+    #     water_image_collection = filtered_image_collection.map(self._get_water_image)
+
+    #     # Get the sum image of image collection
+    #     sum_observation_img = ee.ImageCollection(observation_image_collection).sum().toFloat()
+    #     sum_water_img = ee.ImageCollection(water_image_collection).sum().toFloat()
+
+    #     # water percentage image
+    #     water_percent_image = sum_water_img.divide(sum_observation_img).multiply(100)
+
+    #     # mask water percentage image
+    #     masked_water_percent_image = water_percent_image.gt(1)
+
+    #     # update the original water percentage image
+    #     water_percent_image = water_percent_image.updateMask(masked_water_percent_image)
+
+    #     # clip the water percentage image to geometry
+    #     return water_percent_image.clip(self.geometry)
+
+
+    def _get_obsbands_image(self, img):
+        """ 
+            Returns the new image setting the attribute from the img
+            img is a filtered image
+        """
+
+        #  observation is img > 0
+        obs = img.gt(0)
+        return img.addBands(obs.rename(['obs']).set('system:time_start', img.get('system:time_start')))
+    
+    
+    def _get_waterbands_image(self, img):
+        """ 
+            Returns the new image setting the attribute from the img
+            img is a filtered image
+        """
+
+        #  observation is img > 0
+        water = img.select('water').eq(2)
+        return img.addBands(water.rename(['onlywater']).set('system:time_start', img.get('system:time_start')))
+
     def _get_filtered_image_collection(self):
         """ 
             Returns the filtered image collection based on the type of method
             selected for the time - continuous and discrete
         """
+        startDate = ee.Date.fromYMD(1984, 1, 1)
+        endDate = ee.Date.fromYMD(2015, 12, 31)
 
-        if self.method == 'discrete':
-            return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
-                    filter(ee.Filter.calendarRange(int(self.start_year), int(self.end_year), 'year')).\
-                    filter(ee.Filter.calendarRange(int(self.start_month), int(self.end_month), 'month'))
-        else:
-            return self.IMAGE_COLLECTION.filterBounds(self.geometry).\
-                                        filterDate(self.start_year + '-' + self.start_month,
-                                                   self.end_year + '-' + self.end_month)
+        years = endDate.difference(startDate, 'year').toInt().add(1)
+        #print('Number of year selected : ', years)
 
-    # -------------------------------------------------------------------------
+        return self.IMAGE_COLLECTION.filterDate(startDate, endDate)
+
+
     def _calculate_water_percent_image(self):
 
-        filtered_image_collection = self._get_filtered_image_collection()
+        myjrc = self._get_filtered_image_collection()
 
-        observation_image_collection = filtered_image_collection.map(self._get_observations_image)
 
-        water_image_collection = filtered_image_collection.map(self._get_water_image)
+        myjrc = myjrc.map(self._get_obsbands_image)
+        myjrc = myjrc.map(self._get_waterbands_image)
 
-        # Get the sum image of image collection
-        sum_observation_img = ee.ImageCollection(observation_image_collection).sum().toFloat()
-        sum_water_img = ee.ImageCollection(water_image_collection).sum().toFloat()
+        totalObs = ee.Image(ee.ImageCollection(myjrc.select("obs")).sum().toFloat())
+        totalWater = ee.Image(ee.ImageCollection(myjrc.select("onlywater")).sum().toFloat())
 
-        # water percentage image
-        water_percent_image = sum_water_img.divide(sum_observation_img).multiply(100)
+        returnTime = totalWater.divide(totalObs).multiply(100)
 
-        # mask water percentage image
-        masked_water_percent_image = water_percent_image.gt(1)
-
-        # update the original water percentage image
-        water_percent_image = water_percent_image.updateMask(masked_water_percent_image)
+        myMask = returnTime.eq(0).Not()
+        returnTime = returnTime.updateMask(myMask)
+        myMask2 = returnTime.lt(82)
 
         # clip the water percentage image to geometry
-        return water_percent_image.clip(self.geometry)
+        return returnTime.updateMask(myMask2).clip(self.MAYANMAR)
 
     # -------------------------------------------------------------------------
     def get_map_id(self):
@@ -114,7 +171,7 @@ class GEEApi():
         map_id = water_percent_image.getMapId({
             'min': '0',
             'max': '100',
-            'bands': 'water',
+            'bands': 'onlywater',
             'palette': settings.EE_WATER_PALETTE
         })
 
