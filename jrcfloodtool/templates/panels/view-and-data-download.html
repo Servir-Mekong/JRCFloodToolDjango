@@ -121,6 +121,15 @@
                                         Polygon
                                     </label>
                                 </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value="" 
+                                               ng-checked="checkWorldPop"
+                                               ng-click=""/>
+                                        Population
+                                    </label>
+                                </div>
                                 
                         </td>
                     </tr>
@@ -209,7 +218,7 @@
             <div class="row text-center">
                 <button type="button" class="btn btn-primary" ng-click="updateMap()">Update Map</button>
                 <hr />
-                <div class="btn-group">
+                <!-- <div class="btn-group">
 	                <button type="button" class="btn btn-primary">Download Map Data</button>
 	                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	                    <span class="caret"></span>
@@ -219,7 +228,7 @@
 	                    <li><a href="" target="_blank" class="download-btn" ng-click="downloadMap()">Get URL</a></li>
 	                    <li><a href="" ng-click="showGDriveFileName()">To Your Google Drive</a></li>
 	                </ul>
-                </div>
+                </div> -->
             </div>
             <!--<button type="button" class="btn btn-primary" ng-click="getWorlPopNumber()">Show Affected People</button>-->
             <div ng-show="downloadUrl" class="input-group">

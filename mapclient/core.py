@@ -135,8 +135,11 @@ class GEEApi():
             Returns the filtered image collection based on the type of method
             selected for the time - continuous and discrete
         """
-        startDate = ee.Date.fromYMD(1984, 1, 1)
-        endDate = ee.Date.fromYMD(2015, 12, 31)
+        startDate = ee.Date.fromYMD(int(self.start_year), int(self.start_month), 1)
+        if (int(self.end_month) >=12):
+            endDate = ee.Date.fromYMD(int(self.end_year), int(self.end_month),31)
+        else:
+            endDate = ee.Date.fromYMD(int(self.end_year), int(self.end_month)+1,1)            
 
         years = endDate.difference(startDate, 'year').toInt().add(1)
         #print('Number of year selected : ', years)

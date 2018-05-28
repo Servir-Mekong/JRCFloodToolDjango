@@ -687,7 +687,7 @@
 		};
 
 		$scope.showInfoTooltip = function($event, $index) { 
-			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map'});
+			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map to see the individual information of the result'});
 		};
 
 		$scope.showInfoBox = function() {
