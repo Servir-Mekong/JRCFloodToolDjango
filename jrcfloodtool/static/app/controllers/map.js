@@ -155,6 +155,12 @@
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
 			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
+			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
+		};
+
+		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
+
 			if ($scope.checkMapData) {
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
@@ -174,9 +180,13 @@
 					showErrorAlert(error.statusText);
 				});
 			}
-			
+
+		};
+
+		$scope.initializeHazardLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
+
 			if ($scope.checkAggFH) {
-				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, init)
+				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
@@ -220,7 +230,7 @@
 					}
 					// Clear before adding
 					clearLayers('map');
-					$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
+					$scope.initializeFloodLayer(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
 
@@ -232,7 +242,7 @@
 					}
 					// Clear before adding
 					clearLayers('flood-hazard');
-					$scope.initMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
+					$scope.initializeHazardLayer(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
 
