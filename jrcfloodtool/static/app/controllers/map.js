@@ -155,8 +155,8 @@
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
 			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
-			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
+			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
 		};
 
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
