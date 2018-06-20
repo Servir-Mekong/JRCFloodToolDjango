@@ -156,7 +156,6 @@
 			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
-			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
 		};
 
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
@@ -191,9 +190,17 @@
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
 					showSuccessAlert('The Hazard Level Layer is updated!');
+					if ($scope.checkMapData) {
+						clearLayers('map');						
+						$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+					}
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');
 					console.log(error.statusText);
+					if ($scope.checkMapData) {
+						clearLayers('map');						
+						$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+					}
 				});
 			}
 		};
