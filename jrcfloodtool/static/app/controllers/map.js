@@ -132,6 +132,7 @@
 
 		/** Updates the image based on the current control panel config. */
 		var loadMap = function (mapId, mapToken, type) {
+			var layers = { "township": "2", "flood-hazard": "0", "map":"1" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
@@ -145,8 +146,15 @@
 				opacity: 1.0
 			};
 			var mapType = new google.maps.ImageMapType(eeMapOptions);
-			map.overlayMapTypes.push(mapType);
+			//map.overlayMapTypes.push(null);
+			// map.overlayMapTypes.push(mapType);
+			//map.overlayMapTypes.setAt(layers[mapType.name],mapType);			
 			$scope.overlays[type] = mapType;
+			for (var t in $scope.overlays) {
+				console.log(t);
+				map.overlayMapTypes.setAt(layers[t],$scope.overlays[t]);
+			}
+			//console.log(map.overlayMapTypes);
 		};
 
 		/**
@@ -156,6 +164,8 @@
 			if (typeof (init) === 'undefined') init = false;
 			$scope.showLoader = true;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
+			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+			
 		};
 
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
@@ -190,17 +200,9 @@
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
 					showSuccessAlert('The Hazard Level Layer is updated!');
-					if ($scope.checkMapData) {
-						clearLayers('map');						
-						$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
-					}
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');
 					console.log(error.statusText);
-					if ($scope.checkMapData) {
-						clearLayers('map');						
-						$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
-					}
 				});
 			}
 		};
