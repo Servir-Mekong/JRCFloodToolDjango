@@ -191,3 +191,8 @@
     height: 2em;
     width: 2em;
   }
+
+.map_opacity {
+    width: 70%;
+    float: right;
+}

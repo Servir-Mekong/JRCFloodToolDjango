@@ -62,6 +62,8 @@
 		$scope.checkPolygonDrawing = true;
 		$scope.checkWorldPop = false;
 		$scope.checkMapData = true;
+		$scope.checkMapData_value = true;
+		$scope.checkAggFH_value = true;
 
 		//New added controls in View Data
 		$scope.checkStateBoundary = false;
@@ -207,23 +209,22 @@
 			}
 		};
 
-		$scope.clickMapData = function () {
-			if ($scope.checkMapData) {
-				$scope.checkMapData = false;
-				$scope.overlays.map.setOpacity(0);
+		$scope.clickMapData = function (opacity_value) {
+		opacity_value = parseInt(opacity_value)/100;
+			if ($scope.checkMapData_value) {
+				$scope.overlays.map.setOpacity(opacity_value);
 			} else {
-				$scope.checkMapData = true;
-				$scope.overlays.map.setOpacity(1);
+				$scope.overlays.map.setOpacity(0);
 			}
 		};
 
-		$scope.clickAffFH = function () {
-			if ($scope.checkAggFH) {
-				$scope.checkAggFH = false;
-				$scope.overlays['flood-hazard'].setOpacity(0);
+		$scope.clickAffFH = function (opacity_value) {
+		opacity_value = parseInt(opacity_value)/100;
+			if ($scope.checkAggFH_value) {
+				$scope.overlays['flood-hazard'].setOpacity(opacity_value);
 			} else {
-				$scope.checkAggFH = true;
-				$scope.overlays['flood-hazard'].setOpacity(1);
+			    $scope.overlays['flood-hazard'].setOpacity(0);
+
 			}
 		};
 
