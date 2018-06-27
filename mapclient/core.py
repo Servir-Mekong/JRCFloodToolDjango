@@ -235,6 +235,11 @@ class GEEApi():
         json_data = df5.to_json(orient='records')
         return json_data
 
+    def getExposureDatum(self, lat, lng):
+        print(lat)
+        print(lng)
+        return {'name': 'aaa', 'pop': 123, 'hazard': 'Moderate', 'warehouse': 23}
+
     # -------------------------------------------------------------------------
     def get_map_id(self):
 

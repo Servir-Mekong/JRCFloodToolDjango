@@ -442,10 +442,29 @@
 		};
         // On click event 
         google.maps.event.addListener(map, "click", function (e) {
-                    //var latLng = e.latLng;
-                    var lat = e.latLng.lat();
-                    var log = e.latLng.lng();
-                });
+			var latLng = e.latLng;
+			var lat = e.latLng.lat();
+			var lng = e.latLng.lng();
+
+			MapService.getExposureDatum(lat, lng)
+			.then(function (data) {
+				$scope.ts = data;
+				console.log($scope.ts);
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+			
+			ngDialog.open({
+				template: `<p><b>Information</b></p>
+							<div><p> Name:[[ts.name]]</p>
+							<p>pop affected: [[ts.pop]]</br> Hazard level: [[ts.hazard]]
+							</br> Warehouse: [[ts.warehouse]]</p></div>`,
+				className: 'ngdialog-theme-default',
+				plain: true,
+				scope:$scope
+			});
+        });
 
 		// Overlay Listener
 		google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {

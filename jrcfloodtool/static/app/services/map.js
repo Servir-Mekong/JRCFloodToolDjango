@@ -176,6 +176,23 @@
 			return promise;
 		};
 
+		this.getExposureDatum = function (lat, lng) {
+			
+			var config = {
+				params: {
+					action: 'get-exposure-datum',
+					lat: lat,
+					lng: lng
+				}
+			};
+
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
 
 		this.getWorldPopId = function (shape) {
 
