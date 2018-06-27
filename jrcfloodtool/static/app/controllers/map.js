@@ -440,6 +440,12 @@
 			var northWest = new google.maps.LatLng(ne.lat(), sw.lng());
 			return google.maps.geometry.spherical.computeArea([northEast, northWest, southWest, southEast]) / 1e6;
 		};
+        // On click event 
+        google.maps.event.addListener(map, "click", function (e) {
+                    //var latLng = e.latLng;
+                    var lat = e.latLng.lat();
+                    var log = e.latLng.lng();
+                });
 
 		// Overlay Listener
 		google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
@@ -453,6 +459,7 @@
 
 			var drawingType = event.type;
 			$scope.shape.type = drawingType;
+
 			if (drawingType === 'rectangle') {
 				$scope.shape.geom = getRectangleArray(overlay.getBounds());
 				$scope.drawingArea = computeRectangleArea(overlay.getBounds());
@@ -491,6 +498,7 @@
 					$scope.shape.geom = getPolygonArray(event.overlay.getPath().getArray());
 					$scope.drawingArea = google.maps.geometry.spherical.computeArea(event.overlay.getPath()) / 1e6;
 				});
+
 			}
 			$scope.stopDrawing();
 		});
