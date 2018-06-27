@@ -36,15 +36,19 @@
                         <tr><td><h5><b>Map Results</b></h5></td></tr>
                         <tr class="border-bottom">
                             <td>
-    
+
                                 <div class="form-group">
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
-                                               value="" 
+                                               value=""
                                                ng-checked="checkMapData"
-                                               ng-click="clickMapData()"/>
+                                               ng-model="checkMapData_value"
+                                               ng-click="clickMapData(50)"/>
                                         Actual Flood Frequency
                                     </label>
+                                    <div class="map_opacity">
+                                        <input type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)"/>
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group">
@@ -52,9 +56,13 @@
                                         <input type="checkbox"
                                                value="" 
                                                ng-checked="checkAggFH"
-                                               ng-click="clickAffFH()"/>
+                                               ng-model="checkAggFH_value"
+                                               ng-click="clickAffFH(50)"/>
                                         Aggregate Flood Hazard
                                     </label>
+                                    <div class="map_opacity">
+                                        <input type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" />
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
