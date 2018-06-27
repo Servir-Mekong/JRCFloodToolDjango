@@ -723,53 +723,37 @@
 
 		$scope.execProcess = function() {
 
-			$scope.results = [
-				{   'township': '0014',
-					'name':'aaa township',
-					'pop': 3215,
-					'hazard': 'Low',
-					'risk': 'High'},
-					{   'township': '0015',
-					'name':'bbb township',
-					'pop': 7689,
-					'hazard': 'Moderate',
-					'risk': 'Moderate'},
-					{   'township': '0016',
-					'name':'ccc township',
-					'pop': 8764,
-					'hazard': 'Moderate',
-					'risk': 'High'},
-					{   'township': '0017',
-					'name':'zzz township',
-					'pop': 2234,
-					'hazard': 'Moderate',
-					'risk': 'Low'},
-				];
+			MapService.getExposureData($scope.shape)
+			.then(function (data) {
+				$scope.results = JSON.parse(data);
+				console.log($scope.results);
+				
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+
 			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
 			ngDialog.open({
 				template: `<table class="table">
 				<tr>
-					<th>Township ID
+					<th>Township Name
 					</th>
-					<th>Name
-					</th>
-					<th>Pop.Exposure
+					<th>No. of Warehouse
 					</th>
 					<th>Hazard Level
 					</th>
-					<th>Risk Level
+					<th>No. of Pop
 					</th>
 				</tr>
-				<tr ng-repeat="result in results">
-					<td>[[result.township]]
+				<tr ng-repeat="result in results track by $index">
+					<td>[[result.NAME_3]]
 					</td>
-					<td>[[result.name]]
-					</td>
-					<td>[[result.pop]]
+					<td>[[result.FID_Wareho]]
 					</td>
 					<td>[[result.hazard]]
 					</td>
-					<td>[[result.risk]]
+					<td>[[result.Pop]]
 					</td>
 				</tr>
 			</table>`,

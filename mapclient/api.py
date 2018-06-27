@@ -15,7 +15,8 @@ def api(request):
 
     if action:
         public_methods = ['get-map-id', 'get-hazard-id', 'download-url', 'download-to-drive',
-                          'get-world-pop-id', 'get-township-id', 'get-world-pop-number'
+                          'get-world-pop-id', 'get-township-id', 'get-world-pop-number',
+                          'get-exposure-data'
                           ]
 
         if action in public_methods:
@@ -42,6 +43,8 @@ def api(request):
                 data = core.get_download_url()
             elif action == 'get-world-pop-number':
                 data = core.get_world_pop_number()
+            elif action == 'get-exposure-data':
+                data = core.getExposureData()
             elif action == 'download-to-drive':
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:
@@ -108,4 +111,4 @@ def api(request):
                 else:
                     # default fallback
                     data = {'error': 'You have not allowed the tool to use your google drive to upload file! Allow it first and try again!'}
-            return JsonResponse(data)
+            return JsonResponse(data, safe=False)

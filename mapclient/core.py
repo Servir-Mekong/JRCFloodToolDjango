@@ -4,6 +4,11 @@ from django.conf import settings
 import ee
 import time
 from utils import get_unique_string, transfer_files_to_user_drive
+import pandas
+import geopandas
+from shapely.geometry import shape
+from django.http import JsonResponse
+import numpy as np
 
 # -----------------------------------------------------------------------------
 class GEEApi():
@@ -15,6 +20,8 @@ class GEEApi():
         self.IMAGE_COLLECTION = ee.ImageCollection(settings.EE_IMAGE_COLLECTION_ID)
         self.MAYANMAR = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_MAYANMAR)
         self.FEATURE_COLLECTION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID)
+        self.TS_POP = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_POP)
+        self.TS_WH = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_WH)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
@@ -167,10 +174,73 @@ class GEEApi():
         # clip the water percentage image to geometry
         return returnTime.updateMask(myMask2).clip(self.MAYANMAR)
 
+
+    # Function to Convert Feature Classes to Pandas Dataframe
+    def fc2df(self, fc):
+        # Convert a FeatureCollection into a pandas DataFrame
+        # Features is a list of dict with the output
+        features = fc.getInfo()['features']
+
+        dictarr = []
+
+        for f in features:
+            # Store all attributes in a dict
+            attr = f['properties']
+            dictarr.append(attr)
+
+        return pandas.DataFrame(dictarr)
+
+    def fc2dfgeo(self, fc):
+        # Convert a FeatureCollection into a pandas DataFrame
+        # Features is a list of dict with the output
+        features = fc.getInfo()['features']
+
+        dictarr = []
+
+        for f in features:
+            # Store all attributes in a dict
+            attr = f['properties']
+            # and treat geometry separately
+            attr['geometry'] = f['geometry']  # GeoJSON Feature!
+            # attr['geometrytype'] = f['geometry']['type']
+            dictarr.append(attr)
+
+        df = geopandas.GeoDataFrame(dictarr)
+        # Convert GeoJSON features to shape
+        df['geometry'] = map(lambda s: shape(s), df.geometry)    
+        return df
+
+    def getExposureData(self):
+        # print("TS",self.TS)
+        # print("TS_POP",self.TS_POP)
+        # print("TS.getInfo",self.TS.getInfo())
+        # print("TS_POP.getInfo",self.TS_POP.getInfo())
+        df1 = self.fc2df(self.TS_POP)
+        df2 = self.fc2df(self.TS_WH)
+        water_percent_image = self._calculate_water_percent_image()
+        empty = ee.Image().float()
+        sumfeatures = water_percent_image.reduceRegions(
+                reducer=ee.Reducer.sum(),
+                collection=self.TS,
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+        df3 = self.fc2df(Floodreclass2)
+        print("df3",df3.columns.values.tolist())
+        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
+        df5 = pandas.merge(df4, df3, left_on='ID_3', right_on='ID_3')
+        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
+        json_data = df5.to_json(orient='records')
+        return json_data
+
     # -------------------------------------------------------------------------
     def get_map_id(self):
 
         water_percent_image = self._calculate_water_percent_image()
+        # water_percent_image.getRegion(self.TS_POP, 30).getInfo()
+        # print("wter",water_percent_image)
         map_id = water_percent_image.getMapId({
             'min': '0',
             'max': '100',
