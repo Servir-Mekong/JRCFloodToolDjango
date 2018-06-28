@@ -6,7 +6,7 @@ import time
 from utils import get_unique_string, transfer_files_to_user_drive
 import pandas
 import geopandas
-from shapely.geometry import shape
+from shapely.geometry import shape, Polygon, Point, MultiPolygon
 from django.http import JsonResponse
 import numpy as np
 
@@ -211,10 +211,6 @@ class GEEApi():
         return df
 
     def getExposureData(self):
-        # print("TS",self.TS)
-        # print("TS_POP",self.TS_POP)
-        # print("TS.getInfo",self.TS.getInfo())
-        # print("TS_POP.getInfo",self.TS_POP.getInfo())
         df1 = self.fc2df(self.TS_POP)
         df2 = self.fc2df(self.TS_WH)
         water_percent_image = self._calculate_water_percent_image()
@@ -228,17 +224,47 @@ class GEEApi():
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
         df3 = self.fc2df(Floodreclass2)
-        print("df3",df3.columns.values.tolist())
         df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
         df5 = pandas.merge(df4, df3, left_on='ID_3', right_on='ID_3')
         df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
+        # df6 = df5[df5.columns.difference(['geometry'])]
         json_data = df5.to_json(orient='records')
         return json_data
 
     def getExposureDatum(self, lat, lng):
-        print(lat)
-        print(lng)
-        return {'name': 'aaa', 'pop': 123, 'hazard': 'Moderate', 'warehouse': 23}
+        df1 = self.fc2df(self.TS_POP)
+        df2 = self.fc2df(self.TS_WH)
+        water_percent_image = self._calculate_water_percent_image()
+        empty = ee.Image().float()
+        sumfeatures = water_percent_image.reduceRegions(
+                reducer=ee.Reducer.sum(),
+                collection=self.TS,
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+        df3 = self.fc2dfgeo(Floodreclass2)
+        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
+        #df5 = geopandas.sjoin(df4, df3, how='left', op='within', lsuffix='ID_3', rsuffix='ID_3')
+        df5 = pandas.merge(df4, df3, how='outer', left_on='ID_3', right_on='ID_3')
+        df5 = df5.fillna(0)
+        print df5.count
+        #df5.crs = {"init": "epsg:4326"}
+        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
+        #p1 = Point(lat,lng)
+        p1 = Point(float(lng), float(lat))
+        #p1 = Point(95.7809701660276, 21.99294491892278)
+        ts = None
+        for index, row in df5.iterrows():
+            #centroidseries = poly.centroid
+            poly = row['geometry']
+            if poly.contains(p1):
+                print "success contains"
+                ts = row
+            else:
+                print 'OUT'
+        return {'name': ts['NAME_3'], 'pop': ts['Pop'], 'hazard': ts['hazard'], 'warehouse': ts['FID_Wareho']}
 
     # -------------------------------------------------------------------------
     def get_map_id(self):

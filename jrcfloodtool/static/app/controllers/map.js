@@ -445,7 +445,7 @@
 			var latLng = e.latLng;
 			var lat = e.latLng.lat();
 			var lng = e.latLng.lng();
-
+			$scope.ts = null;
 			MapService.getExposureDatum(lat, lng)
 			.then(function (data) {
 				$scope.ts = data;
