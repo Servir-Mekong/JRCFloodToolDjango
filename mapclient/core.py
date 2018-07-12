@@ -22,6 +22,7 @@ class GEEApi():
         self.FEATURE_COLLECTION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID)
         self.TS_POP = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_POP)
         self.TS_WH = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_WH)
+        self.State_Reg = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SR)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
@@ -286,7 +287,7 @@ class GEEApi():
 
     def get_township_id(self):
         empty = ee.Image().float()
-        outline = empty.paint(self.TS, 1, 1.5)
+        outline = empty.paint(self.TS, 1, 1)
         map_id = outline.getMapId({
             'palette': 'black'
         })
@@ -295,6 +296,38 @@ class GEEApi():
             'eeMapId': str(map_id['mapid']),
             'eeMapToken': str(map_id['token'])
         }
+
+    def get_state_id(self):
+        empty = ee.Image().float()
+        outline = empty.paint(self.State_Reg, 1, 2.5)
+        map_id = outline.getMapId({
+            'palette': 'black'
+        })
+
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
+
+    def get_wh_id(self):
+        empty = ee.Image().float()
+        TS_WH_new = self.TS_WH.map(self.bufferFeature)
+        outline = empty.paint(TS_WH_new, 'FID_Wareho', 5)
+        map_id = outline.getMapId({
+            'palette': 'black'
+        })
+
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
+
+
+    def bufferFeature(self, ft):
+        #ft = ft.buffer(2000, 100)
+        return ft.buffer(2000, 100)
+
+
 
     def get_hazard_map_id(self):
 
@@ -325,7 +358,7 @@ class GEEApi():
             'eeMapId': str(map_id['mapid']),
             'eeMapToken': str(map_id['token'])
         }
-
+    
     def Floodindexcal(self,feature):
         findex = ee.Number(feature.get('sum')).\
                         divide(feature.geometry().area().divide(1000000))
