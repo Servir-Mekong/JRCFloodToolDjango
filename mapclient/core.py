@@ -211,28 +211,9 @@ class GEEApi():
         df['geometry'] = map(lambda s: shape(s), df.geometry)    
         return df
 
-    def getExposureData(self):
-        df1 = self.fc2df(self.TS_POP)
-        df2 = self.fc2df(self.TS_WH)
-        water_percent_image = self._calculate_water_percent_image()
-        empty = ee.Image().float()
-        sumfeatures = water_percent_image.reduceRegions(
-                reducer=ee.Reducer.sum(),
-                collection=self.TS,
-                scale=150
-            )
-        FloodIndex = sumfeatures.map(self.Floodindexcal)
-        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
-        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        df3 = self.fc2df(Floodreclass2)
-        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
-        df5 = pandas.merge(df4, df3, left_on='ID_3', right_on='ID_3')
-        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
-        # df6 = df5[df5.columns.difference(['geometry'])]
-        json_data = df5.to_json(orient='records')
-        return json_data
 
-    def getExposureDatum(self, lat, lng):
+
+    def getExposureTables(self):
         df1 = self.fc2df(self.TS_POP)
         df2 = self.fc2df(self.TS_WH)
         water_percent_image = self._calculate_water_percent_image()
@@ -246,16 +227,22 @@ class GEEApi():
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
         df3 = self.fc2dfgeo(Floodreclass2)
-        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
-        #df5 = geopandas.sjoin(df4, df3, how='left', op='within', lsuffix='ID_3', rsuffix='ID_3')
+        df4 = pandas.merge(df1, df2, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = pandas.merge(df4, df3, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = df5.fillna(0)
-        print df5.count
-        #df5.crs = {"init": "epsg:4326"}
         df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
-        #p1 = Point(lat,lng)
+        return df5
+
+
+    def getExposureData(self):
+        df5 = self.getExposureTables()
+        df5 = df5.drop(columns=['geometry'])
+        json_data = df5.to_json(orient='records')
+        return json_data
+
+    def getExposureDatum(self, lat, lng):
+        df5 = self.getExposureTables()
         p1 = Point(float(lng), float(lat))
-        #p1 = Point(95.7809701660276, 21.99294491892278)
         ts = None
         for index, row in df5.iterrows():
             #centroidseries = poly.centroid
