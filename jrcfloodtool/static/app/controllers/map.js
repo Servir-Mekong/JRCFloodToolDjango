@@ -3,7 +3,7 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl', function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog) {
+	.controller('mapCtrl',function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog, usSpinnerService) {
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
@@ -300,6 +300,7 @@
 				console.log(data);
 				loadMap(data.eeMapId, data.eeMapToken, 'township');
 				showSuccessAlert('The Township Layer is updated!');
+				usSpinnerService.stop('spinner-1');
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
 				console.log(error);
@@ -315,6 +316,7 @@
 				if ($scope.overlays.township) {
 					$scope.overlays.township.setOpacity(1);
 				} else {
+				    usSpinnerService.spin('spinner-1');
 					$scope.getTownShipId();
 				}
 			}
