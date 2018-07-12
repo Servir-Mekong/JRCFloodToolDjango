@@ -164,10 +164,9 @@
 		*/
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
 			if (typeof (init) === 'undefined') init = false;
-			$scope.showLoader = true;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
-			
+
 		};
 
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
@@ -176,6 +175,7 @@
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					loadMap(data.eeMapId, data.eeMapToken);
+					usSpinnerService.spin('spinner-1');
 					if (init) {
 						$timeout(function () {
 							showInfoAlert('The map data shows the data from 2000 January to 2012 December. You can change the map data with the ☰  provided in the left side!');
@@ -201,6 +201,7 @@
 				.then(function (data) {
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
+					usSpinnerService.stop('spinner-1');
 					showSuccessAlert('The Hazard Level Layer is updated!');
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');
@@ -329,6 +330,7 @@
 			.then(function (data) {
 				console.log(data);
 				loadMap(data.eeMapId, data.eeMapToken, 'state');
+				usSpinnerService.stop('spinner-1');
 				showSuccessAlert('The State Layer is updated!');
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
@@ -345,6 +347,7 @@
 				if ($scope.overlays.state) {
 					$scope.overlays.state.setOpacity(1);
 				} else {
+				    usSpinnerService.spin('spinner-1');
 					$scope.getStateRegionId();
 				}
 			}
@@ -356,6 +359,7 @@
 			.then(function (data) {
 				console.log(data);
 				loadMap(data.eeMapId, data.eeMapToken, 'warehouse');
+				usSpinnerService.stop('spinner-1');
 				showSuccessAlert('The Warehouse Location Layer is updated!');
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
@@ -372,6 +376,7 @@
 				if ($scope.overlays.warehouse) {
 					$scope.overlays.warehouse.setOpacity(1);
 				} else {
+				    usSpinnerService.spin('spinner-1');
 					$scope.getWhLocId();
 				}
 			}
@@ -504,9 +509,11 @@
 			var lat = e.latLng.lat();
 			var lng = e.latLng.lng();
 			$scope.ts = null;
+            usSpinnerService.spin('spinner-1');
 			MapService.getExposureDatum(lat, lng)
 			.then(function (data) {
 				$scope.ts = data;
+				usSpinnerService.stop('spinner-1');
 				console.log($scope.ts);
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
@@ -795,23 +802,12 @@
 			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map to see the individual information of the result'});
 		};
 
-		$scope.showInfoBox = function() {
-			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
-			ngDialog.open({
-				template: `<p><b>Information</b></p>
-						   <div><p>Township ID: 0014<br/> Name: Five star</p>
-						   <p>pop affected: 5412</br> Hazard level: Moderate
-						   </br> Risk Level: High</p></div>`,
-				plain: true
-			});
-		};
-
-
 		$scope.execProcess = function() {
-
+            usSpinnerService.spin('spinner-2');
 			MapService.getExposureData($scope.shape)
 			.then(function (data) {
 				$scope.results = JSON.parse(data);
+				usSpinnerService.stop('spinner-2');
 				console.log($scope.results);
 				
 			}, function (error) {
