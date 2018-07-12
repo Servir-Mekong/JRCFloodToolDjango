@@ -134,7 +134,7 @@
 
 		/** Updates the image based on the current control panel config. */
 		var loadMap = function (mapId, mapToken, type) {
-			var layers = { "township": "2", "flood-hazard": "0", "map":"1" };
+			var layers = { "township": "2", "flood-hazard": "0", "map":"1", "state": "3","warehouse": "4" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
@@ -321,6 +321,62 @@
 				}
 			}
 		};
+
+
+		$scope.getStateRegionId = function () {
+			
+			MapService.getStateRegionId($scope.shape)
+			.then(function (data) {
+				console.log(data);
+				loadMap(data.eeMapId, data.eeMapToken, 'state');
+				showSuccessAlert('The State Layer is updated!');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+		$scope.clickStateRegion = function () {
+			if ($scope.checkStateBoundary) {
+				$scope.checkStateBoundary = false;
+				$scope.overlays.state.setOpacity(0);
+			} else {
+				$scope.checkStateBoundary = true;
+				if ($scope.overlays.state) {
+					$scope.overlays.state.setOpacity(1);
+				} else {
+					$scope.getStateRegionId();
+				}
+			}
+		};
+
+		$scope.getWhLocId = function () {
+			
+			MapService.getWhLocId($scope.shape)
+			.then(function (data) {
+				console.log(data);
+				loadMap(data.eeMapId, data.eeMapToken, 'warehouse');
+				showSuccessAlert('The Warehouse Location Layer is updated!');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+		$scope.clickWhLoc = function () {
+			if ($scope.analysisWhLoc) {
+				$scope.analysisWhLoc = false;
+				$scope.overlays.warehouse.setOpacity(0);
+			} else {
+				$scope.analysisWhLoc = true;
+				if ($scope.overlays.warehouse) {
+					$scope.overlays.warehouse.setOpacity(1);
+				} else {
+					$scope.getWhLocId();
+				}
+			}
+		};
+
 
 		$scope.getWorldPopId = function () {
 
