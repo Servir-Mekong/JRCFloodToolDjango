@@ -28,7 +28,11 @@
                                     <div class="row text-center">
                                             <button type="button" class="btn btn-primary" ng-click="execProcess()">Click to Process</button>
                                             
-                                            <a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()"><i class="fa fa-info-circle"></i></a>
+                                            <a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()">
+                                            <!--<span class="fa-stack">-->
+                                              <!--<i class="fa fa-circle fa-stack-2x"></i>-->
+                                              <!--<i style="font-size: 12px;" class="fa fa-search fa-stack-1x fa-inverse"></i>-->
+                                            <!--</span></a>-->
                                             <hr />
                                     </div>
                             </td>
@@ -46,8 +50,11 @@
                                                ng-click="clickMapData(50)"/>
                                         Actual Flood Frequency
                                     </label>
-                                    <div class="map_opacity">
-                                        <input type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)"/>
+                                    <div style="position:relative;margin:10px 0;padding-bottom:10px;" class="map_opacity">
+                                        <span style="position: absolute;text-align: center;color: #aaa;left: 35%; font-size: 16px; z-index: 0;">
+                                        Opacity
+                                    </span>
+                                        <input style="position: absolute; opacity:0.8" type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)"/>
                                     </div>
                                 </div>
                                 
@@ -60,8 +67,11 @@
                                                ng-click="clickAffFH(50)"/>
                                         Aggregate Flood Hazard
                                     </label>
-                                    <div class="map_opacity">
-                                        <input type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" />
+                                    <div style="position:relative;margin:10px 0;padding-bottom:10px;" class="map_opacity">
+                                         <span style="position: absolute;text-align: center;color: #aaa;left: 35%; font-size: 16px; z-index: 0;">
+                                        Opacity
+                                    </span>
+                                        <input style="position: absolute; opacity:0.8" type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" />
                                     </div>
                                 </div>
 
