@@ -805,8 +805,13 @@
 		};
 
 
-		$scope.execProcess = function() {
+		$scope.clickResultDownload = function(){
+			console.log('result download');
+		}
 
+
+		$scope.execProcess = function() {
+			$scope.results = null;
 			MapService.getExposureData($scope.shape)
 			.then(function (data) {
 				$scope.results = JSON.parse(data);
@@ -820,7 +825,12 @@
 			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
 			ngDialog.open({
 				template: `<table class="table">
+				<thead>
 				<tr>
+					<th>State/Region
+					</th>
+					<th>District
+					</th>
 					<th>Township Name
 					</th>
 					<th>No. of Warehouse
@@ -829,8 +839,16 @@
 					</th>
 					<th>No. of Pop
 					</th>
+					<th>No. of Shelter
+					</th>
 				</tr>
+				</thead>
+				<tbody>
 				<tr ng-repeat="result in results track by $index">
+					<td>[[result.NAME_1]]
+					</td>
+					<td>[[result.NAME_2]]
+					</td>
 					<td>[[result.NAME_3]]
 					</td>
 					<td>[[result.FID_Wareho]]
@@ -839,9 +857,13 @@
 					</td>
 					<td>[[result.Pop]]
 					</td>
+					<td>[[result.No_shelter]]
+					</td>
 				</tr>
+				</tbody>
 			</table>`,
 				className: 'ngdialog-theme-default',
+				width: '60%',
 				plain: true,
 				scope:$scope
 			});

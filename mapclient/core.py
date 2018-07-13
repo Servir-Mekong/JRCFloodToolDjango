@@ -23,6 +23,7 @@ class GEEApi():
         self.TS_POP = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_POP)
         self.TS_WH = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_WH)
         self.State_Reg = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SR)
+        self.Shelter = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SHELTER)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
@@ -214,8 +215,11 @@ class GEEApi():
 
 
     def getExposureTables(self):
-        df1 = self.fc2df(self.TS_POP)
-        df2 = self.fc2df(self.TS_WH)
+        population_df = self.fc2df(self.TS_POP)
+        warehouse_df = self.fc2df(self.TS_WH)
+        shelter_df = self.fc2df(self.Shelter)
+        shelter_df = shelter_df.groupby(['Township']).sum()
+        print("shelter_df",shelter_df.columns)
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -226,11 +230,14 @@ class GEEApi():
         FloodIndex = sumfeatures.map(self.Floodindexcal)
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        df3 = self.fc2dfgeo(Floodreclass2)
-        df4 = pandas.merge(df1, df2, how='outer', left_on='ID_3', right_on='ID_3')
-        df5 = pandas.merge(df4, df3, how='outer', left_on='ID_3', right_on='ID_3')
+        flood_haz_df = self.fc2dfgeo(Floodreclass2)
+        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
+        # Population, Warehouse and Shelter join
+        print("pop_wh",pop_wh_df.columns)
+        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3_x')        
+        df5 = pandas.merge(pop_wh_sh_df, flood_haz_df, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = df5.fillna(0)
-        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
+        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', np.where(df5['Freclass']==3, 'High', 'None')))
         return df5
 
 
