@@ -11,8 +11,7 @@
                                         <label class="checkbox-inline">
                                             <input type="checkbox"
                                                    value="" 
-                                                   ng-checked="resultDisplay"
-                                                   ng-click="clickResultDisplay()"/>
+                                                   ng-model="resultDisplay"/>
                                             Display result as table
                                         </label>
                                     </div>
@@ -20,13 +19,12 @@
                                         <label class="checkbox-inline">
                                             <input type="checkbox"
                                                    value="" 
-                                                   ng-checked="resultDownload"
-                                                   ng-click="clickResultDownload()"/>
+                                                   ng-model="resultDownload"/>
                                             Download result as excel file
                                         </label>
                                     </div>
                                     <div class="row text-center">
-                                            <button type="button" class="btn btn-primary" ng-click="execProcess()">Click to Process</button>
+                                            <button type="button" class="btn btn-primary" ng-click="clickProcess()">Click to Process</button>
                                             
                                             <a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()"><i class="fa fa-info-circle"></i></a>
                                             <hr />

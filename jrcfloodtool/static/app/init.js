@@ -8,7 +8,7 @@
 	});
 	
 	// All the dependencies come here
-	angular.module('baseApp', ['rzModule','mgcrea.ngStrap', 'ngDialog'], function ($interpolateProvider) {
+	angular.module('baseApp', ['rzModule','mgcrea.ngStrap', 'ngDialog','ngFileSaver'], function ($interpolateProvider) {
 		$interpolateProvider.startSymbol('[[');
 		$interpolateProvider.endSymbol(']]');
 	})

@@ -9,7 +9,10 @@ import geopandas
 from shapely.geometry import shape, Polygon, Point, MultiPolygon
 from django.http import JsonResponse
 import numpy as np
-
+import pandas as pd
+from django.http import HttpResponse
+import xlsxwriter
+import base64
 # -----------------------------------------------------------------------------
 class GEEApi():
     """ Google Earth Engine API """
@@ -218,8 +221,8 @@ class GEEApi():
         population_df = self.fc2df(self.TS_POP)
         warehouse_df = self.fc2df(self.TS_WH)
         shelter_df = self.fc2df(self.Shelter)
+        shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
         shelter_df = shelter_df.groupby(['Township']).sum()
-        print("shelter_df",shelter_df.columns)
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -233,7 +236,6 @@ class GEEApi():
         flood_haz_df = self.fc2dfgeo(Floodreclass2)
         pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
         # Population, Warehouse and Shelter join
-        print("pop_wh",pop_wh_df.columns)
         pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3_x')        
         df5 = pandas.merge(pop_wh_sh_df, flood_haz_df, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = df5.fillna(0)
@@ -241,20 +243,53 @@ class GEEApi():
         return df5
 
 
-    def getExposureData(self):
-        df5 = self.getExposureTables()
-        df5 = df5.drop(columns=['geometry'])
-        json_data = df5.to_json(orient='records')
+    def getExposureData(self,request):
+        exposure_df = self.getExposureTables()
+        exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
+        json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 
+
+
+    def getExposureDownload(self,request):
+        exposure_df = self.getExposureTables()
+        try:
+            from io import BytesIO as IO # for modern python
+        except ImportError:
+            from StringIO import StringIO as IO # for legacy python
+
+        # this is my output data a list of lists
+
+        # my "Excel" file, which is an in-memory output file (buffer) 
+        # for the new workbook
+        excel_file = IO()
+
+        xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+        exposure_df_with_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Pop','FID_Wareho','hazard','No_shelter']]
+        exposure_df_with_geo.to_excel(xlwriter, 'sheetname')
+
+        xlwriter.save()
+        xlwriter.close()
+
+        # important step, rewind the buffer or when it is read() you'll get nothing
+        # but an error message when you try to open your zero length file in Excel
+        excel_file.seek(0)
+        # set the mime type so that the browser knows what to do with the file
+        response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+        # set the file name in the Content-Disposition header
+        response['Content-Disposition'] = 'attachment; filename=myfile.xlsx'
+        return response
+        #return json_data
+
     def getExposureDatum(self, lat, lng):
-        df5 = self.getExposureTables()
+        exposure_df = self.getExposureTables()
         p1 = Point(float(lng), float(lat))
         ts = None
-        for index, row in df5.iterrows():
+        for index, row in exposure_df.iterrows():
             #centroidseries = poly.centroid
             poly = row['geometry']
-            if poly.contains(p1):
+            if poly and poly.contains(p1):
                 print "success contains"
                 ts = row
             else:

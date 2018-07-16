@@ -3,7 +3,7 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl', function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog) {
+	.controller('mapCtrl' ,function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog,FileSaver, Blob) {
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
@@ -810,17 +810,31 @@
 		}
 
 
-		$scope.execProcess = function() {
+
+		$scope.clickProcess = function(){
+			if($scope.resultDisplay){
+				execProcessTable();
+			}
+			if($scope.resultDownload){
+				execProcessDownload();
+			}
+		};
+
+
+		var execProcessTable = function() {
 			$scope.results = null;
 			MapService.getExposureData($scope.shape)
 			.then(function (data) {
 				$scope.results = JSON.parse(data);
 				console.log($scope.results);
-				
+
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
 				console.log(error);
-			});
+		});
+
+
+
 
 			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
 			ngDialog.open({
@@ -868,6 +882,22 @@
 				scope:$scope
 			});
 		};
+
+		var execProcessDownload = function() {
+			$scope.results = null;
+			MapService.getExposureDownload($scope.shape)
+			.then(function (data) {
+				var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+				//var objectUrl = URL.createObjectURL(blob);
+				//window.open(objectUrl);
+				FileSaver.saveAs(blob, 'default' + '.xlsx');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+	
 
 	});
 
