@@ -3,7 +3,8 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl',function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog, usSpinnerService) {
+	.controller('mapCtrl' ,function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog,FileSaver, Blob, usSpinnerService) {
+
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
@@ -812,23 +813,61 @@
 			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map to see the individual information of the result'});
 		};
 
-		$scope.execProcess = function() {
-            usSpinnerService.spin('spinner-2');
+
+		$scope.showInfoBox = function() {
+			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
+			ngDialog.open({
+				template: `<p><b>Information</b></p>
+						   <div><p>Township ID: 0014<br/> Name: Five star</p>
+						   <p>pop affected: 5412</br> Hazard level: Moderate
+						   </br> Risk Level: High</p></div>`,
+				plain: true
+			});
+		};
+
+
+		$scope.clickResultDownload = function(){
+			console.log('result download');
+		}
+
+
+
+		$scope.clickProcess = function(){
+			usSpinnerService.spin('spinner-2');
+			if($scope.resultDisplay){
+				execProcessTable();
+			}
+			if($scope.resultDownload){
+				execProcessDownload();
+			}
+		};
+
+
+		var execProcessTable = function() {
+			$scope.results = null;
 			MapService.getExposureData($scope.shape)
 			.then(function (data) {
 				$scope.results = JSON.parse(data);
 				usSpinnerService.stop('spinner-2');
 				console.log($scope.results);
-				
+
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
 				console.log(error);
-			});
+		});
+
+
+
 
 			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
 			ngDialog.open({
 				template: `<table class="table">
+				<thead>
 				<tr>
+					<th>State/Region
+					</th>
+					<th>District
+					</th>
 					<th>Township Name
 					</th>
 					<th>No. of Warehouse
@@ -837,8 +876,16 @@
 					</th>
 					<th>No. of Pop
 					</th>
+					<th>No. of Shelter
+					</th>
 				</tr>
+				</thead>
+				<tbody>
 				<tr ng-repeat="result in results track by $index">
+					<td>[[result.NAME_1]]
+					</td>
+					<td>[[result.NAME_2]]
+					</td>
 					<td>[[result.NAME_3]]
 					</td>
 					<td>[[result.FID_Wareho]]
@@ -847,13 +894,33 @@
 					</td>
 					<td>[[result.Pop]]
 					</td>
+					<td>[[result.No_shelter]]
+					</td>
 				</tr>
+				</tbody>
 			</table>`,
 				className: 'ngdialog-theme-default',
+				width: '60%',
 				plain: true,
 				scope:$scope
 			});
 		};
+
+		var execProcessDownload = function() {
+			$scope.results = null;
+			MapService.getExposureDownload($scope.shape)
+			.then(function (data) {
+				var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+				//var objectUrl = URL.createObjectURL(blob);
+				//window.open(objectUrl);
+				FileSaver.saveAs(blob, 'default' + '.xlsx');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+	
 
 	});
 

@@ -9,7 +9,10 @@ import geopandas
 from shapely.geometry import shape, Polygon, Point, MultiPolygon
 from django.http import JsonResponse
 import numpy as np
-
+import pandas as pd
+from django.http import HttpResponse
+import xlsxwriter
+import base64
 # -----------------------------------------------------------------------------
 class GEEApi():
     """ Google Earth Engine API """
@@ -23,6 +26,7 @@ class GEEApi():
         self.TS_POP = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_POP)
         self.TS_WH = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_TS_WH)
         self.State_Reg = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SR)
+        self.Shelter = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SHELTER)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
@@ -211,9 +215,14 @@ class GEEApi():
         df['geometry'] = map(lambda s: shape(s), df.geometry)    
         return df
 
-    def getExposureData(self):
-        df1 = self.fc2df(self.TS_POP)
-        df2 = self.fc2df(self.TS_WH)
+
+
+    def getExposureTables(self):
+        population_df = self.fc2df(self.TS_POP)
+        warehouse_df = self.fc2df(self.TS_WH)
+        shelter_df = self.fc2df(self.Shelter)
+        shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
+        shelter_df = shelter_df.groupby(['Township']).sum()
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -224,43 +233,63 @@ class GEEApi():
         FloodIndex = sumfeatures.map(self.Floodindexcal)
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        df3 = self.fc2df(Floodreclass2)
-        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
-        df5 = pandas.merge(df4, df3, left_on='ID_3', right_on='ID_3')
-        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
-        # df6 = df5[df5.columns.difference(['geometry'])]
-        json_data = df5.to_json(orient='records')
+        flood_haz_df = self.fc2dfgeo(Floodreclass2)
+        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
+        # Population, Warehouse and Shelter join
+        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3_x')        
+        df5 = pandas.merge(pop_wh_sh_df, flood_haz_df, how='outer', left_on='ID_3', right_on='ID_3')
+        df5 = df5.fillna(0)
+        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', np.where(df5['Freclass']==3, 'High', 'None')))
+        return df5
+
+
+    def getExposureData(self,request):
+        exposure_df = self.getExposureTables()
+        exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
+        json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 
+
+
+    def getExposureDownload(self,request):
+        exposure_df = self.getExposureTables()
+        try:
+            from io import BytesIO as IO # for modern python
+        except ImportError:
+            from StringIO import StringIO as IO # for legacy python
+
+        # this is my output data a list of lists
+
+        # my "Excel" file, which is an in-memory output file (buffer) 
+        # for the new workbook
+        excel_file = IO()
+
+        xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+        exposure_df_with_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Pop','FID_Wareho','hazard','No_shelter']]
+        exposure_df_with_geo.to_excel(xlwriter, 'sheetname')
+
+        xlwriter.save()
+        xlwriter.close()
+
+        # important step, rewind the buffer or when it is read() you'll get nothing
+        # but an error message when you try to open your zero length file in Excel
+        excel_file.seek(0)
+        # set the mime type so that the browser knows what to do with the file
+        response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+        # set the file name in the Content-Disposition header
+        response['Content-Disposition'] = 'attachment; filename=myfile.xlsx'
+        return response
+        #return json_data
+
     def getExposureDatum(self, lat, lng):
-        df1 = self.fc2df(self.TS_POP)
-        df2 = self.fc2df(self.TS_WH)
-        water_percent_image = self._calculate_water_percent_image()
-        empty = ee.Image().float()
-        sumfeatures = water_percent_image.reduceRegions(
-                reducer=ee.Reducer.sum(),
-                collection=self.TS,
-                scale=150
-            )
-        FloodIndex = sumfeatures.map(self.Floodindexcal)
-        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
-        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        df3 = self.fc2dfgeo(Floodreclass2)
-        df4 = pandas.merge(df1, df2, left_on='ID_3', right_on='ID_3')
-        #df5 = geopandas.sjoin(df4, df3, how='left', op='within', lsuffix='ID_3', rsuffix='ID_3')
-        df5 = pandas.merge(df4, df3, how='outer', left_on='ID_3', right_on='ID_3')
-        df5 = df5.fillna(0)
-        print df5.count
-        #df5.crs = {"init": "epsg:4326"}
-        df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', 'High'))
-        #p1 = Point(lat,lng)
+        exposure_df = self.getExposureTables()
         p1 = Point(float(lng), float(lat))
-        #p1 = Point(95.7809701660276, 21.99294491892278)
         ts = None
-        for index, row in df5.iterrows():
+        for index, row in exposure_df.iterrows():
             #centroidseries = poly.centroid
             poly = row['geometry']
-            if poly.contains(p1):
+            if poly and poly.contains(p1):
                 print "success contains"
                 ts = row
             else:

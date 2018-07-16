@@ -229,6 +229,38 @@
 			return promise;
 		};
 
+
+		this.getExposureDownload = function (shape) {
+			
+			var config = {
+				params: {
+					action: 'get-exposure-dnld'
+				},
+				responseType: "blob",
+				headers: {
+					'Content-type': 'application/json',
+					'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				}
+			};
+
+			var shapeType = shape.type;
+			if (shapeType === 'rectangle' || shapeType === 'polygon') {
+				config.params.shape = shapeType;
+				config.params.geom = shape.geom.toString();
+			} else if (shapeType === 'circle') {
+				config.params.shape = shapeType;
+				config.params.radius = shape.radius;
+				config.params.center = shape.center.toString();
+			}
+
+			var promise = $http.get('/downloadExcel/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+
 		this.getExposureDatum = function (lat, lng) {
 			
 			var config = {

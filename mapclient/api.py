@@ -48,7 +48,7 @@ def api(request):
             elif action == 'get-world-pop-number':
                 data = core.get_world_pop_number()
             elif action == 'get-exposure-data':
-                data = core.getExposureData()
+                data = core.getExposureData(request)
             elif action == 'get-exposure-datum':
                 data = core.getExposureDatum(get('lat', ''), get('lng', ''))
             elif action == 'download-to-drive':
@@ -118,3 +118,29 @@ def api(request):
                     # default fallback
                     data = {'error': 'You have not allowed the tool to use your google drive to upload file! Allow it first and try again!'}
             return JsonResponse(data, safe=False)
+
+
+
+
+def downloadExcel(request):
+    get = request.GET.get
+    action = get('action', '')
+
+    if action:
+        public_methods = ['get-exposure-dnld',]
+
+        if action in public_methods:
+            start_year = get('startYear', '2000')
+            end_year = get('endYear', '2012')
+            start_month = get('startMonth', '01')
+            end_month = get('endMonth', '12')
+            shape = get('shape', '')
+            geom = get('geom', '')
+            radius = get('radius', '')
+            center = get('center', '')
+            file_name = get('file', '')
+            method = get('method', '')
+            core = GEEApi(start_year, end_year, start_month, end_month, shape, geom, radius, center, method)
+            if action == 'get-exposure-dnld':
+                data = core.getExposureDownload(request)
+            return data
