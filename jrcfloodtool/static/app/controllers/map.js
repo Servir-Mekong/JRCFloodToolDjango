@@ -813,19 +813,6 @@
 			$tooltip(angular.element($event.target), {title: 'Information Icon: Click here then click on the map to see the individual information of the result'});
 		};
 
-
-		$scope.showInfoBox = function() {
-			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
-			ngDialog.open({
-				template: `<p><b>Information</b></p>
-						   <div><p>Township ID: 0014<br/> Name: Five star</p>
-						   <p>pop affected: 5412</br> Hazard level: Moderate
-						   </br> Risk Level: High</p></div>`,
-				plain: true
-			});
-		};
-
-
 		$scope.clickResultDownload = function(){
 			console.log('result download');
 		}
