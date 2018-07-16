@@ -82,15 +82,15 @@
                                     </label>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox"
-                                               value="" 
-                                               ng-checked="checkRdNet"
-                                               ng-click="clickRdNet()"/>
-                                        Road Network
-                                    </label>
-                                </div>
+                                <!--<div class="form-group">-->
+                                    <!--<label class="checkbox-inline">-->
+                                        <!--<input type="checkbox"-->
+                                               <!--value="" -->
+                                               <!--ng-checked="checkRdNet"-->
+                                               <!--ng-click="clickRdNet()"/>-->
+                                        <!--Road Network-->
+                                    <!--</label>-->
+                                <!--</div>-->
                                 
                                 <div class="form-group">
                                     <label class="checkbox-inline">
@@ -146,8 +146,11 @@
                                                ng-click="clickMapData(50)"/>
                                         Actual Flood Frequency
                                     </label>
-                                    <div class="map_opacity">
-                                        <input type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)"/>
+                                    <div style="position:relative;margin:10px 0;padding-bottom:10px;" class="map_opacity">
+                                    <span style="position: absolute;text-align: center;color: #aaa;left: 35%; font-size: 16px; z-index: 0;">
+                                        Opacity
+                                    </span>
+                                        <input style="position: absolute; opacity:0.8" type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)"/>
                                     </div>
                                 </div>
                                 
@@ -160,8 +163,11 @@
                                                ng-click="clickAffFH(50)"/>
                                         Aggregate Flood Hazard
                                     </label>
-                                    <div class="map_opacity">
-                                        <input type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" />
+                                    <div style="position:relative;margin:10px 0;padding-bottom:10px;" class="map_opacity">
+                                   <span style="position: absolute;text-align: center;color: #aaa;left: 35%; font-size: 16px; z-index: 0;">
+                                        Opacity
+                                    </span>
+                                        <input style="position: absolute; opacity:0.8" type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" />
                                     </div>
                                 </div>
                                 
@@ -226,7 +232,7 @@
             <div class="row text-center">
                 <button type="button" class="btn btn-primary" ng-click="updateMap()">Update Map</button>
                 <hr />
-                <!-- <div class="btn-group">
+                 <div class="btn-group">
 	                <button type="button" class="btn btn-primary">Download Map Data</button>
 	                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	                    <span class="caret"></span>
@@ -236,7 +242,7 @@
 	                    <li><a href="" target="_blank" class="download-btn" ng-click="downloadMap()">Get URL</a></li>
 	                    <li><a href="" ng-click="showGDriveFileName()">To Your Google Drive</a></li>
 	                </ul>
-                </div> -->
+                </div>
             </div>
             <!--<button type="button" class="btn btn-primary" ng-click="getWorlPopNumber()">Show Affected People</button>-->
             <div ng-show="downloadUrl" class="input-group">
