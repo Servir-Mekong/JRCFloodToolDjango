@@ -89,6 +89,7 @@
 		$scope.resultActualFF = false;
 		$scope.resultAggFH = true;
 		$scope.resultRisk = false;
+		$scope.checkInfoBtn = false
 
 		// Custom Control Google Maps API
 		$scope.overlays = {};
@@ -264,8 +265,7 @@
 		};
 
 		$scope.downloadMap = function () {
-
-			var dateObject = $scope.checkBeforeDownload(true);
+             var dateObject = $scope.checkBeforeDownload(true);
 			// @ToDo: Do proper check
 			if (dateObject) {
 				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
@@ -503,13 +503,21 @@
 			var northWest = new google.maps.LatLng(ne.lat(), sw.lng());
 			return google.maps.geometry.spherical.computeArea([northEast, northWest, southWest, southEast]) / 1e6;
 		};
+
+		$scope.showInfoBox = function() {
+        $scope.checkInfoBtn = true;
+		};
+
         // On click event 
         google.maps.event.addListener(map, "click", function (e) {
+            if ($scope.checkInfoBtn)
+            {
+            usSpinnerService.spin('spinner-1');
+            $scope.checkInfoBtn = false;
 			var latLng = e.latLng;
 			var lat = e.latLng.lat();
 			var lng = e.latLng.lng();
 			$scope.ts = null;
-            usSpinnerService.spin('spinner-1');
 			MapService.getExposureDatum(lat, lng)
 			.then(function (data) {
 				$scope.ts = data;
@@ -529,6 +537,7 @@
 				plain: true,
 				scope:$scope
 			});
+			}
         });
 
 		// Overlay Listener
@@ -685,6 +694,7 @@
 			return monthObject[month];
 		};
 
+
 		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon, needDate) {
 
 			if (typeof(needPolygon) === 'undefined') needPolygon = true;
@@ -773,7 +783,7 @@
 		};
 
 		$scope.saveToDrive = function () {
-			var dateObject = $scope.checkBeforeDownload(true);
+            var dateObject = $scope.checkBeforeDownload(true);
 			// Check if filename is provided, if not use the default one
 			// @ToDo: Sanitize input and do proper check of dateobject
 			var fileName = $('#gdrive-file-name').val() || '';
