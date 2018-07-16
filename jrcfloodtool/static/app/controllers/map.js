@@ -272,6 +272,7 @@
 				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
 				MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
 			    .then(function (data) {
+					console.log(data);
 					showSuccessAlert('Your Download Link is ready. Enjoy!');
 			    	$scope.downloadURL = data.downloadUrl;
 			    	$scope.showDownloadUrl();
@@ -698,21 +699,21 @@
 
 		$scope.checkBeforeDownload = function (checkAreaLimit, needPolygon, needDate) {
 
-			if (typeof(needPolygon) === 'undefined') needPolygon = true;
-			if (needPolygon){
-				if (!$scope.overlays.polygon) {
-					showErrorAlert('Please draw a polygon first!');
-					return false;
-				}
-			}
+			// if (typeof(needPolygon) === 'undefined') needPolygon = true;
+			// if (needPolygon){
+			// 	if (!$scope.overlays.polygon) {
+			// 		showErrorAlert('Please draw a polygon first!');
+			// 		return false;
+			// 	}
+			// }
 
-			if (typeof(checkAreaLimit) === 'undefined') checkAreaLimit = false;
-			if (checkAreaLimit) {
-				if ($scope.drawingArea > AREA_LIMIT) {
-					showErrorAlert('The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!');
-					return false;
-				}
-			}
+			// if (typeof(checkAreaLimit) === 'undefined') checkAreaLimit = false;
+			// if (checkAreaLimit) {
+			// 	if ($scope.drawingArea > AREA_LIMIT) {
+			// 		showErrorAlert('The drawn polygon is larger than ' + AREA_LIMIT + ' km2. This exceeds the current limitations for downloading data. Please draw a smaller polygon!');
+			// 		return false;
+			// 	}
+			// }
 
 			if (typeof(needDate) === 'undefined') needDate = true;
 			if (needDate) {
@@ -901,6 +902,7 @@
 				//var objectUrl = URL.createObjectURL(blob);
 				//window.open(objectUrl);
 				FileSaver.saveAs(blob, 'default' + '.xlsx');
+				usSpinnerService.stop('spinner-2');
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
 				console.log(error);

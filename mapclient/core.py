@@ -156,7 +156,7 @@ class GEEApi():
         years = endDate.difference(startDate, 'year').toInt().add(1)
         #print('Number of year selected : ', years)
 
-        return self.IMAGE_COLLECTION.filterDate(startDate, endDate)
+        return self.IMAGE_COLLECTION.filterBounds(self.geometry).filterDate(startDate, endDate)
 
 
     def _calculate_water_percent_image(self):
@@ -448,13 +448,16 @@ class GEEApi():
     def get_download_url(self):
 
         water_percent_image = self._calculate_water_percent_image()
+        print(self.geometry)
         try:
             url = water_percent_image.getDownloadURL({
                 'name': 'water_extract',
-                'scale': 30
+                'region' : self.geometry.bounds().getInfo()['coordinates'],
+                'scale': 300
             })
             return {'downloadUrl': url}
         except Exception as e:
+            print(e)
             return {'error': e.message}
 
     # -------------------------------------------------------------------------
