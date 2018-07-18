@@ -337,6 +337,18 @@ class GEEApi():
             'eeMapId': str(map_id['mapid']),
             'eeMapToken': str(map_id['token'])
         }
+    def get_shelter_id(self):
+        empty = ee.Image().float()
+        TS_WH_new = self.Shelter.map(self.bufferFeature)
+        outline = empty.paint(TS_WH_new, 'No_shelter', 2.5)
+        map_id = outline.getMapId({
+            'palette': 'blue'
+        })
+
+        return {
+            'eeMapId': str(map_id['mapid']),
+            'eeMapToken': str(map_id['token'])
+        }
 
     def get_wh_id(self):
         empty = ee.Image().float()

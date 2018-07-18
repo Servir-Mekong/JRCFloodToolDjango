@@ -136,7 +136,7 @@
 
 		/** Updates the image based on the current control panel config. */
 		var loadMap = function (mapId, mapToken, type) {
-			var layers = { "township": "2", "flood-hazard": "0", "map":"1", "state": "3","warehouse": "4" };
+			var layers = { "township": "2", "flood-hazard": "0", "map":"1", "state": "3","warehouse": "4", "shelter": "5" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
@@ -324,6 +324,41 @@
 				}
 			}
 		};
+
+
+        $scope.getShLocId = function () {
+
+			MapService.getShLocId($scope.shape)
+			.then(function (data) {
+				console.log(data);
+				//check
+				loadMap(data.eeMapId, data.eeMapToken, 'shelter');
+				showSuccessAlert('The Shelter Location Layer is updated!');
+				usSpinnerService.stop('spinner-1');
+			}, function (error) {
+				showErrorAlert('Something went wrong! Please try again later!');
+				console.log(error);
+			});
+		};
+
+		$scope.clickShLoc = function () {
+			if ($scope.checkShLoc) {
+				$scope.checkShLoc = false;
+				//check
+				$scope.overlays.shelter.setOpacity(0);
+			} else {
+				$scope.checkShLoc = true;
+				//check
+				if ($scope.overlays.shelter) {
+				    //check
+					$scope.overlays.shelter.setOpacity(1);
+				} else {
+				    usSpinnerService.spin('spinner-1');
+					$scope.getShLocId();
+				}
+			}
+		};
+
 
 
 		$scope.getStateRegionId = function () {

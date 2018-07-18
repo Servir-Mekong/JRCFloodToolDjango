@@ -177,6 +177,32 @@
 		};
 
 
+        this.getShLocId = function () {
+			var config = {
+				params: {
+					action: 'get-shelter-id'
+				}
+			};
+
+//			var shapeType = shape.type;
+//			if (shapeType === 'rectangle' || shapeType === 'polygon') {
+//				config.params.shape = shapeType;
+//				config.params.geom = shape.geom.toString();
+//			} else if (shapeType === 'circle') {
+//				config.params.shape = shapeType;
+//				config.params.radius = shape.radius;
+//				config.params.center = shape.center.toString();
+//			}
+
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+
+
 
 		this.getWhLocId = function (shape) {
 			

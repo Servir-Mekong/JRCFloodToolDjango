@@ -15,7 +15,7 @@ def api(request):
 
     if action:
         public_methods = ['get-map-id', 'get-hazard-id', 'download-url', 'download-to-drive',
-                          'get-world-pop-id', 'get-township-id', 'get-state-id', 'get-wh-id',
+                          'get-world-pop-id', 'get-township-id', 'get-state-id', 'get-shelter-id', 'get-wh-id',
                           'get-world-pop-number','get-exposure-data', 'get-exposure-datum'
                           ]
 
@@ -41,6 +41,8 @@ def api(request):
                 data = core.get_township_id()
             elif action == 'get-state-id':
                 data = core.get_state_id()
+            elif action == 'get-shelter-id':
+                data = core.get_shelter_id()
             elif action == 'get-wh-id':
                 data = core.get_wh_id()
             elif action == 'download-url':
