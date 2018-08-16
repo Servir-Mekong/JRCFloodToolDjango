@@ -223,6 +223,9 @@ class GEEApi():
         shelter_df = self.fc2df(self.Shelter)
         shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
         shelter_df = shelter_df.groupby(['Township']).sum()
+        print("township_pop",population_df.count())
+        print("township_wh",warehouse_df.count())
+        print("shelter",shelter_df.count())
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -234,9 +237,16 @@ class GEEApi():
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
         flood_haz_df = self.fc2dfgeo(Floodreclass2)
-        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
+        print("hazard",flood_haz_df.count())
+        # hazard_pop_df =pandas.merge( flood_haz_df, population_df,how='outer', left_on='ID_3', right_on='ID_3')
+        # print("hazard_pop",hazard_pop_df.count())
+        # hazard_pop_wh_df = pandas.merge(hazard_pop_df, warehouse_df, how='outer', left_on='NAME_3_x', right_on='DDM_WH')
+        # print("hazard_pop_wh",hazard_pop_wh_df.count())
+        # df5 = pandas.merge(hazard_pop_wh_df, shelter_df, how='outer', left_on='NAME_3_x', right_on='Township')
+        # print("df5",df5.count())
+        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='NAME_3', right_on='DDM_WH')
         # Population, Warehouse and Shelter join
-        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3_x')        
+        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3')        
         df5 = pandas.merge(pop_wh_sh_df, flood_haz_df, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = df5.fillna(0)
         df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', np.where(df5['Freclass']==3, 'High', 'None')))
@@ -246,6 +256,7 @@ class GEEApi():
     def getExposureData(self,request):
         exposure_df = self.getExposureTables()
         exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
+        print("exposure_df",exposure_df_wo_geo.count())
         json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 
@@ -265,7 +276,7 @@ class GEEApi():
         excel_file = IO()
 
         xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
-        exposure_df_with_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Pop','FID_Wareho','hazard','No_shelter']]
+        exposure_df_with_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Sum_Pop','no_warehou','hazard','No_shelter']]
         exposure_df_with_geo.to_excel(xlwriter, 'sheetname')
 
         xlwriter.save()
@@ -294,7 +305,7 @@ class GEEApi():
                 ts = row
             else:
                 print 'OUT'
-        return {'name': ts['NAME_3'], 'pop': ts['Pop'], 'hazard': ts['hazard'], 'warehouse': ts['FID_Wareho']}
+        return {'name': ts['NAME_3_x'], 'pop': ts['Sum_Pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou']}
 
     # -------------------------------------------------------------------------
     def get_map_id(self):
@@ -419,6 +430,7 @@ class GEEApi():
     def _get_world_pop_image():
 
         WORLD_POP = ee.ImageCollection(settings.EE_WORLD_POP_ID)
+        print("World",WORLD_POP.getInfo()['features'])
         filtered = WORLD_POP.filter(\
                         ee.Filter.inList('country', settings.COUNTRIES_NAME_WORLD_POP))
         filtered = filtered.filterMetadata('year', 'equals', 2015)

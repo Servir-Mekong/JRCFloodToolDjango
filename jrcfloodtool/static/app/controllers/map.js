@@ -136,7 +136,7 @@
 
 		/** Updates the image based on the current control panel config. */
 		var loadMap = function (mapId, mapToken, type) {
-			var layers = { "township": "2", "flood-hazard": "0", "map":"1", "state": "3","warehouse": "4", "shelter": "5" };
+			var layers = { "township": "2", "flood-hazard": "0", "map":"1", "state": "3","warehouse": "4", "shelter": "5", "worldPop": "6" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
@@ -165,9 +165,12 @@
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
+			
 			if (typeof (init) === 'undefined') init = false;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+		    //usSpinnerService.spin('spinner-1');
+
 
 		};
 
@@ -180,7 +183,7 @@
 					usSpinnerService.spin('spinner-1');
 					if (init) {
 						$timeout(function () {
-							showInfoAlert('The map data shows the data from 2000 January to 2012 December. You can change the map data with the ☰  provided in the left side!');
+							showInfoAlert('The map data shows the data from 1984 January to 2015 December. You can change the map data with the ☰  provided in the left side!');
 						}, 3500);
 					} else {
 						$timeout(function () {
@@ -203,7 +206,7 @@
 				.then(function (data) {
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
-					usSpinnerService.stop('spinner-1');
+				    usSpinnerService.stop('spinner-1');
 					showSuccessAlert('The Hazard Level Layer is updated!');
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');
@@ -214,6 +217,7 @@
 
 		$scope.clickMapData = function (opacity_value) {
 		opacity_value = parseInt(opacity_value)/100;
+		  if($scope.overlays.map)
 			if ($scope.checkMapData_value) {
 				$scope.overlays.map.setOpacity(opacity_value);
 			} else {
@@ -223,6 +227,7 @@
 
 		$scope.clickAffFH = function (opacity_value) {
 		opacity_value = parseInt(opacity_value)/100;
+		  if($scope.overlays['flood-hazard'])
 			if ($scope.checkAggFH_value) {
 				$scope.overlays['flood-hazard'].setOpacity(opacity_value);
 			} else {
@@ -568,8 +573,8 @@
 			ngDialog.open({
 				template: `<p><b>Information</b></p>
 							<div><p> Name:[[ts.name]]</p>
-							<p>pop affected: [[ts.pop]]</br> Hazard level: [[ts.hazard]]
-							</br> Warehouse: [[ts.warehouse]]</p></div>`,
+							<p ng-show="checkTSBoundary">pop affected: [[ts.pop]]</p><p> Hazard level: [[ts.hazard]]</p>
+							<p ng-show="checkWhLoc"> Warehouse: [[ts.warehouse]]</p></div>`,
 				className: 'ngdialog-theme-default',
 				plain: true,
 				scope:$scope
@@ -895,29 +900,29 @@
 					</th>
 					<th>No. of Warehouse
 					</th>
-					<th>Hazard Level
+					<th ng-show="checkAggFH">Hazard Level
 					</th>
-					<th>No. of Pop
+					<th ng-show="checkTSBoundary">No. of Pop
 					</th>
-					<th>No. of Shelter
+					<th ng-show="checkShLoc">No. of Shelter
 					</th>
 				</tr>
 				</thead>
 				<tbody>
 				<tr ng-repeat="result in results track by $index">
-					<td>[[result.NAME_1]]
+					<td>[[result.NAME_1_x]]
 					</td>
-					<td>[[result.NAME_2]]
+					<td>[[result.NAME_2_x]]
 					</td>
-					<td>[[result.NAME_3]]
+					<td>[[result.NAME_3_x]]
 					</td>
-					<td>[[result.FID_Wareho]]
+					<td >[[result.no_warehou]]
 					</td>
-					<td>[[result.hazard]]
+					<td ng-show="checkAggFH">[[result.hazard]]
 					</td>
-					<td>[[result.Pop]]
+					<td ng-show="checkTSBoundary">[[result.Sum_Pop]]
 					</td>
-					<td>[[result.No_shelter]]
+					<td ng-show="checkShLoc">[[result.No_shelter]]
 					</td>
 				</tr>
 				</tbody>

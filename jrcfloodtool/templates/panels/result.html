@@ -26,16 +26,17 @@
                                     <div class="row text-center">
                                             <button type="button" class="btn btn-primary" ng-click="clickProcess()">Click to Process</button>
                                             
-                                            <a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()">
-                                            <span class="fa-stack">
-                                              <i class="fa fa-circle fa-stack-2x"></i>
-                                              <i style="font-size: 12px;" class="fa fa-search fa-stack-1x fa-inverse"></i>
-                                            </span></a>
                                             <hr />
                                     </div>
                             </td>
                         </tr>
-                        <tr><td><h5><b>Map Results</b></h5></td></tr>
+                        <tr><td><h5><b>Map Results</b></h5></td>
+                        <td><a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()">
+                                <span class="fa-stack">
+                                  <i class="fa fa-circle fa-stack-2x"></i>
+                                  <i style="font-size: 12px;" class="fa fa-search fa-stack-1x fa-inverse"></i>
+                                </span></a></td>
+                        </tr>
                         <tr class="border-bottom">
                             <td>
 
@@ -77,6 +78,7 @@
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
                                                 value="" 
+                                                disabled
                                                 ng-checked="resultRisk"
                                                 ng-click="clickResultRisk()"/>
                                         Risk Result

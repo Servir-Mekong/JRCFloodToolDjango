@@ -11,15 +11,16 @@
                                     Administrative Boundary
                                 </div>
                                 <br>
-                                <!--<div class="form-group">-->
-                                    <!--<label class="checkbox-inline">-->
-                                        <!--<input type="checkbox"-->
-                                               <!--value="" -->
-                                               <!--ng-checked="analysisStateBoundary"-->
-                                               <!--ng-click="clickAnalysisStateBound()"/>-->
-                                        <!--State/Region-->
-                                    <!--</label>-->
-                                <!--</div>-->
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value=""
+                                               disabled
+                                               ng-checked="false"
+                                               ng-click="clickAnalysisStateBound()"/>
+                                        State/Region
+                                    </label>
+                                </div>
                                 <div class="form-group">
                                     <label class="checkbox-inline">
                                         <input type="checkbox"
@@ -87,15 +88,16 @@
                                     </label>
                                 </div>
                                 
-                                <!--<div class="form-group">-->
-                                    <!--<label class="checkbox-inline">-->
-                                        <!--<input type="checkbox"-->
-                                               <!--value="" -->
-                                               <!--ng-checked="analysisRisk"-->
-                                               <!--ng-click="clickAnalysisRisk()"/>-->
-                                        <!--Risk-->
-                                    <!--</label>-->
-                                <!--</div>-->
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"
+                                               value=""
+                                               disabled
+                                               ng-checked="false"
+                                               ng-click="clickAnalysisRisk()"/>
+                                        Risk
+                                    </label>
+                                </div>
                                 
                         </td>
                     </tr>
@@ -105,12 +107,12 @@
         <!-- End Panel Body -->
         <div class="panel-footer">
             <div class="row text-center">
-                <button type="button" class="btn btn-primary" ng-click="analyzeProcess()">Process to analyze</button>
+                <button type="button" class="btn btn-primary" ng-click="analyzeProcess()">Analyze</button>
                 <hr />
             </div>
         </div>
-        <tr><td><h5 ng-show="startyr!=undefined && endyr!=undefined && startmt!=undefined && endmt!=undefined">
+        <!-- <tr><td><h5 ng-show="startyr!=undefined && endyr!=undefined && startmt!=undefined && endmt!=undefined">
             <b>*Time period is already selected</b>
-        </h5></td></tr>
+        </h5></td></tr> -->
     </div>
 </div>

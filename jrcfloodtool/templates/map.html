@@ -23,7 +23,7 @@
                         <a data-toggle="tab" href ng-click="page='second'">Analysis</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href ng-click="page='third'">Result</a>
+                        <a data-toggle="tab" href ng-click="page='third'">Download</a>
                     </li>
             </ul>
 
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Legend Container -->
-        <div class="panel panel-default legend" ng-show="checkMapData">
+        <div class="panel panel-default legend" ng-show="checkMapData_value">
 		    <div class="panel-heading">
 		        <h4>
 		            <a class="legend-toggle"
@@ -79,7 +79,7 @@
         </div>
 
         <!-- Legend Container -->
-        <div class="panel panel-default legend" ng-show="checkAggFH">
+        <div class="panel panel-default legend" ng-show="checkAggFH_value">
             <div class="panel-heading">
                 <h4>
                     <a class="legend-toggle"
@@ -107,7 +107,7 @@
         </div>
 
         <!-- Map Container -->
-        <div class="map col-sm-7 col-md-9 col-lg-9" id="map" ng-init="initMap('2000', '2012', '01', '12', 'continuous', true)"></div>
+        <div class="map col-sm-7 col-md-9 col-lg-9" id="map" ng-init="initMap('1984', '2015', '01', '12', 'continuous', true)"></div>
         
     </div>
 
