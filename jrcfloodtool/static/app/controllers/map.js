@@ -8,6 +8,7 @@
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
+		$scope.loader = false;
 		
 		// Sidebar Menu controller
 		/*$scope.toggleButtonClass = 'toggle-sidebar-button is-close';
@@ -170,7 +171,6 @@
 			if (typeof (init) === 'undefined') init = false;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
-		    //usSpinnerService.spin('spinner-1');
 
 
 		};
@@ -182,6 +182,7 @@
 				.then(function (data) {
 					loadMap(data.eeMapId, data.eeMapToken);
 					usSpinnerService.spin('spinner-1');
+					$scope.loader = true;
 					if (init) {
 						$timeout(function () {
 							showInfoAlert('The map data shows the data from 1984 January to 2015 December. You can change the map data with the ☰  provided in the left side!');
@@ -201,13 +202,16 @@
 		};
 
 		$scope.initializeHazardLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
+			
 
+			 
 			if ($scope.checkAggFH) {
 				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
-				    usSpinnerService.stop('spinner-1');
+					usSpinnerService.stop('spinner-1');
+					$scope.loader = false;
 					showSuccessAlert('The Hazard Level Layer is updated!');
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');

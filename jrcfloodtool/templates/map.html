@@ -42,7 +42,7 @@
             </div>
         </div>
         </div>
-        <span us-spinner spinner-key="spinner-1"></span>
+        <span ng-show="loader" us-spinner spinner-key="spinner-1"></span>
         <span us-spinner spinner-key="spinner-2"></span>
         <!-- Alert Container -->
         <div class="alert alert-dismissible text-center display-none custom-alert" role="alert">
@@ -79,7 +79,7 @@
         </div>
 
         <!-- Legend Container -->
-        <div class="panel panel-default legend" ng-show="checkAggFH_value">
+        <div class="panel panel-default legend-sec" ng-show="checkAggFH_value">
             <div class="panel-heading">
                 <h4>
                     <a class="legend-toggle"
