@@ -223,9 +223,6 @@ class GEEApi():
         shelter_df = self.fc2df(self.Shelter)
         shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
         shelter_df = shelter_df.groupby(['Township']).sum()
-        print("township_pop",population_df.count())
-        print("township_wh",warehouse_df.count())
-        print("shelter",shelter_df.count())
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -237,7 +234,6 @@ class GEEApi():
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
         flood_haz_df = self.fc2dfgeo(Floodreclass2)
-        print("hazard",flood_haz_df.count())
         # hazard_pop_df =pandas.merge( flood_haz_df, population_df,how='outer', left_on='ID_3', right_on='ID_3')
         # print("hazard_pop",hazard_pop_df.count())
         # hazard_pop_wh_df = pandas.merge(hazard_pop_df, warehouse_df, how='outer', left_on='NAME_3_x', right_on='DDM_WH')
@@ -256,7 +252,6 @@ class GEEApi():
     def getExposureData(self,request):
         exposure_df = self.getExposureTables()
         exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
-        print("exposure_df",exposure_df_wo_geo.count())
         json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 

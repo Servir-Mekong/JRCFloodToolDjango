@@ -79,8 +79,9 @@
 		$scope.analysisStateBoundary = false;
 		$scope.analysisTSBoundary = true;
 		$scope.analysisRdNet = false;
-		$scope.analysisShLoc = true;
+		$scope.analysisShLoc = false;
 		$scope.analysisWhLoc = false;
+		$scope.analysisPop = false
 		$scope.analysisExposure = true;
 		$scope.analysisRisk = false;
 
@@ -410,11 +411,11 @@
 		};
 
 		$scope.clickWhLoc = function () {
-			if ($scope.analysisWhLoc) {
-				$scope.analysisWhLoc = false;
+			if ($scope.checkWhLoc) {
+				$scope.checkWhLoc = false;
 				$scope.overlays.warehouse.setOpacity(0);
 			} else {
-				$scope.analysisWhLoc = true;
+				$scope.checkWhLoc = true;
 				if ($scope.overlays.warehouse) {
 					$scope.overlays.warehouse.setOpacity(1);
 				} else {
@@ -573,8 +574,8 @@
 			ngDialog.open({
 				template: `<p><b>Information</b></p>
 							<div><p> Name:[[ts.name]]</p>
-							<p ng-show="checkTSBoundary">pop affected: [[ts.pop]]</p><p> Hazard level: [[ts.hazard]]</p>
-							<p ng-show="checkWhLoc"> Warehouse: [[ts.warehouse]]</p></div>`,
+							<p ng-show="analysisPop">pop affected: [[ts.pop]]</p><p> Hazard level: [[ts.hazard]]</p>
+							<p ng-show="analysisWhLoc"> Warehouse: [[ts.warehouse]]</p></div>`,
 				className: 'ngdialog-theme-default',
 				plain: true,
 				scope:$scope
@@ -870,6 +871,11 @@
 			}
 		};
 
+		$scope.analyzeProcess = function(){
+			usSpinnerService.spin('spinner-2');
+				execProcessTable();
+		};
+
 
 		var execProcessTable = function() {
 			$scope.results = null;
@@ -898,13 +904,13 @@
 					</th>
 					<th>Township Name
 					</th>
-					<th>No. of Warehouse
+					<th ng-show="analysisWhLoc">No. of Warehouse
 					</th>
-					<th ng-show="checkAggFH">Hazard Level
+					<th >Hazard Level
 					</th>
-					<th ng-show="checkTSBoundary">No. of Pop
+					<th ng-show="analysisPop">No. of Pop
 					</th>
-					<th ng-show="checkShLoc">No. of Shelter
+					<th ng-show="analysisShLoc">No. of Shelter
 					</th>
 				</tr>
 				</thead>
@@ -916,13 +922,13 @@
 					</td>
 					<td>[[result.NAME_3_x]]
 					</td>
-					<td >[[result.no_warehou]]
+					<td ng-show="analysisWhLoc">[[result.no_warehou]]
 					</td>
-					<td ng-show="checkAggFH">[[result.hazard]]
+					<td >[[result.hazard]]
 					</td>
-					<td ng-show="checkTSBoundary">[[result.Sum_Pop]]
+					<td ng-show="analysisPop">[[result.Sum_Pop]]
 					</td>
-					<td ng-show="checkShLoc">[[result.No_shelter]]
+					<td ng-show="analysisShLoc">[[result.No_shelter]]
 					</td>
 				</tr>
 				</tbody>
