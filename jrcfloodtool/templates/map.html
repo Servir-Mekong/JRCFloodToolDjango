@@ -50,6 +50,11 @@
             <strong>[[alertContent]]</strong>
         </div>
 
+        <div class="col-sm-7 col-md-9 col-lg-9" style="position:relative;">
+
+        <!-- Map Container -->
+        <div class="map" id="map" ng-init="initMap('1984', '2015', '01', '12', 'continuous', true)"></div>
+        
         <!-- Legend Container -->
         <div class="panel panel-default legend" ng-show="checkMapData_value">
 		    <div class="panel-heading">
@@ -105,10 +110,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Map Container -->
-        <div class="map col-sm-7 col-md-9 col-lg-9" id="map" ng-init="initMap('1984', '2015', '01', '12', 'continuous', true)"></div>
-        
     </div>
-
+</div>
 {% endblock main_container %}
