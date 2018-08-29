@@ -285,13 +285,20 @@
 					console.log(data);
 					showSuccessAlert('Your Download Link is ready. Enjoy!');
 			    	$scope.downloadURL = data.downloadUrl;
-			    	$scope.showDownloadUrl();
+					$scope.showDownloadUrl();
+					openInNewTab(data.downloadUrl);
 			    }, function (error) {
 			    	showErrorAlert(error.message);
 			        console.log(error);
 			    });
 			}
 		};
+
+
+		function openInNewTab(url) {
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
 
 		// Map Layers
 
@@ -578,8 +585,11 @@
 			ngDialog.open({
 				template: `<p><b>Information</b></p>
 							<div><p> Name:[[ts.name]]</p>
-							<p ng-show="analysisPop">pop affected: [[ts.pop]]</p><p> Hazard level: [[ts.hazard]]</p>
-							<p ng-show="analysisWhLoc"> Warehouse: [[ts.warehouse]]</p></div>`,
+							<p ng-show="analysisPop">pop affected: [[ts.pop]]</p>
+							<p> Hazard level: [[ts.hazard]]</p>
+							<p ng-show="analysisWhLoc"> Warehouse: [[ts.warehouse]]</p>
+							<p ng-show="analysisShLoc"> Shelters: [[ts.shelter]]</p>
+							</div>`,
 				className: 'ngdialog-theme-default',
 				plain: true,
 				scope:$scope

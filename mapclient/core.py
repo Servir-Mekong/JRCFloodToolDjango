@@ -300,7 +300,7 @@ class GEEApi():
                 ts = row
             else:
                 print 'OUT'
-        return {'name': ts['NAME_3_x'], 'pop': ts['Sum_Pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou']}
+        return {'name': ts['NAME_3_x'], 'pop': ts['Sum_Pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou'], 'shelter':ts['No_shelter']}
 
     # -------------------------------------------------------------------------
     def get_map_id(self):
