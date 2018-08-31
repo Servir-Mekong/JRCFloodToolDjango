@@ -240,18 +240,20 @@ class GEEApi():
         # print("hazard_pop_wh",hazard_pop_wh_df.count())
         # df5 = pandas.merge(hazard_pop_wh_df, shelter_df, how='outer', left_on='NAME_3_x', right_on='Township')
         # print("df5",df5.count())
-        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='NAME_3', right_on='DDM_WH')
+        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
         # Population, Warehouse and Shelter join
-        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='Township', right_on='NAME_3')        
+        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='ID_3', right_on='ID_3')        
         df5 = pandas.merge(pop_wh_sh_df, flood_haz_df, how='outer', left_on='ID_3', right_on='ID_3')
         df5 = df5.fillna(0)
         df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', np.where(df5['Freclass']==3, 'High', 'None')))
+        # print("headers===",df5.columns.values)
         return df5
 
 
     def getExposureData(self,request):
         exposure_df = self.getExposureTables()
-        exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
+        # exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
+        exposure_df_wo_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Sum_Pop','no_warehou','hazard','No_shelter']]        
         json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 
