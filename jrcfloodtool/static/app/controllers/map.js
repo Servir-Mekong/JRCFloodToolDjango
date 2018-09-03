@@ -3,12 +3,11 @@
 	'use strict';
 	
 	angular.module('baseApp')
-	.controller('mapCtrl' ,function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, ngDialog,FileSaver, Blob, usSpinnerService) {
+	.controller('mapCtrl' ,function ($scope, $timeout, MapService, appSettings, $tooltip, $modal, $alert, ngDialog,FileSaver, Blob, usSpinnerService) {
 
 
 		// Settings
 		$scope.timePeriodOptions = appSettings.timePeriodOptions;
-		$scope.loader = false;
 		
 		// Sidebar Menu controller
 		/*$scope.toggleButtonClass = 'toggle-sidebar-button is-close';
@@ -99,6 +98,8 @@
 		$scope.shape = {};
 		$scope.drawingArea = null;
 
+		$scope.initialLoader = 0;
+		
 		$('.js-tooltip').tooltip();
 
 		/**
@@ -167,7 +168,8 @@
 		* Starts the Google Earth Engine application. The main entry point.
 		*/
 		$scope.initMap = function (startYear, endYear, startMonth, endMonth, method, init) {
-			
+			$scope.initialLoader = 0;			
+
 			if (typeof (init) === 'undefined') init = false;
 			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
@@ -176,16 +178,15 @@
 		};
 
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
-
 			if ($scope.checkMapData) {
+
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					loadMap(data.eeMapId, data.eeMapToken);
-					usSpinnerService.spin('spinner-1');
-					$scope.loader = true;
+					// usSpinnerService.spin('spinner-1');
 					if (init) {
 						$timeout(function () {
-							showInfoAlert('The map data shows the data from 1984 January to 2015 December. You can change the map data with the ☰  provided in the left side!');
+							showInfoAlert('The map data shows the data from 1984 to 2015. You can change the map data with the ☰ provided in the left side!');
 						}, 3500);
 					} else {
 						$timeout(function () {
@@ -193,6 +194,8 @@
 						}, 3500);
 					}
 					$scope.showLegend = true;
+					$scope.initialLoader += 1;
+					stopLoader();
 				}, function (error) {
 					console.log(error);
 					showErrorAlert(error.statusText);
@@ -202,24 +205,30 @@
 		};
 
 		$scope.initializeHazardLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
-			
 
-			 
 			if ($scope.checkAggFH) {
 				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					console.log(data);
 					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
-					usSpinnerService.stop('spinner-1');
-					$scope.loader = false;
 					showSuccessAlert('The Hazard Level Layer is updated!');
+					$scope.initialLoader += 1;					
+					stopLoader();					
 				}, function (error) {
 					showErrorAlert('Something went wrong! Please try again later!');
 					console.log(error.statusText);
 				});
 			}
 		};
-
+		function stopLoader(){
+			console.log("asdf")
+			if($scope.initialLoader == 2) 
+			{
+				console.log("stop")
+				
+				usSpinnerService.stop('spinner-1');
+			}
+		}
 		$scope.clickMapData = function (opacity_value) {
 		opacity_value = parseInt(opacity_value)/100;
 		  if($scope.overlays.map)
