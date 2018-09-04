@@ -285,21 +285,27 @@
 		};
 
 		$scope.downloadMap = function () {
-             var dateObject = $scope.checkBeforeDownload(true);
-			// @ToDo: Do proper check
-			if (dateObject) {
-				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
-				MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
-			    .then(function (data) {
-					console.log(data);
-					showSuccessAlert('Your Download Link is ready. Enjoy!');
-			    	$scope.downloadURL = data.downloadUrl;
-					$scope.showDownloadUrl();
-					openInNewTab(data.downloadUrl);
-			    }, function (error) {
-			    	showErrorAlert(error.message);
-			        console.log(error);
-			    });
+
+			if(!$scope.resultDownload){
+				var dateObject = $scope.checkBeforeDownload(true);
+				// @ToDo: Do proper check
+				if (dateObject) {
+					showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
+					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
+					.then(function (data) {
+						console.log(data);
+						showSuccessAlert('Your Download Link is ready. Enjoy!');
+						$scope.downloadURL = data.downloadUrl;
+						$scope.showDownloadUrl();
+						openInNewTab(data.downloadUrl);
+					}, function (error) {
+						showErrorAlert(error.message);
+						console.log(error);
+					});
+				}
+			}
+			else {
+				$scope.clickProcess();
 			}
 		};
 
