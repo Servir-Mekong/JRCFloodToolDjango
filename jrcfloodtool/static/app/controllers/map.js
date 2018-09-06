@@ -823,7 +823,7 @@
 					message = '';
 
 				if (!(startYear && endYear)) {
-					showErrorAlert('Select the start and end date in order to download the ma data!');
+					showErrorAlert('Select the start and end date in order to download the map data!');
 					return false;
 				} else {
 					if (Number(startYear) > Number(endYear)) {
