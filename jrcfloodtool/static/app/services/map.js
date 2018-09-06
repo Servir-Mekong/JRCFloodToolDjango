@@ -74,7 +74,7 @@
 			return promise;
 		};
 
-		this.downloadMap = function (startYear, endYear, startMonth, endMonth, method, shape) {
+		this.downloadMap = function (startYear, endYear, startMonth, endMonth, method, shape, action) {
 
 			var config = {
 				params: {
@@ -82,7 +82,7 @@
 					endYear: endYear,
 					startMonth: startMonth,
 					endMonth: endMonth,
-					action: 'download-url',
+					action: action,
 					method: method
 				}
 			};

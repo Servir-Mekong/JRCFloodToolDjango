@@ -88,6 +88,7 @@
 		//New added controls in Result
 		$scope.resultDisplay = false;
 		$scope.resultDownload = true;
+		$scope.layerDownload = false;
 		$scope.resultActualFF = false;
 		$scope.resultAggFH = true;
 		$scope.resultRisk = false;
@@ -284,14 +285,13 @@
 			}
 		};
 
-		$scope.downloadMap = function () {
-
-			if(!$scope.resultDownload){
-				var dateObject = $scope.checkBeforeDownload(true);
-				// @ToDo: Do proper check
-				if (dateObject) {
-					showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
-					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape)
+		$scope.downloadMap = function (){
+			var dateObject = $scope.checkBeforeDownload(true);
+			// @ToDo: Do proper check
+			if (dateObject) {
+				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
+				if($scope.checkMapData_value){
+					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url')
 					.then(function (data) {
 						console.log(data);
 						showSuccessAlert('Your Download Link is ready. Enjoy!');
@@ -303,9 +303,36 @@
 						console.log(error);
 					});
 				}
+				if($scope.checkAggFH_value){
+					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url-haz')
+					.then(function (data) {
+						console.log(data);
+						showSuccessAlert('Your Download Link is ready. Enjoy!');
+						$scope.downloadURL = data.downloadUrl;
+						$scope.showDownloadUrl();
+						openInNewTab(data.downloadUrl);
+					}, function (error) {
+						showErrorAlert(error.message);
+						console.log(error);
+					});
+				}
+				if($scope.resultDownload) {
+					$scope.clickProcess();
+				}
+
 			}
-			else {
+		}
+
+		$scope.download = function () {
+
+			if($scope.layerDownload){
+				$scope.downloadMap();
+			}
+			if($scope.resultDownload && !$scope.layerDownload) {
 				$scope.clickProcess();
+			}
+			if(!$scope.layerDownload && !$scope.resultDownload) {
+				showErrorAlert('Please select either Hazard or Eposure');
 			}
 		};
 
@@ -457,7 +484,8 @@
 			MapService.getWorldPopId($scope.shape)
 		    .then(function (data) {
 				console.log(data);
-		    	loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
+				loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
+				usSpinnerService.stop('spinner-1');
 		    	showSuccessAlert('The World Pop Layer is updated!');
 		    }, function (error) {
 		    	showErrorAlert('Something went wrong! Please try again later!');
@@ -474,6 +502,7 @@
 				if ($scope.overlays.worldPop) {
 					$scope.overlays.worldPop.setOpacity(1);
 				} else {
+					usSpinnerService.spin('spinner-1');
 					$scope.getWorldPopId();
 				}
 			}

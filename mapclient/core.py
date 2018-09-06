@@ -28,6 +28,7 @@ class GEEApi():
         self.State_Reg = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SR)
         self.Shelter = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_SHELTER)
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
+        self.POPULATION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_POPULATION)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
                     ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
         self.start_year = start_year
@@ -438,14 +439,10 @@ class GEEApi():
     # -------------------------------------------------------------------------
     def get_world_pop_id(self):
 
-        image = GEEApi._get_world_pop_image()
-        image = image.updateMask(image).clip(self.geometry)
-        map_id = image.getMapId({
-            'min': '0',
-            'max': '100',
-            'bands': 'population',
-            #'palette': 'fcbda4, fb7050, d32020, 67000d',
-            'gamma': '4'
+        empty = ee.Image().float()
+        outline = empty.paint(self.TS, 1, 1)
+        map_id = outline.getMapId({
+            'palette': 'black'
         })
 
         return {
@@ -473,6 +470,34 @@ class GEEApi():
         try:
             url = water_percent_image.getDownloadURL({
                 'name': 'water_extract',
+                'region' : self.geometry.bounds().getInfo()['coordinates'],
+                'scale': 300
+            })
+            return {'downloadUrl': url}
+        except Exception as e:
+            print(e)
+            return {'error': e.message}
+
+
+    def get_download_url_hazard(self):
+
+        water_percent_image = self._calculate_water_percent_image()
+        empty = ee.Image().float()
+        sumfeatures = water_percent_image.reduceRegions(
+                reducer=ee.Reducer.sum(),
+                collection=self.TS,
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+        fills_image = empty.paint(FloodIndex,'Findex')
+        floodIndexfills = empty.paint(Floodreclass2,'Findex2')
+        FloodReclassfills = empty.paint(Floodreclass2, 'Freclass')
+        print(self.geometry)
+        try:
+            url = FloodReclassfills.getDownloadURL({
+                'name': 'hazard-layer',
                 'region' : self.geometry.bounds().getInfo()['coordinates'],
                 'scale': 300
             })
