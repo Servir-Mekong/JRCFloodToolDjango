@@ -325,16 +325,24 @@
 
 		$scope.download = function () {
 
-			if($scope.layerDownload){
-				$scope.downloadMap();
-			}
-			if($scope.resultDownload && !$scope.layerDownload) {
-				$scope.clickProcess();
-			}
-			if(!$scope.layerDownload && !$scope.resultDownload) {
+
+			$scope.downloadMap();
+
+			// if($scope.resultDownload && !$scope.layerDownload) {
+			// 	$scope.clickProcess();
+			// }
+			if(!$scope.checkMapData_value && !$scope.checkAggFH_value && !$scope.resultDownload) {
 				showErrorAlert('Please select either Hazard or Eposure');
 			}
 		};
+
+		$scope.selectAllLayers = function (){
+			console.log($scope.layerDownload)
+			$scope.checkMapData_value = $scope.layerDownload;
+			$scope.clickMapData(100);
+			$scope.checkAggFH_value = $scope.layerDownload;
+			$scope.clickAffFH(100);
+		}
 
 
 		function openInNewTab(url) {
