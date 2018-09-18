@@ -424,25 +424,29 @@ class GEEApi():
 
 
     # -------------------------------------------------------------------------
-    @staticmethod
-    def _get_world_pop_image():
-
-        WORLD_POP = ee.ImageCollection(settings.EE_WORLD_POP_ID)
-        print("World",WORLD_POP.getInfo()['features'])
-        filtered = WORLD_POP.filter(\
-                        ee.Filter.inList('country', settings.COUNTRIES_NAME_WORLD_POP))
-        filtered = filtered.filterMetadata('year', 'equals', 2015)
-        filtered = filtered.filterMetadata('UNadj', 'equals', 'yes')
-
-        return filtered.mosaic()
+    #@staticmethod
+    def _get_world_pop_image(self):
+        empty = ee.Image().float()
+        WORLD_POP = empty.paint(self.POPULATION, 'Sum_Pop')
+        return WORLD_POP
 
     # -------------------------------------------------------------------------
     def get_world_pop_id(self):
 
-        empty = ee.Image().float()
-        outline = empty.paint(self.TS, 1, 1)
-        map_id = outline.getMapId({
-            'palette': 'black'
+        # empty = ee.Image().float()
+        # outline = empty.paint(self.TS, 1, 1)
+        # map_id = outline.getMapId({
+        #     'palette': 'black'
+        # })
+        image = self._get_world_pop_image()
+        # image = image.updateMask(image).clip(self.geometry)
+        print("new image", image)
+        map_id = image.getMapId({
+            'min': '5000',
+            'max': '200000',
+            'bands': 'constant',
+            'palette': 'f2c387 , eeaf61 , ae601f , 894517',
+            #'gamma': '4'
         })
 
         return {
@@ -466,7 +470,6 @@ class GEEApi():
     def get_download_url(self):
 
         water_percent_image = self._calculate_water_percent_image()
-        print(self.geometry)
         try:
             url = water_percent_image.getDownloadURL({
                 'name': 'water_extract',
@@ -494,7 +497,6 @@ class GEEApi():
         fills_image = empty.paint(FloodIndex,'Findex')
         floodIndexfills = empty.paint(Floodreclass2,'Findex2')
         FloodReclassfills = empty.paint(Floodreclass2, 'Freclass')
-        print(self.geometry)
         try:
             url = FloodReclassfills.getDownloadURL({
                 'name': 'hazard-layer',
