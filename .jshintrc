@@ -22,5 +22,6 @@
 		"browser",
 		"element"
 	],
-	"devel": true // Allow development statements e.g. `console.log();`.
+	"devel": true, // Allow development statements e.g. `console.log();`.
+        "esversion": 6
 }

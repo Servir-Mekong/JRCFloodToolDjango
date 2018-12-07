@@ -81,7 +81,7 @@
 		$scope.analysisRdNet = false;
 		$scope.analysisShLoc = false;
 		$scope.analysisWhLoc = false;
-		$scope.analysisPop = false
+		$scope.analysisPop = false;
 		$scope.analysisExposure = true;
 		$scope.analysisRisk = false;
 
@@ -92,7 +92,7 @@
 		$scope.resultActualFF = false;
 		$scope.resultAggFH = true;
 		$scope.resultRisk = false;
-		$scope.checkInfoBtn = false
+		$scope.checkInfoBtn = false;
 
 		// Custom Control Google Maps API
 		$scope.overlays = {};
@@ -222,11 +222,8 @@
 			}
 		};
 		function stopLoader(){
-			console.log("asdf")
-			if($scope.initialLoader == 2) 
+			if($scope.initialLoader === 2) 
 			{
-				console.log("stop")
-				
 				usSpinnerService.stop('spinner-1');
 			}
 		}
@@ -255,8 +252,9 @@
 
 		$scope.updateMap = function () {
 			$scope.closeAlert();
+                        var dateObject;
 			if ($scope.checkMapData) {
-				var dateObject = $scope.checkBeforeDownload(false, false);
+				dateObject = $scope.checkBeforeDownload(false, false);
 				if (dateObject) {
 					if (dateObject.message) {
 						showInfoAlert(dateObject.message);
@@ -268,7 +266,7 @@
 			}
 
 			if ($scope.checkAggFH) {
-				var dateObject = $scope.checkBeforeDownload(false, false);
+				dateObject = $scope.checkBeforeDownload(false, false);
 				if (dateObject) {
 					if (dateObject.message) {
 						showInfoAlert(dateObject.message);
@@ -321,7 +319,7 @@
 				}
 
 			}
-		}
+		};
 
 		$scope.download = function () {
 
@@ -337,12 +335,12 @@
 		};
 
 		$scope.selectAllLayers = function (){
-			console.log($scope.layerDownload)
+			console.log($scope.layerDownload);
 			$scope.checkMapData_value = $scope.layerDownload;
 			$scope.clickMapData(100);
 			$scope.checkAggFH_value = $scope.layerDownload;
 			$scope.clickAffFH(100);
-		}
+		};
 
 
 		function openInNewTab(url) {
@@ -635,13 +633,7 @@
 			});
 			
 			ngDialog.open({
-				template: `<p><b>Information</b></p>
-							<div><p> Name:[[ts.name]]</p>
-							<p ng-show="analysisPop">pop affected: [[ts.pop]]</p>
-							<p> Hazard level: [[ts.hazard]]</p>
-							<p ng-show="analysisWhLoc"> Warehouse: [[ts.warehouse]]</p>
-							<p ng-show="analysisShLoc"> Shelters: [[ts.shelter]]</p>
-							</div>`,
+				template: '<p><b>Information</b></p><div><p> Name:[[ts.name]]</p> <p ng-show="analysisPop">pop affected: [[ts.pop]]</p> <p> Hazard level: [[ts.hazard]]</p> <p ng-show="analysisWhLoc"> Warehouse: [[ts.warehouse]]</p> <p ng-show="analysisShLoc"> Shelters: [[ts.shelter]]</p> </div>',
 				className: 'ngdialog-theme-default',
 				plain: true,
 				scope:$scope
@@ -923,23 +915,6 @@
 
 		$scope.clickResultDownload = function(){
 			console.log('result download');
-		}
-
-
-
-		$scope.clickProcess = function(){
-			usSpinnerService.spin('spinner-2');
-			if($scope.resultDisplay){
-				execProcessTable();
-			}
-			if($scope.resultDownload){
-				execProcessDownload();
-			}
-		};
-
-		$scope.analyzeProcess = function(){
-			usSpinnerService.spin('spinner-2');
-				execProcessTable();
 		};
 
 
@@ -956,56 +931,6 @@
 				console.log(error);
 		});
 
-
-
-
-			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
-			ngDialog.open({
-				template: `<table class="table">
-				<thead>
-				<tr>
-					<th>State/Region
-					</th>
-					<th>District
-					</th>
-					<th>Township Name
-					</th>
-					<th ng-show="analysisWhLoc">No. of Warehouse
-					</th>
-					<th >Hazard Level
-					</th>
-					<th ng-show="analysisPop">No. of Pop
-					</th>
-					<th ng-show="analysisShLoc">No. of Shelter
-					</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr ng-repeat="result in results track by $index">
-					<td>[[result.NAME_1_x]]
-					</td>
-					<td>[[result.NAME_2_x]]
-					</td>
-					<td>[[result.NAME_3_x]]
-					</td>
-					<td ng-show="analysisWhLoc">[[result.no_warehou]]
-					</td>
-					<td >[[result.hazard]]
-					</td>
-					<td ng-show="analysisPop">[[result.Sum_Pop]]
-					</td>
-					<td ng-show="analysisShLoc">[[result.No_shelter]]
-					</td>
-				</tr>
-				</tbody>
-			</table>`,
-				className: 'ngdialog-theme-default',
-				width: '60%',
-				plain: true,
-				scope:$scope
-			});
-		};
-
 		var execProcessDownload = function() {
 			$scope.results = null;
 			MapService.getExposureDownload($scope.shape)
@@ -1021,7 +946,38 @@
 			});
 		};
 
-	
+
+		$scope.clickProcess = function(){
+			usSpinnerService.spin('spinner-2');
+			if($scope.resultDisplay){
+				execProcessTable();
+			}
+			if($scope.resultDownload){
+				execProcessDownload();
+			}
+		};
+
+
+		$scope.analyzeProcess = function(){
+			usSpinnerService.spin('spinner-2');
+				execProcessTable();
+		};
+
+
+
+
+
+
+			//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
+			ngDialog.open({
+                                template: '<table class="table"><thead><tr><th>State/Region</th><th>District</th><th>Township Name</th><th ng-show="analysisWhLoc">No. of Warehouse</th><th >Hazard Level</th><th ng-show="analysisPop">No. of Pop</th><th ng-show="analysisShLoc">No. of Shelter</th></tr></thead><tbody><tr ng-repeat="result in results track by $index"><td>[[result.NAME_1_x]]</td><td>[[result.NAME_2_x]]</td><td>[[result.NAME_3_x]]</td><td ng-show="analysisWhLoc">[[result.no_warehou]]</td><td >[[result.hazard]]</td><td ng-show="analysisPop">[[result.Sum_Pop]]</td><td ng-show="analysisShLoc">[[result.No_shelter]]</td></tr></tbody></table>',
+				className: 'ngdialog-theme-default',
+				width: '60%',
+				plain: true,
+				scope:$scope
+			});
+		};
+
 
 	});
 
