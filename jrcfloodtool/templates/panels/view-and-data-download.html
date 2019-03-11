@@ -1,0 +1,128 @@
+<label>Select element to display</label>
+<div class="chiller_cb">
+  <input id="Shelter_check" type="checkbox"
+  value=""
+  ng-checked="checkShLoc"
+  ng-click="clickShLoc()">
+  <label for="Shelter_check">Shelter Location</label>
+  <span></span>
+</div>
+
+<div class="chiller_cb">
+  <input id="Warehouse_check" type="checkbox"
+  value=""
+  ng-checked="checkWhLoc"
+  ng-click="clickWhLoc()">
+  <label for="Warehouse_check">Warehouse Location</label>
+  <span></span>
+</div>
+<div class="chiller_cb">
+  <input id="Township_check" type="checkbox"
+  value=""
+  ng-checked="checkTSBoundary"
+  ng-click="clickTSBoundary()">
+  <label for="Township_check">Township Boundary</label>
+  <span></span>
+</div>
+<div class="chiller_cb">
+  <input id="State_check" type="checkbox"
+  value=""
+  ng-checked="checkStateBoundary"
+  ng-click="clickStateRegion()">
+  <label for="State_check">State/Region Boundary</label>
+  <span></span>
+</div>
+<div class="chiller_cb">
+  <input id="Population_check" type="checkbox"
+  value=""
+  ng-checked="checkWorldPop"
+  ng-click="clickWorldPop()">
+  <label for="Population_check">Population</label>
+  <span></span>
+</div>
+<div class="padding-slider">
+<div class="slidecontainer">
+<span>Opacity</span>
+  <!-- <input type="range" id="AffFH_opacity" name="clickAffFH_opacity" min="0" max="100"  class="slider" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" > -->
+  <rzslider id="population_opacity" name="population_opacity"
+            class="custom-slider"
+            rz-slider-model="slider3.value"
+            rz-slider-options="slider3.options"></rzslider>
+</div>
+</div>
+
+<hr class="full-divider"/>
+<label>Select hazard to display</label>
+
+<div class="chiller_cb" >
+  <input id="ActualFlood_check" type="checkbox" checked
+  value=""
+  ng-checked="checkMapData"
+  ng-model="checkMapData_value"
+  ng-click="clickMapData(100)">
+  <label for="ActualFlood_check">Actual Flood Frequency</label>
+  <span></span>
+</div>
+<div class="slidecontainer">
+<span>Opacity</span>
+  <!-- <input type="range" id="MapData_opacity" name="clickMapData_opacity" min="0" max="100"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)" class="slider" > -->
+  <rzslider id="MapData_opacity" name="clickMapData_opacity"
+            class="custom-slider"
+            rz-slider-model="slider.value"
+            rz-slider-options="slider.options"></rzslider>
+</div>
+
+<div class="chiller_cb">
+  <input id="AffFH_opacity_check" type="checkbox" checked
+  value=""
+  ng-checked="checkAggFH"
+  ng-model="checkAggFH_value"
+  ng-click="clickAffFH(100)">
+  <label for="AffFH_opacity_check">Aggregated Flood Hazard</label>
+  <span></span>
+</div>
+<div class="slidecontainer">
+<span>Opacity</span>
+  <!-- <input type="range" id="AffFH_opacity" name="clickAffFH_opacity" min="0" max="100"  class="slider" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" > -->
+  <rzslider id="AffFH_opacity" name="clickAffFH_opacity"
+            class="custom-slider"
+            rz-slider-model="slider2.value"
+            rz-slider-options="slider2.options"></rzslider>
+</div>
+
+<hr class="full-divider"/>
+<div ng-show="checkMapData || checkAggFH">
+<div class="form-group">
+  <label for="time-period-method">Select Time Period To Display</label>
+  <select name="time-period-method" title="Time Period Method"
+          class="form-control js-tooltip"
+          ng-init="timePeriodOption = timePeriodOptions[0]"
+          ng-options="option.name for option in timePeriodOptions"
+          ng-model="timePeriodOption"></select>
+</div>
+<h5><b>Select Years</b></h5>
+<div class="input-group input-daterange datepicker-year-class">
+  <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-start" placeholder="Start Year" ng-model="startyr">
+  <div class="input-group-addon">to</div>
+  <input type="text" data-provide="datepicker" class="form-control" id="datepicker-year-end" placeholder="End Year" ng-model="endyr">
+</div>
+<h5><b>Select Months</b></h5>
+<div class="input-group input-monthrange datepicker-month-class">
+<input type="text" data-provide="datepicker" class="form-control" value="01" id="datepicker-month-start" placeholder="Start Month" ng-model="startmt">
+<div class="input-group-addon">to</div>
+<input type="text" data-provide="datepicker" class="form-control" value="12" id="datepicker-month-end" placeholder="End Month" ng-model="endmt">
+</div>
+<hr class="full-divider"/>
+</div>
+
+<div class="footer-box">
+<div class="row text-center">
+    <button type="button" class="btn btn-thmcolor"  ng-click="updateMap()">Update Map</button>
+</div>
+<div ng-show="gDriveFileName">
+    <hr>
+    <input type="text" id="gdrive-file-name" placeholder="Enter Filename in Google Drive!" class="form-control">
+    <hr>
+    <button type="button" ng-click="saveToDrive()" class="btn btn-primary">Start Download</button>
+</div>
+</div>

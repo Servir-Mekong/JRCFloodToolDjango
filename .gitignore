@@ -1,0 +1,46 @@
+# python compile files
+# ===========
+*.pyc
+
+# private
+# ===========
+credentials/
+media/*
+# Exception to the rule
+!media/README.md
+static/*
+# Exception to the rule
+!static/README.md
+scripts/install.sh
+jrcfloodtool/settings.py
+
+# Unused templates
+# ======================
+jrcfloodtool/templates/home_.html
+jrcfloodtool/templates/panels/graph.html
+jrcfloodtool/templates/panels/map-view.html
+
+# Eclipse project files
+# ======================
+.project
+.pydevproject
+*.pyproj
+
+# Visual Studio project files
+# ======================
+.settings/
+.vs/
+*.sln
+
+# Vendor files
+# ======================
+jrcfloodtool/static/vendor/*
+jrcfloodtool/static/dist/*
+# Exception to the rule
+!jrcfloodtool/static/dist/README.md
+
+# Node and related environment
+# ======================
+.npmignore
+node_modules/
+_pycache_/

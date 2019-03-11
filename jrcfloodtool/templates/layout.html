@@ -1,0 +1,237 @@
+﻿{% load cms_tags menu_tags sekizai_tags staticfiles %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-framework="angularjs">
+<head>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+	  	function gtag(){dataLayer.push(arguments);}
+	  	gtag('js', new Date());
+		gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+	</script>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=1024">
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">-->
+	<meta name="description" content="The historical flood analysis tool presents the occurance of
+	surface water for the selected period. A 100% water occurance means
+	that all datapoints in the collection are identified of water
+	(permanent water), 50% implies a location that is inundated half of
+	the time. Locations with a low surface water occurance have only
+	been inundated for a short period in the whole period, likely caused
+	by flood events">
+	<meta name="author" content="SERVIR MEKONG">
+	<meta name="keywords" content="flood, tool, historical flood, servir, flood analysis, SERVIR MEKONG">
+
+	<title>Historical Flood Analysis Tool</title>
+
+	<link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+
+	{% addtoblock "css" %}
+	    <style type="text/css">
+	        /** Hide when Angular is not yet loaded and initialized */
+	        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	            display: none !important;
+	        }
+	    </style>
+
+		<!-- Bootstrap Core CSS -->
+		<link href="{% static 'vendor/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+		<!-- Bootstrap Plugins -->
+		<link href="{% static 'vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+
+	    <!-- AngularJS Slider CSS -->
+	    <link href="{% static 'vendor/angularjs-slider/dist/rzslider.min.css' %}" rel="stylesheet">
+
+
+	    <!-- Bootstrap slider -->
+		<link href="{% static 'vendor/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css' %}" rel="stylesheet">
+
+		<!-- Load CSS -->
+		{% if debug %}
+		<!-- Custom CSS -->
+		<link href="{% static 'css/main.css' %}" rel="stylesheet">
+		<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
+		<link href="{% static 'css/sidebar.css' %}" rel="stylesheet">
+		<link href="{% static 'css/dateslider.css' %}" rel="stylesheet">
+		<link href="{% static 'css/footer.css' %}" rel="stylesheet">
+		{% else %}
+		<link href="{% static 'dist/application.min.css' %}" rel="stylesheet">
+		{% endif %}
+
+		<!-- Normalize CSS -->
+		<link href="{% static 'vendor/normalize-css/normalize.css' %}" rel="stylesheet">
+		<!-- Fonts -->
+		<link href="{% static 'vendor/components-font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+		<!-- ng-Dialog -->
+		<link href="{% static 'vendor/ng-dialog/css/ngDialog.min.css' %}" rel="stylesheet">
+		<link href="{% static 'vendor/ng-dialog/css/ngDialog-theme-default.min.css' %}" rel="stylesheet">
+
+	{% endaddtoblock %}
+
+	{% render_block "css" %}
+
+</head>
+<body>
+
+	<div ng-cloak class="container-fluid">
+
+		{% cms_toolbar %}
+
+	    <!-- CMS Menu -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	        <ul class="nav navbar-nav navbar-right">
+	            {% show_menu 0 100 100 100 %}
+	        </ul>
+	    </div>
+
+        {% include "navigation.html" %}
+
+		<div class="container-fluid container-wrapper">
+			{% block main_container %} {% endblock main_container %}
+		</div>
+
+		<!-- /.wrapper-collapse -->
+	</div>
+
+    {% block footer %}
+    	{% include "footer.html" %}
+	{% endblock footer %}
+
+	{% addtoblock "js" %}
+
+		<!-- Load JS Lib -->
+		<!-- jQuery -->
+		<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+		<!-- Bootstrap Core JavaScript -->
+		<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+		<!-- Bootstrap Plugins -->
+	    <script src="{% static 'vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+
+	    <!-- Google Maps API -->
+	    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCftEx2S9RjScdfNCGa4Z-8HgUVIUjOErk&v=3.exp&libraries=drawing"></script>
+
+		<!--  Load Angular  -->
+		<script src="{% static 'vendor/angular/angular.min.js' %}"></script>
+
+	    <!-- Angular Dependent Library -->
+	    <script src="{% static 'vendor/angularjs-slider/dist/rzslider.min.js' %}"></script>
+
+		<!-- Bootstrap Slider -->
+		<script src="{% static 'vendor/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+
+
+		<!--Angular Dialogue -->
+		<script src="{% static 'vendor/ng-dialog/js/ngDialog.min.js' %}"></script>
+
+		<!--Angular Strap -->
+		<script src="{% static 'vendor/angular-strap/dist/angular-strap.min.js' %}"></script>
+		<script src="{% static 'vendor/angular-strap/dist/angular-strap.tpl.min.js' %}"></script>
+		<script src="{% static 'vendor/angular-file-saver/dist/angular-file-saver.bundle.min.js' %}"></script>
+
+		<script src="{% static 'vendor/angular-spinner/dist/angular-spinner.min.js' %}"></script>
+
+		{% if debug %}
+	    <!-- Bootstrap Application -->
+	    <script src="{% static 'app/init.js' %}"></script>
+
+	    <!-- Load Settings -->
+	    <script src="{% static 'app/config/settings.js' %}"></script>
+
+	    <!-- Services -->
+	    <script src="{% static 'app/services/map.js' %}"></script>
+
+	    <!-- Controllers -->
+	    <script src="{% static 'app/controllers/settings.js' %}"></script>
+	    <script src="{% static 'app/controllers/map.js' %}"></script>
+			<script type="text/javascript">
+	    $('#slide_show').on('click', function(){
+	      $('#fade-in').toggleClass('show');
+	      $('#slide_show').removeClass('slide show_obj');
+	      $('#slide_show').toggleClass('slide hide_obj');
+	      $('#fade-btn-hide').removeClass('box show');
+	      $('#fade-btn-hide').toggleClass('box show');
+
+
+	    });
+	    $('#slide_hide').on('click', function(){
+	      $('#fade-in').removeClass('show');
+	      $('#fade-btn-hide').removeClass('show');
+	      $('#slide_show').removeClass('slide hide_obj');
+	      $('#slide_show').toggleClass('slide show_obj');
+
+	    });
+
+	    $('#ActualFlood_check').on('click', function(){
+	      $('#legend-1').removeClass('show_obj');
+	      $('#legend-1').toggleClass('hide_obj');
+	    });
+
+	    $('#AffFH_opacity_check').on('click', function(){
+	      $('#legend-2').removeClass('show_obj');
+	      $('#legend-2').toggleClass('hide_obj');
+	    });
+
+			$('#Population_check').on('click', function(){
+	      $('#legend-3').removeClass('show_obj');
+	      $('#legend-3').toggleClass('hide_obj');
+	    });
+
+	    $('#AffFH_opacity_check').click(function() {
+
+	            if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+	                $('#legend-div').removeClass('show_obj');
+	                $('#legend-div').toggleClass('hide_obj');
+	              }
+	            else{
+	              $('#legend-div').removeClass('hide_obj');
+	              $('#legend-div').toggleClass('show_obj');
+	            }
+
+	        });
+					$('#ActualFlood_check').click(function() {
+
+									if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+											$('#legend-div').removeClass('show_obj');
+											$('#legend-div').toggleClass('hide_obj');
+										}
+									else{
+										$('#legend-div').removeClass('hide_obj');
+										$('#legend-div').toggleClass('show_obj');
+									}
+
+							});
+							$('#Population_check').click(function() {
+
+											if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+													$('#legend-div').removeClass('show_obj');
+													$('#legend-div').toggleClass('hide_obj');
+												}
+											else{
+												$('#legend-div').removeClass('hide_obj');
+												$('#legend-div').toggleClass('show_obj');
+											}
+
+									});
+
+	    $('.navbar_menu > a').on('click', function (e) {
+	      e.preventDefault();
+	      $('.navbar_menu > a').removeClass('active');
+	      $(this).addClass('active');
+	    });
+
+	    </script>
+		{% else %}
+		<script src="{% static 'dist/application.min.js' %}"></script>
+		{% endif %}
+
+	{% endaddtoblock %}
+
+
+	{% render_block "js" %}
+
+</body>
+</html>

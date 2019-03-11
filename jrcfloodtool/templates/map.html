@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% load cms_tags staticfiles %}
+
+{% block main_container %}
+
+    <!-- Main Container -->
+    <div class="row" ng-controller="mapCtrl">
+
+        <!-- Toggle Button -->
+        <!--<button type="button" ng-click="openSidebar()" ng-class="toggleButtonClass" data-toggle="offcanvas">
+            <span class="ts-top"></span>
+            <span class="ts-middle"></span>
+            <span class="ts-bottom"></span>
+        </button>-->
+
+        <span us-spinner spinner-key="spinner-1" spinner-start-active="true"></span>
+        <span us-spinner spinner-key="spinner-2"></span>
+        <!-- Alert Container -->
+        <div class="alert alert-dismissible text-center display-none custom-alert" role="alert">
+            <button type="button" class="close" ng-click="closeAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>[[alertContent]]</strong>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map" id="map" ng-init="initMap('1984', '2015', '01', '12', 'continuous', true)"></div>
+
+
+        <a id="slide_show" class="slide" href="#"><h4 id="slide_out" > <span class="glyphicon glyphicon-menu-hamburger"></span></h4> </a>
+
+        <button ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()" class="btn_info">
+                <span>
+                  <i class="fa fa-map-marker"></i>
+                </span>
+        </button>
+
+        <div id="fade-in" class="box show">
+          <div class="navbar_menu">
+          <a class="active" data-toggle="tab" href ng-click="page='first'"><i class="fa fa-fw fa-search"></i> View Data</a>
+          <a data-toggle="tab" href ng-click="page='second'"><i class="fa fa-fw fa-map"></i> Analysis</a>
+          <a data-toggle="tab" href ng-click="page='third'"><i class="fa fa-fw fa-download"></i> Download</a>
+          </div>
+          <div class="padding-20">
+          <div class="tab-content">
+            <div ng-init="page='first'"></div>
+            <div ng-show="page === 'first'" >
+              {% include "panels/view-and-data-download.html" %}
+            </div>
+
+            <div ng-show="page === 'second'">
+              {% include "panels/analysis.html" %}
+            </div>
+            <div ng-show="page === 'third'" >
+              {% include "panels/result.html" %}
+            </div>
+
+        </div>
+      </div>
+  </div>
+  <div id="fade-btn-hide" class="box show">
+      <a id="slide_hide" href="#"> << </a>
+  </div>
+
+        <div id="legend-div" class="show_obj">
+          <div class="legend_custom">
+          <div class="legend_custom-heading" id="legend-heading">
+                  <a class="legend-toggle"
+                     data-toggle="collapse"
+                         data-parent="#accordion"
+                         href="#legend-body">Legend</a>
+                  <!-- <h4>Legend<h4> -->
+          </div>
+
+          <div class="panel-collapse collapse in"  id="legend-body">
+                <div class="panel-body">
+                  <div id="legend-1" class="show_obj">
+                  <span class="text-center"><h5><b>flood Occurrence (%)</b></h5></span>
+                  <div>
+                      <table>
+                          <tbody>
+                            <tr><td rowspan="4"><img src="{% static 'images/legend.png' %}" alt="Flood legend"/></td></tr>
+                            <tr><td>100%</td></tr>
+                            <tr><td>50%</td></tr>
+                            <tr><td>1%</td></tr>
+                          </tbody>
+                      </table>
+                  </div>
+                </div>
+
+
+                <div id="legend-2" class="legend_div show_obj">
+                  <span class="text-center"><h5><b>Hazard Level Index</b></h5></span>
+                  <div>
+                      <table>
+                          <tbody>
+                            <tr><td rowspan="4"><img src="{% static 'images/hazardy.png' %}"  alt="hazard legend"/></td></tr>
+                            <tr><td>Low</td></tr>
+                            <tr><td>Moderate</td></tr>
+                            <tr><td>High</td></tr>
+
+                          </tbody>
+                      </table>
+                  </div>
+                </div>
+
+                <div id="legend-3" class="legend_div hide_obj">
+                <span class="text-center"><h5><b>No. Population</b></h5></span>
+                <div>
+                    <table>
+                        <tbody>
+                          <tr><td rowspan="6"><img src="{% static 'images/population.png' %}" alt="Population legend"/></td></tr>
+                          <tr><td>0 - 10000</td></tr>
+                          <tr><td>10000 - 100000</td></tr>
+                          <tr><td>100000 - 200000</td></tr>
+                          <tr><td>200000 - 300000</td></tr>
+                          <tr><td>More than 300000</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+
+                </div>
+              </div>
+          </div>
+        </div>
+
+</div>
+{% endblock main_container %}

@@ -1,0 +1,78 @@
+<label>Select element to analyze</label>
+<form>
+  <div class="padding-20">
+  <label>Administrative Boundary</label>
+  <div class="chiller_cb">
+    <input id="state_check"
+    type="checkbox"
+    value=""
+    disabled
+    ng-checked="false"
+    ng-click="clickAnalysisStateBound()">
+    <label for="state_check">State/Region</label>
+    <span></span>
+  </div>
+
+  <div class="chiller_cb">
+    <input id="township_check" type="checkbox"
+    value=""
+    ng-checked="analysisTSBoundary"
+    ng-click="clickAnalysisTSBound()">
+    <label for="township_check">Township</label>
+    <span></span>
+  </div>
+
+  <label>Elements</label>
+  <div class="chiller_cb">
+    <input id="shelter_check" type="checkbox"
+    value=""
+    ng-model="analysisShLoc"
+    ng-click="">
+    <label for="shelter_check">Shelter Location</label>
+    <span></span>
+  </div>
+
+  <div class="chiller_cb">
+    <input id="warehouse_check" type="checkbox"
+    value=""
+    ng-model="analysisWhLoc"
+    ng-click=""/>
+    <label for="warehouse_check">Warehouse Location</label>
+    <span></span>
+  </div>
+
+  <div class="chiller_cb">
+    <input id="population_check" type="checkbox"
+    value=""
+    ng-model="analysisPop"
+    ng-click=""/>
+    <label for="population_check">Population</label>
+    <span></span>
+  </div>
+</div>
+<hr class="full-divider"/>
+<label>Select type of Analysis</label>
+<div class="chiller_cb">
+  <input id="Exposure_check" type="checkbox"
+  value=""
+  ng-checked="analysisExposure"
+  ng-click="clickAnalysisExposure()">
+  <label for="Exposure_check">Exposure</label>
+  <span></span>
+</div>
+
+<div class="chiller_cb">
+  <input id="Risk_check" type="checkbox"
+  value=""
+  disabled
+  ng-checked="false"
+  ng-click="clickAnalysisRisk()">
+  <label for="Risk_check">Risk</label>
+  <span></span>
+</div>
+<hr class="full-divider"/>
+<div class="footer-box">
+  <div class="row text-center">
+      <button type="button" class="btn btn-thmcolor" ng-click="analyzeProcess()">Analyze</button>
+  </div>
+</div>
