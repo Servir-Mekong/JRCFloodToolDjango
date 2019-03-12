@@ -311,9 +311,9 @@ class GEEApi():
         ts = None
         for index, row in exposure_df.iterrows():
             #centroidseries = poly.centroid
-            # poly = row['geometry']
-            # if poly and poly.contains(self.p1):
-            ts = row
+            poly = row['geometry']
+            if poly and poly.contains(self.p1):
+                ts = row
         return {'state':ts['NAME_1_x'], 'district':ts['NAME_2_x'],'name': ts['NAME_3_x'], 'pop': ts['Sum_Pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou'], 'shelter':ts['No_shelter']}
 
     def getTownShipId(self):
@@ -327,7 +327,6 @@ class GEEApi():
 
     # -------------------------------------------------------------------------
     def get_map_id(self):
-
         water_percent_image = self._calculate_water_percent_image()
         # water_percent_image.getRegion(self.TS_POP, 30).getInfo()
         # print("wter",water_percent_image)
