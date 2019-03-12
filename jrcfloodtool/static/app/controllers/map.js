@@ -143,6 +143,81 @@
 							}
 			}
 		};
+		$('#slide_show').on('click', function(){
+			$('#fade-in').toggleClass('show');
+			$('#slide_show').removeClass('slide show_obj');
+			$('#slide_show').toggleClass('slide hide_obj');
+			$('#fade-btn-hide').removeClass('box show');
+			$('#fade-btn-hide').toggleClass('box show');
+
+
+		});
+		$('#slide_hide').on('click', function(){
+			$('#fade-in').removeClass('show');
+			$('#fade-btn-hide').removeClass('show');
+			$('#slide_show').removeClass('slide hide_obj');
+			$('#slide_show').toggleClass('slide show_obj');
+
+		});
+
+		$('#ActualFlood_check').on('click', function(){
+			$('#legend-1').removeClass('show_obj');
+			$('#legend-1').toggleClass('hide_obj');
+		});
+
+		$('#AffFH_opacity_check').on('click', function(){
+			$('#legend-2').removeClass('show_obj');
+			$('#legend-2').toggleClass('hide_obj');
+		});
+
+		$('#Population_check').on('click', function(){
+			$('#legend-3').removeClass('show_obj');
+			$('#legend-3').toggleClass('hide_obj');
+		});
+
+		$('#AffFH_opacity_check').click(function() {
+
+						if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+								$('#legend-div').removeClass('show_obj');
+								$('#legend-div').toggleClass('hide_obj');
+							}
+						else{
+							$('#legend-div').removeClass('hide_obj');
+							$('#legend-div').toggleClass('show_obj');
+						}
+
+				});
+				$('#ActualFlood_check').click(function() {
+
+								if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+										$('#legend-div').removeClass('show_obj');
+										$('#legend-div').toggleClass('hide_obj');
+									}
+								else{
+									$('#legend-div').removeClass('hide_obj');
+									$('#legend-div').toggleClass('show_obj');
+								}
+
+						});
+						$('#Population_check').click(function() {
+
+										if(!$('#AffFH_opacity_check').is(':checked') && !$('#ActualFlood_check').is(':checked') && !$('#Population_check').is(':checked')){
+												$('#legend-div').removeClass('show_obj');
+												$('#legend-div').toggleClass('hide_obj');
+											}
+										else{
+											$('#legend-div').removeClass('hide_obj');
+											$('#legend-div').toggleClass('show_obj');
+										}
+
+								});
+
+		$('.navbar_menu > a').on('click', function (e) {
+			e.preventDefault();
+			$('.navbar_menu > a').removeClass('active');
+			$(this).addClass('active');
+		});
+		
 
 		$('.js-tooltip').tooltip();
 
