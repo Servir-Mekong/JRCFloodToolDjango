@@ -1,5 +1,21 @@
 <label>Select element to display</label>
 <div class="chiller_cb">
+  <input id="State_check" type="checkbox"
+  value=""
+  ng-checked="checkStateBoundary"
+  ng-click="clickStateRegion()">
+  <label for="State_check">State/Region Boundary</label>
+  <span></span>
+</div>
+<div class="chiller_cb">
+  <input id="Township_check" type="checkbox"
+  value=""
+  ng-checked="checkTSBoundary"
+  ng-click="clickTSBoundary()">
+  <label for="Township_check">Township Boundary</label>
+  <span></span>
+</div>
+<div class="chiller_cb">
   <input id="Shelter_check" type="checkbox"
   value=""
   ng-checked="checkShLoc"
@@ -14,22 +30,6 @@
   ng-checked="checkWhLoc"
   ng-click="clickWhLoc()">
   <label for="Warehouse_check">Warehouse Location</label>
-  <span></span>
-</div>
-<div class="chiller_cb">
-  <input id="Township_check" type="checkbox"
-  value=""
-  ng-checked="checkTSBoundary"
-  ng-click="clickTSBoundary()">
-  <label for="Township_check">Township Boundary</label>
-  <span></span>
-</div>
-<div class="chiller_cb">
-  <input id="State_check" type="checkbox"
-  value=""
-  ng-checked="checkStateBoundary"
-  ng-click="clickStateRegion()">
-  <label for="State_check">State/Region Boundary</label>
   <span></span>
 </div>
 <div class="chiller_cb">
