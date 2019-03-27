@@ -42,7 +42,6 @@ class GEEApi():
         self.method = method
         self.geometry = self._get_geometry(shape)
         self.IMAGE_COLLECTION = self.IMAGE_COLLECTION_RAW.filterBounds(self.geometry)
-        global population_df, warehouse_df, shelter_df, pop_wh_df, pop_wh_sh_df
         #global water_percent_image
         #water_percent_image = self._calculate_water_percent_image()
 
@@ -240,16 +239,16 @@ class GEEApi():
         #     if poly and poly.contains(Point(float(96.750), float(19.467))):
         #         print(row)
         #region = self.TS.filter(ee.Filter.eq("ID_3", self.township_id))
-        # water_percent_image = self._calculate_water_percent_image()
-        # sumfeatures = water_percent_image.reduceRegions(
-        #         collection= self.TS,
-        #         reducer=ee.Reducer.sum(),
-        #         scale=150
-        #     )
-        #FloodIndex = sumfeatures.map(self.Floodindexcal)
-        #self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
-        #Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        #flood_haz_df = self.fc2dfgeo(Floodreclass2)
+        water_percent_image = self._calculate_water_percent_image()
+        sumfeatures = water_percent_image.reduceRegions(
+                collection= self.TS,
+                reducer=ee.Reducer.sum(),
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+        flood_haz_df = self.fc2dfgeo(Floodreclass2)
         # hazard_pop_df =pandas.merge( flood_haz_df, population_df,how='outer', left_on='ID_3', right_on='ID_3')
         # print("hazard_pop",hazard_pop_df.count())
         # hazard_pop_wh_df = pandas.merge(hazard_pop_df, warehouse_df, how='outer', left_on='NAME_3_x', right_on='DDM_WH')
@@ -391,7 +390,6 @@ class GEEApi():
 
 
     def get_hazard_map_id(self):
-        global flood_haz_df
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
         sumfeatures = water_percent_image.reduceRegions(
@@ -402,7 +400,6 @@ class GEEApi():
         FloodIndex = sumfeatures.map(self.Floodindexcal)
         self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
         Floodreclass2 = FloodIndex.map(self.Floodreclass1)
-        flood_haz_df = self.fc2dfgeo(Floodreclass2)
         fills_image = empty.paint(FloodIndex,'Findex')
         floodIndexfills = empty.paint(Floodreclass2,'Findex2')
         FloodReclassfills = empty.paint(Floodreclass2, 'Freclass')

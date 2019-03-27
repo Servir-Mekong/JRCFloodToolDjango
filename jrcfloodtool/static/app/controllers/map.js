@@ -217,7 +217,7 @@
 			$('.navbar_menu > a').removeClass('active');
 			$(this).addClass('active');
 		});
-		
+
 
 		$('.js-tooltip').tooltip();
 
@@ -291,8 +291,8 @@
 			$scope.initialLoader = 0;
 
 			if (typeof (init) === 'undefined') init = false;
-			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 			$scope.initializeFloodLayer(startYear, endYear, startMonth, endMonth, method, init);
+			$scope.initializeHazardLayer(startYear, endYear, startMonth, endMonth, method, init);
 
 		};
 
