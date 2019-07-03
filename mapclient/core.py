@@ -228,10 +228,11 @@ class GEEApi():
         warehouse_df = self.fc2df(self.TS_WH)
         #township_df = self.fc2dfgeo(self.TS)
         shelter_df = self.fc2df(self.Shelter)
-        shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
-        shelter_df = shelter_df.groupby(['ID_3']).sum()
-        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
-        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='ID_3', right_on='ID_3')
+        #shelter_df = shelter_df.drop(columns=['Latitude','Longitude'])
+        shelter_df = shelter_df.groupby(['TS_PCODE'], as_index=False, sort=False)['No_shelter'].sum()
+        warehouse_df = warehouse_df.groupby(['TS_PCODE'], as_index=False, sort=False)['no_warehou'].sum()
+        pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='TS_PCODE', right_on='TS_PCODE')
+        pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='TS_PCODE', right_on='TS_PCODE')
         #self.township_id = self.getTownShipId()
         # for row in township_df.iterrows():
         #     #centroidseries = poly.centroid
@@ -257,17 +258,17 @@ class GEEApi():
         # print("df5",df5.count())
         # pop_wh_df = pandas.merge(population_df, warehouse_df, how='outer', left_on='ID_3', right_on='ID_3')
         # pop_wh_sh_df = pandas.merge(shelter_df, pop_wh_df, how='outer', left_on='ID_3', right_on='ID_3')
-        df5 = pandas.merge(flood_haz_df, pop_wh_sh_df, how='outer', left_on='ID_3', right_on='ID_3')
+        #print(list(flood_haz_df.columns))
+        df5 = pandas.merge(flood_haz_df, pop_wh_sh_df, how='outer', left_on='TS_PCODE', right_on='TS_PCODE')
         df5 = df5.fillna(0)
         df5['hazard'] = np.where(df5['Freclass']==1, 'Low', np.where(df5['Freclass']==2, 'Moderate', np.where(df5['Freclass']==3, 'High', 'None')))
-        #print("headers===",df5.columns.values)
         return df5
 
 
     def getExposureData(self,request):
         exposure_df = self.getExposureTables()
         # exposure_df_wo_geo = exposure_df.drop(columns=['geometry'])
-        exposure_df_wo_geo = exposure_df[['FID_Cyclon','ID_3','NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Sum_Pop','no_warehou','hazard','No_shelter']]
+        exposure_df_wo_geo = exposure_df[['ST_x','DT_x','TS_x','sum_pop','no_warehou','hazard','No_shelter']]
         json_data = exposure_df_wo_geo.to_json(orient='records')
         return json_data
 
@@ -287,7 +288,7 @@ class GEEApi():
         excel_file = IO()
 
         xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
-        exposure_df_with_geo = exposure_df[['NAME_0_x','NAME_1_x','NAME_2_x','NAME_3_x','Sum_Pop','no_warehou','hazard','No_shelter']]
+        exposure_df_with_geo = exposure_df[['ST_x','DT_x','TS_x','sum_pop','no_warehou','hazard','No_shelter']]
         exposure_df_with_geo.to_excel(xlwriter, 'exposure')
 
         xlwriter.save()
@@ -313,7 +314,7 @@ class GEEApi():
             poly = row['geometry']
             if poly and poly.contains(self.p1):
                 ts = row
-        return {'state':ts['NAME_1_x'], 'district':ts['NAME_2_x'],'name': ts['NAME_3_x'], 'pop': ts['Sum_Pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou'], 'shelter':ts['No_shelter']}
+        return {'state':ts['ST_x'], 'district':ts['DT_x'],'name': ts['TS_x'], 'pop': ts['sum_pop'], 'hazard': ts['hazard'], 'warehouse': ts['no_warehou'], 'shelter':ts['No_shelter']}
 
     def getTownShipId(self):
         township_df = self.fc2dfgeo(self.TS)
@@ -435,11 +436,11 @@ class GEEApi():
     #@staticmethod
     def Populationreclass(self,feature):
         myClass = ee.Number(2);
-        myNumber = ee.Number(feature.get('Sum_Pop'))
-        myClass = myClass.subtract(myNumber.lt(10001))
-        myClass = myClass.add(myNumber.gt(99999))
+        myNumber = ee.Number(feature.get('sum_pop'))
+        myClass = myClass.subtract(myNumber.lt(99999))
         myClass = myClass.add(myNumber.gt(199999))
-        myClass = myClass.add(myNumber.gt(299999))
+        myClass = myClass.add(myNumber.gt(499999))
+        myClass = myClass.add(myNumber.gt(899999))
 
         return feature.set('Popclass', myClass);
 
@@ -494,7 +495,7 @@ class GEEApi():
             url = water_percent_image.getDownloadURL({
                 'name': 'water_extract',
                 #'region' : self.geometry.bounds().getInfo()['coordinates'],
-                'scale': 300
+                'scale': 150
             })
             return {'downloadUrl': url}
         except Exception as e:

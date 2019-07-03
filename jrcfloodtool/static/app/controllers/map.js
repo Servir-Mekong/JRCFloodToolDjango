@@ -303,7 +303,7 @@
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
 					loadMap(data.eeMapId, data.eeMapToken);
-					map.overlayMapTypes.setAt( 0, null);
+					//map.overlayMapTypes.setAt( 0, null);
 					//usSpinnerService.spin('spinner-1');
 					if(	!$("#ActualFlood_check").is(':checked')){
 						$("#ActualFlood_check").click();
@@ -367,7 +367,7 @@
 				$scope.closeAlert();
 				//$modal({title: "Information", content: "Township ID: 0014, \n Name: Five star", show: true});
 				ngDialog.open({
-											template: '<table id="exposure_tbl" class="table"><thead><tr><th>State/Region</th><th>District</th><th>Township Name</th><th ng-show="analysisWhLoc">No. of Warehouse</th><th >Hazard Level</th><th ng-show="analysisPop">No. of Pop</th><th ng-show="analysisShLoc">No. of Shelter</th></tr></thead><tbody><tr ng-repeat="result in results track by $index"><td>[[result.NAME_1_x]]</td><td>[[result.NAME_2_x]]</td><td>[[result.NAME_3_x]]</td><td ng-show="analysisWhLoc">[[result.no_warehou]]</td><td >[[result.hazard]]</td><td ng-show="analysisPop">[[result.Sum_Pop]]</td><td ng-show="analysisShLoc">[[result.No_shelter]]</td></tr></tbody></table>',
+											template: '<table id="exposure_tbl" class="table"><thead><tr><th>State/Region</th><th>District</th><th>Township Name</th><th ng-show="analysisWhLoc">No. of Warehouse</th><th >Hazard Level</th><th ng-show="analysisPop">No. of Pop</th><th ng-show="analysisShLoc">No. of Shelter</th></tr></thead><tbody><tr ng-repeat="result in results track by $index"><td>[[result.ST_x]]</td><td>[[result.DT_x]]</td><td>[[result.TS_x]]</td><td ng-show="analysisWhLoc">[[result.no_warehou]]</td><td >[[result.hazard]]</td><td ng-show="analysisPop">[[result.sum_pop]]</td><td ng-show="analysisShLoc">[[result.No_shelter]]</td></tr></tbody></table>',
 					className: 'ngdialog-theme-default',
 					width: '60%',
 					plain: true,
@@ -686,7 +686,7 @@
 				console.log(data);
 				loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
 				usSpinnerService.stop('spinner-1');
-		    	showSuccessAlert('The World Pop Layer is updated!');
+		    	showSuccessAlert('The Population Layer is updated!');
 		    }, function (error) {
 		    	showErrorAlert('Something went wrong! Please try again later!');
 		        console.log(error);
