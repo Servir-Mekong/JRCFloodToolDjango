@@ -437,10 +437,10 @@ class GEEApi():
     def Populationreclass(self,feature):
         myClass = ee.Number(2);
         myNumber = ee.Number(feature.get('sum_pop'))
-        myClass = myClass.subtract(myNumber.lt(99999))
+        myClass = myClass.subtract(myNumber.lt(9999))
+        myClass = myClass.add(myNumber.gt(99999))
         myClass = myClass.add(myNumber.gt(199999))
-        myClass = myClass.add(myNumber.gt(499999))
-        myClass = myClass.add(myNumber.gt(899999))
+        myClass = myClass.add(myNumber.gt(299999))
 
         return feature.set('Popclass', myClass);
 
