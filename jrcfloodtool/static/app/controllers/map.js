@@ -299,10 +299,12 @@
 		$scope.initializeFloodLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
 			usSpinnerService.spin('spinner-1');
 			showInfoAlert('Please wait a minute! we are processing your request.');
+			// Clear before adding
+			clearLayers('map');
 			if ($scope.checkMapData) {
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
-					loadMap(data.eeMapId, data.eeMapToken);
+					loadMap(data.eeMapId, data.eeMapToken, 'map');
 					//map.overlayMapTypes.setAt( 0, null);
 					//usSpinnerService.spin('spinner-1');
 					if(	!$("#ActualFlood_check").is(':checked')){
@@ -332,6 +334,8 @@
 		$scope.initializeHazardLayer = function (startYear, endYear, startMonth, endMonth, method, init) {
 			usSpinnerService.spin('spinner-1');
 			showInfoAlert('Please wait a minute! we are processing your request.');
+			// Clear before adding
+			clearLayers('flood-hazard');
 			if ($scope.checkAggFH) {
 				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
@@ -430,15 +434,17 @@
 		$scope.updateMap = function () {
 			$scope.closeAlert();
 			usSpinnerService.spin('spinner-1');
-      var dateObject;
+			// Clear before adding
+			clearLayers('flood-hazard');
+			clearLayers('map');
+      	var dateObject;
 			if ($scope.checkMapData) {
 				dateObject = $scope.checkBeforeDownload(false, false);
 				if (dateObject) {
 					if (dateObject.message) {
 						showInfoAlert(dateObject.message);
 					}
-					// Clear before adding
-					clearLayers('map');
+
 					$scope.initializeFloodLayer(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
@@ -449,8 +455,6 @@
 					if (dateObject.message) {
 						showInfoAlert(dateObject.message);
 					}
-					// Clear before adding
-					clearLayers('flood-hazard');
 					$scope.initializeHazardLayer(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value);
 				}
 			}
