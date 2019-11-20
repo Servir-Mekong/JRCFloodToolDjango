@@ -173,6 +173,12 @@
 		$('#Population_check').on('click', function(){
 			$('#legend-3').removeClass('show_obj');
 			$('#legend-3').toggleClass('hide_obj');
+			if(this.checked){
+				$("#pop-opacity").css("display", "block");
+			}
+			else{
+				$("#pop-opacity").css("display", "none");
+			}
 		});
 
 		$('#AffFH_opacity_check').click(function() {
@@ -221,6 +227,8 @@
 
 		$('.js-tooltip').tooltip();
 
+		$("#pop-opacity").css("display", "none");
+
 		/**
 		 * Alert
 		 */
@@ -259,7 +267,7 @@
 		var loadMap = function (mapId, mapToken, type) {
 			//map.overlayMapTypes.setAt( 0, null);
 
-			var layers = { "township": "4", "flood-hazard": "0", "map":"2", "state": "3","warehouse": "5", "shelter": "6", "worldPop": "1" };
+			var layers = { "township": "4", "flood-hazard": "0", "jrc-map":"2", "state": "3","warehouse": "5", "shelter": "6", "worldPop": "1" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
@@ -300,11 +308,12 @@
 			usSpinnerService.spin('spinner-1');
 			showInfoAlert('Please wait a minute! we are processing your request.');
 			// Clear before adding
-			clearLayers('map');
+			clearLayers('jrc-map');
+			clearLayers('flood-hazard');
 			if ($scope.checkMapData) {
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
-					loadMap(data.eeMapId, data.eeMapToken, 'map');
+					loadMap(data.eeMapId, data.eeMapToken, 'jrc-map');
 					//map.overlayMapTypes.setAt( 0, null);
 					//usSpinnerService.spin('spinner-1');
 					if(	!$("#ActualFlood_check").is(':checked')){
@@ -312,7 +321,7 @@
 					}
 					if (init) {
 						$timeout(function () {
-							showInfoAlert('The map data shows the data from 1984 to 2015. You can change the map data with the ☰ provided in the left side!');
+							showInfoAlert('The map data shows the data from 1984 to 2018. You can change the map data with the ☰ provided in the left side!');
 						}, 3500);
 					} else {
 						$timeout(function () {
@@ -436,7 +445,9 @@
 			usSpinnerService.spin('spinner-1');
 			// Clear before adding
 			clearLayers('flood-hazard');
-			clearLayers('map');
+			clearLayers('jrc-map');
+			$scope.overlays['flood-hazard'].setOpacity(0);
+
       	var dateObject;
 			if ($scope.checkMapData) {
 				dateObject = $scope.checkBeforeDownload(false, false);
@@ -710,7 +721,9 @@
 					$scope.getWorldPopId();
 				}
 			}
+
 		};
+
 
 		$scope.getWorlPopNumber = function () {
 			var _object = $scope.checkBeforeDownload(false, true, false);
@@ -958,7 +971,7 @@
 			format: 'yyyy',
 			autoclose: true,
 			startDate: new Date('1984'),
-			endDate: new Date('2015'),
+			endDate: new Date('2018'),
 			clearBtn: true,
 			startView: 'years',
 			minViewMode: 'years',
@@ -1000,7 +1013,7 @@
 
 		$('#datepicker-month-end').datepicker()
 		.on('hide', function (e) {
-			if (e.date && e.date.getMonth() > 9 && $('#datepicker-year-end').val() === '2015') {
+			if (e.date && e.date.getMonth() > 9 && $('#datepicker-year-end').val() === '2018') {
 				$('#datepicker-month-end').val('October');
 			}
 		});
