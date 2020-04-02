@@ -30,7 +30,8 @@ class GEEApi():
         self.TS = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID1)
         self.POPULATION = ee.FeatureCollection(settings.EE_MEKONG_IMAGE_COLLECTION_POPULATION)
         self.COUNTRIES_GEOM = self.FEATURE_COLLECTION.filter(\
-                    ee.Filter.inList('Country', settings.COUNTRIES_NAME)).geometry()
+                    ee.Filter.inList('Name', settings.COUNTRIES_NAME)).geometry()
+
 
         self.start_year = start_year
         self.end_year = end_year
@@ -338,8 +339,7 @@ class GEEApi():
         })
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
     def get_township_id(self):
@@ -350,8 +350,7 @@ class GEEApi():
         })
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
     def get_state_id(self):
@@ -362,16 +361,16 @@ class GEEApi():
         })
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
+
     def get_shelter_id(self):
         feature = self.Shelter.style(color="blue",pointSize=5, pointShape="diamond")
         map_id = feature.getMapId()
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
     def get_wh_id(self):
@@ -379,8 +378,7 @@ class GEEApi():
         map_id = feature.getMapId()
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
 
@@ -415,8 +413,7 @@ class GEEApi():
             'palette': '045b06, fafb27, d20504'
         })
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
     def Floodindexcal(self,feature):
@@ -472,8 +469,7 @@ class GEEApi():
         })
 
         return {
-            'eeMapId': str(map_id['mapid']),
-            'eeMapToken': str(map_id['token'])
+            'eeMapURL': str(map_id['tile_fetcher'].url_format)
         }
 
     # -------------------------------------------------------------------------

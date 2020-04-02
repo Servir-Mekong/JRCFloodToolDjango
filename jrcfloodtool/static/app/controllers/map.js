@@ -70,6 +70,7 @@
 		$scope.checkMapData_value = true;
 		$scope.checkAggFH_value = true;
 
+
 		//New added controls in View Data
 		$scope.checkStateBoundary = false;
 		$scope.checkTSBoundary = false;
@@ -264,17 +265,17 @@
 		};
 
 		/** Updates the image based on the current control panel config. */
-		var loadMap = function (mapId, mapToken, type) {
+		var loadMap = function (eeMapURL, type) {
 			//map.overlayMapTypes.setAt( 0, null);
 
 			var layers = { "township": "4", "flood-hazard": "0", "jrc-map":"2", "state": "3","warehouse": "5", "shelter": "6", "worldPop": "1" };
 			if (typeof(type) === 'undefined') type = 'map';
 			var eeMapOptions = {
 				getTileUrl: function (tile, zoom) {
-					var url = EE_URL + '/map/';
-						url += [mapId, zoom, tile.x, tile.y].join('/');
-						url += '?token=' + mapToken;
-						return url;
+							var url = eeMapURL.replace('{x}', tile.x)
+													      .replace('{y}', tile.y)
+													      .replace('{z}', zoom);
+							return url;
 					},
 				tileSize: new google.maps.Size(256, 256),
 				name: type,
@@ -313,7 +314,7 @@
 			if ($scope.checkMapData) {
 				MapService.getEEMapTokenID(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
-					loadMap(data.eeMapId, data.eeMapToken, 'jrc-map');
+					loadMap(data.eeMapURL, 'jrc-map');
 					//map.overlayMapTypes.setAt( 0, null);
 					//usSpinnerService.spin('spinner-1');
 					if(	!$("#ActualFlood_check").is(':checked')){
@@ -348,8 +349,7 @@
 			if ($scope.checkAggFH) {
 				MapService.getFloodHazardId(startYear, endYear, startMonth, endMonth, method, $scope.shape)
 				.then(function (data) {
-					console.log(data);
-					loadMap(data.eeMapId, data.eeMapToken, 'flood-hazard');
+					loadMap(data.eeMapURL,  'flood-hazard');
 					showSuccessAlert('The Hazard Level Layer is updated!');
 					if(	!$("#AffFH_opacity_check").is(':checked')){
 						$("#AffFH_opacity_check").click();
@@ -412,11 +412,11 @@
 
 		$scope.clickMapData = function (opacity_value) {
 		opacity_value = parseInt(opacity_value)/100;
-		  if($scope.overlays.map)
+		  if($scope.overlays['jrc-map'])
 			if ($scope.checkMapData_value) {
-				$scope.overlays.map.setOpacity(opacity_value);
+				$scope.overlays['jrc-map'].setOpacity(opacity_value);
 			} else {
-				$scope.overlays.map.setOpacity(0);
+				$scope.overlays['jrc-map'].setOpacity(0);
 			}
 		};
 
@@ -432,11 +432,11 @@
 		};
 		$scope.PopOpacity = function (opacity_value) {
 		opacity_value = parseInt(opacity_value)/100;
-		  if($scope.overlays.worldPop)
+		  if($scope.overlays['worldPop'])
 			if ($scope.checkAggFH_value) {
-				$scope.overlays.worldPop.setOpacity(opacity_value);
+				$scope.overlays['worldPop'].setOpacity(opacity_value);
 			} else {
-			    $scope.overlays.worldPop.setOpacity(0);
+			    $scope.overlays['worldPop'].setOpacity(0);
 			}
 		};
 
@@ -485,7 +485,6 @@
 				if($scope.checkMapData_value){
 					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url')
 					.then(function (data) {
-						console.log(data);
 						showSuccessAlert('Your Download Link is ready. Enjoy!');
 						$scope.downloadURL = data.downloadUrl;
 						$scope.showDownloadUrl();
@@ -498,7 +497,6 @@
 				if($scope.checkAggFH_value){
 					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url-haz')
 					.then(function (data) {
-						console.log(data);
 						showSuccessAlert('Your Download Link is ready. Enjoy!');
 						$scope.downloadURL = data.downloadUrl;
 						$scope.showDownloadUrl();
@@ -509,7 +507,6 @@
 					});
 				}
 				if($scope.resultDownload) {
-						console.log('resultDownload ',$scope.resultDownload);
 						execProcessDownload(dateObject.startYear, dateObject.endYear);
 				}
 
@@ -538,7 +535,6 @@
 
 
 		$scope.selectAllLayers = function (){
-			console.log($scope.layerDownload);
 
 			$scope.checkMapData_value = $scope.layerDownload;
 			$scope.clickMapData(100);
@@ -547,7 +543,6 @@
 		};
 
 		$scope.selectExposureLayers = function (){
-			console.log($scope.resultDownload);
 			$scope.resultDownload_data = $scope.resultDownload;
 		};
 
@@ -574,8 +569,7 @@
 			$scope.closeAlert();
 			MapService.getTownShipId($scope.shape)
 			.then(function (data) {
-				console.log(data);
-				loadMap(data.eeMapId, data.eeMapToken, 'township');
+				loadMap(data.eeMapURL,  'township');
 				showSuccessAlert('The Township Layer is updated!');
 				usSpinnerService.stop('spinner-1');
 			}, function (error) {
@@ -604,9 +598,8 @@
 			$scope.closeAlert();
 			MapService.getShLocId($scope.shape)
 			.then(function (data) {
-				console.log(data);
 				//check
-				loadMap(data.eeMapId, data.eeMapToken, 'shelter');
+				loadMap(data.eeMapURL,  'shelter');
 				showSuccessAlert('The Shelter Location Layer is updated!');
 				usSpinnerService.stop('spinner-1');
 			}, function (error) {
@@ -639,8 +632,7 @@
 			$scope.closeAlert();
 			MapService.getStateRegionId($scope.shape)
 			.then(function (data) {
-				console.log(data);
-				loadMap(data.eeMapId, data.eeMapToken, 'state');
+				loadMap(data.eeMapURL,  'state');
 				usSpinnerService.stop('spinner-1');
 				showSuccessAlert('The State Layer is updated!');
 			}, function (error) {
@@ -668,8 +660,7 @@
 			$scope.closeAlert();
 			MapService.getWhLocId($scope.shape)
 			.then(function (data) {
-				console.log(data);
-				loadMap(data.eeMapId, data.eeMapToken, 'warehouse');
+				loadMap(data.eeMapURL,  'warehouse');
 				usSpinnerService.stop('spinner-1');
 				showSuccessAlert('The Warehouse Location Layer is updated!');
 			}, function (error) {
@@ -698,8 +689,7 @@
 			$scope.closeAlert();
 			MapService.getWorldPopId($scope.shape)
 		    .then(function (data) {
-				console.log(data);
-				loadMap(data.eeMapId, data.eeMapToken, 'worldPop');
+				loadMap(data.eeMapURL,  'worldPop');
 				usSpinnerService.stop('spinner-1');
 		    	showSuccessAlert('The Population Layer is updated!');
 		    }, function (error) {
@@ -837,7 +827,6 @@
 			.then(function (data) {
 				$scope.ts = data;
 				usSpinnerService.stop('spinner-1');
-				console.log($scope.ts);
 			}, function (error) {
 				showErrorAlert('Something went wrong! Please try again later!');
 				console.log(error);
