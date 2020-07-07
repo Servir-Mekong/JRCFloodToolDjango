@@ -13,7 +13,7 @@ import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
 import base64
-import win_inet_pton
+
 # -----------------------------------------------------------------------------
 class GEEApi():
     """ Google Earth Engine API """

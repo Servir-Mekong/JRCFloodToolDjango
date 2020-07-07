@@ -230,3 +230,8 @@ EEException: Collection.loadTable: Collection asset 'users/thannarotk/hfa/mmr_ad
 [C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
 [C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
 [C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
