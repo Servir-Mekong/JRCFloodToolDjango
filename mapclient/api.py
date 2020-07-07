@@ -16,7 +16,7 @@ def api(request):
     if action:
         public_methods = ['get-map-id', 'get-hazard-id', 'download-url', 'download-url-haz', 'download-to-drive',
                           'get-world-pop-id', 'get-township-id', 'get-state-id', 'get-shelter-id', 'get-wh-id',
-                          'get-world-pop-number','get-exposure-dnld','get-exposure-data', 'get-exposure-datum'
+                          'get-world-pop-number','get-exposure-dnld','get-exposure-data', 'get-exposure-datum', 'download-hazard-to-drive'
                           ]
 
         if action in public_methods:
@@ -57,7 +57,7 @@ def api(request):
                 data = core.getExposureData(request)
             elif action == 'get-exposure-datum':
                 data = core.getExposureDatum(get('lat', ''), get('lng', ''))
-            elif action == 'download-to-drive':
+            elif action == 'download-to-drive' or action == 'download-hazard-to-drive':
                 session_cache = request.session._session_cache
                 if 'google_oauth2_credentials' in session_cache:
                     import json
@@ -78,9 +78,11 @@ def api(request):
                     id_token_jwt = google_oauth2_credentials['id_token_jwt']
                     oauth2object = OAuth2Credentials(access_token, client_id, client_secret, refresh_token, token_expiry, token_uri, user_agent, revoke_uri, id_token, token_response, scopes, token_info_uri, id_token_jwt)
                     user_email = id_token['email']
+                    user_name = id_token['email']
                     user_id = id_token['sub']
                     # for expiry of tokens see this
                     # https://github.com/google/oauth2client/issues/391
+                    export = None
                     if settings.EE_USE_CELERY:
                         export_to_drive_task.delay(start_year=start_year,
                                                    end_year=end_year,
@@ -110,16 +112,25 @@ def api(request):
                                                    )
                         data = {'info': 'I have started the export! You can check your drive after 5-10 mins to get the exported image!'}
                     else:
-                        data = core.download_to_drive(user_email, user_id, file_name, oauth2object)
-                    #task = export_to_drive_task.delay
-                    #work = AsyncResult(task.task_id)
-                    #while not work.ready():
-                    #    time.sleep(5)
-                    #else:
-                    #    try:
-                    #        data = work.get()
-                    #    except:
-                    #        data = {'error': 'Something went wrong. Please try again later!'}
+                        if action == 'download-to-drive':
+                            data = core.download_to_drive(
+                                                      user_email = user_email,
+                                                      user_id = user_id,
+                                                      file_name = file_name,
+                                                      oauth2object = oauth2object,
+                                                      user_name = user_name
+                                                      )
+                            data['info'] = 'The export is completed! Please check the Actual Flood Frequency data in the Historical Flood Analysis Tool folder on your Google Drive.'
+                        elif action == 'download-hazard-to-drive':
+                            data = core.download_shp_hazard(
+                                                      user_email = user_email,
+                                                      user_id = user_id,
+                                                      file_name = file_name,
+                                                      oauth2object = oauth2object,
+                                                      user_name = user_name
+                                                      )
+                            data['info'] = 'The export is completed! Please check the Aggregated Flood Hazard data in the Historical Flood Analysis Tool folder on your Google Drive.'
+
                 else:
                     # default fallback
                     data = {'error': 'You have not allowed the tool to use your google drive to upload file! Allow it first and try again!'}

@@ -287,7 +287,6 @@
 			//map.overlayMapTypes.setAt(layers[mapType.name],mapType);
 			$scope.overlays[type] = mapType;
 			for (var t in $scope.overlays) {
-				console.log(t);
 				map.overlayMapTypes.setAt(layers[t],$scope.overlays[t]);
 			}
 			//console.log(map.overlayMapTypes);
@@ -414,8 +413,10 @@
 		opacity_value = parseInt(opacity_value)/100;
 		  if($scope.overlays['jrc-map'])
 			if ($scope.checkMapData_value) {
+				$scope.gDriveFLoodFileName = true;
 				$scope.overlays['jrc-map'].setOpacity(opacity_value);
 			} else {
+				$scope.gDriveFLoodFileName = false;
 				$scope.overlays['jrc-map'].setOpacity(0);
 			}
 		};
@@ -424,9 +425,11 @@
 		opacity_value = parseInt(opacity_value)/100;
 		  if($scope.overlays['flood-hazard'])
 			if ($scope.checkAggFH_value) {
+				$scope.gDriveHazardFileName = true;
 				$scope.overlays['flood-hazard'].setOpacity(opacity_value);
 			} else {
 			    $scope.overlays['flood-hazard'].setOpacity(0);
+					$scope.gDriveHazardFileName = false;
 
 			}
 		};
@@ -476,35 +479,36 @@
 			}
 		};
 
-
 		$scope.downloadMap = function (){
 			var dateObject = $scope.checkBeforeDownload(true);
 			// @ToDo: Do proper check
 			if (dateObject) {
-				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you!');
+				showInfoAlert(dateObject.message + ' Please wait while we are preparing the data for you! It will take 10 minutes');
 				if($scope.checkMapData_value){
-					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url')
-					.then(function (data) {
-						showSuccessAlert('Your Download Link is ready. Enjoy!');
-						$scope.downloadURL = data.downloadUrl;
-						$scope.showDownloadUrl();
-						openInNewTab(data.downloadUrl);
-					}, function (error) {
-						showErrorAlert(error.message);
-						console.log(error);
-					});
+					// MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url')
+					// .then(function (data) {
+					// 	showSuccessAlert('Your Download Link is ready. Enjoy!');
+					// 	$scope.downloadURL = data.downloadUrl;
+					// 	$scope.showDownloadUrl();
+					// 	openInNewTab(data.downloadUrl);
+					// }, function (error) {
+					// 	showErrorAlert(error.message);
+					// 	console.log(error);
+					// });
+					$scope.saveToDrive();
 				}
 				if($scope.checkAggFH_value){
-					MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url-haz')
-					.then(function (data) {
-						showSuccessAlert('Your Download Link is ready. Enjoy!');
-						$scope.downloadURL = data.downloadUrl;
-						$scope.showDownloadUrl();
-						openInNewTab(data.downloadUrl);
-					}, function (error) {
-						showErrorAlert(error.message);
-						console.log(error);
-					});
+					$scope.saveHazardToDrive();
+					// MapService.downloadMap(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape,'download-url-haz')
+					// .then(function (data) {
+					// 	showSuccessAlert('Your Download Link is ready. Enjoy!');
+					// 	$scope.downloadURL = data.downloadUrl;
+					// 	$scope.showDownloadUrl();
+					// 	openInNewTab(data.downloadUrl);
+					// }, function (error) {
+					// 	showErrorAlert(error.message);
+					// 	console.log(error);
+					// });
 				}
 				if($scope.resultDownload) {
 						execProcessDownload(dateObject.startYear, dateObject.endYear);
@@ -514,11 +518,9 @@
 		};
 
 		$scope.download = function () {
-			$scope.downloadMap();
+			//$scope.downloadMap();
+			$scope.saveToDrive();
 
-			// if($scope.resultDownload && !$scope.layerDownload) {
-			// 	$scope.clickProcess();
-			// }
 			if(!$scope.checkMapData_value && !$scope.checkAggFH_value && !$scope.resultDownload) {
 				showErrorAlert('Please select either Hazard or Exposure');
 			}
@@ -1099,38 +1101,65 @@
 
 		$scope.downloadURL = '';
 		$scope.downloadUrl = false;
-		$scope.gDriveFileName = false;
+		$scope.gDriveFLoodFileName = true;
+		$scope.gDriveHazardFileName = true;
 		$scope.showDownloadUrl = function () {
 			$scope.downloadUrl = true;
 		};
 		$scope.hideDownloadUrl = function () {
 			$scope.downloadUrl = false;
 		};
-		$scope.showGDriveFileName = function () {
-			$scope.gDriveFileName = true;
+		$scope.showGDriveFloodFileName = function () {
+			$scope.gDriveFLoodFileName = true;
 		};
-		$scope.hideGDriveFileName = function () {
-			$scope.gDriveFileName = false;
+		$scope.hideGDriveFloodFileName = function () {
+			$scope.gDriveFLoodFileName = false;
 		};
 
 		$scope.saveToDrive = function () {
-            var dateObject = $scope.checkBeforeDownload(true);
+      var dateObject = $scope.checkBeforeDownload(true);
 			// Check if filename is provided, if not use the default one
 			// @ToDo: Sanitize input and do proper check of dateobject
-			var fileName = $('#gdrive-file-name').val() || '';
+			var fileName = $('#gdrive-flood-file-name').val() || '';
 			if (dateObject) {
-				showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!');
+				//showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!');
 				MapService.saveToDrive(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape, fileName)
 			    .then(function (data) {
 			    	if (data.error) {
 				    	showErrorAlert(data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
 				        console.log(data.error);
 			    	} else {
-						showInfoAlert(data.info);
+							showSuccessAlert(data.info);
 				    	//$scope.downloadURL = data.driveLink;
 				    	//$scope.showDownloadUrl();
-				    	$scope.hideGDriveFileName();
-				    	$('#gdrive-file-name').val('');
+				    	// $scope.hideGDriveFloodFileName();
+				    	$('#gdrive-flood-file-name').val('');
+			    	}
+			    }, function (error) {
+			    	showErrorAlert(error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
+			        console.log(error);
+			    });
+			}
+		};
+
+		$scope.saveHazardToDrive = function () {
+      var dateObject = $scope.checkBeforeDownload(true);
+			// Check if filename is provided, if not use the default one
+			// @ToDo: Sanitize input and do proper check of dateobject
+			var fileName = $('#gdrive-hazard-file-name').val() || '';
+			if (dateObject) {
+				//showInfoAlert(dateObject.message + ' Please wait while I prepare the download link for you. This might take a while!');
+				MapService.saveHazardToDrive(dateObject.startYear, dateObject.endYear, dateObject.startMonth, dateObject.endMonth, $scope.timePeriodOption.value, $scope.shape, fileName)
+			    .then(function (data) {
+			    	if (data.error) {
+				    	showErrorAlert(data.error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');
+				        console.log(data.error);
+			    	} else {
+							showSuccessAlert(data.info);
+				    	//$scope.downloadURL = data.driveLink;
+				    	//$scope.showDownloadUrl();
+				    	// $scope.hideGDriveFloodFileName();
+				    	$('#gdrive-hazard-file-name').val('');
 			    	}
 			    }, function (error) {
 			    	showErrorAlert(error + ' This is likely error in our end. As a workaround, please try to clear cookie, then hard refresh and load again. If the problem exists, please contact us!');

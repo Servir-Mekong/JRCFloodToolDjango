@@ -1,12 +1,3 @@
-
-  <!-- <a href="#" ng-mouseover="showInfoTooltip($event, $index)" ng-click="showInfoBox()" style="float: right;">
-          <span class="fa-stack">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i style="font-size: 14px;" class="fa fa-info fa-stack-1x fa-inverse"></i>
-          </span>
-  </a> -->
-
-
 <div class="chiller_cb">
   <input id="Hazard_check" type="checkbox"
   value=""
@@ -27,14 +18,6 @@
     <label for="ActualFlood_check">Actual Flood Frequency</label>
     <span></span>
   </div>
-  <div class="slidecontainer">
-  <!-- <span>Opacity</span> -->
-    <!-- <input type="range" id="MapData_opacity" name="clickMapData_opacity"  min="0" max="100" value="50" step="1"  ng-model="MapData_opacity.value" ng-change="clickMapData(MapData_opacity.value)" class="slider" /> -->
-    <!-- <rzslider id="MapData_opacity" name="clickMapData_opacity"
-              class="custom-slider"
-              rz-slider-model="slider.value"
-              rz-slider-options="slider.options"></rzslider> -->
-  </div>
 
   <div class="chiller_cb">
     <input id="AffFH_opacity_check" type="checkbox"
@@ -44,14 +27,6 @@
     ng-click="clickAffFH(100)">
     <label for="AffFH_opacity_check">Aggregated Flood Hazard</label>
     <span></span>
-  </div>
-  <div class="slidecontainer">
-  <!-- <span>Opacity</span> -->
-    <!-- <input type="range" id="AffFH_opacity" name="clickAffFH_opacity"  min="0" max="100" value="50" step="1" ng-model="AffFH_opacity.value" ng-change="clickAffFH(AffFH_opacity.value)" class="slider" /> -->
-    <!-- <rzslider id="AffFH_opacity" name="clickAffFH_opacity"
-              class="custom-slider"
-              rz-slider-model="slider2.value"
-              rz-slider-options="slider2.options"></rzslider> -->
   </div>
 
 </div>
@@ -77,11 +52,32 @@
   <label for="Risk_check">Risk</label>
   <span></span>
 </div>
+
+
 <hr class="full-divider"/>
 <div class="footer-box">
-  <div class="row text-center">
-      <button type="button" class="btn btn-thmcolor" ng-click="download()">Download</button>
+  <div ng-show="gDriveFLoodFileName">
+      <p>Actual Flood Frequency</p>
+      <input type="text" id="gdrive-flood-file-name" placeholder="Enter Filename in Google Drive!" class="form-control">
+      <hr>
   </div>
+  <div ng-show="gDriveHazardFileName">
+      <p>Aggregated Flood Hazard</p>
+      <input type="text" id="gdrive-hazard-file-name" placeholder="Enter Filename in Google Drive!" class="form-control">
+      <hr>
+  </div>
+
+  <!-- <div ng-show="gDriveExposureFileName">
+      <hr>
+      <input type="text" id="gdrive-exposure-file-name" placeholder="Enter Filename in Google Drive!" class="form-control">
+      <hr>
+      <button type="button" ng-click="downloadMap()" class="btn btn-thmcolor">Start Download</button>
+  </div> -->
+
+  <div class="row text-center">
+      <button type="button" class="btn btn-thmcolor" ng-click="downloadMap()">Download</button>
+  </div>
+
   <div ng-show="downloadUrl" class="input-group">
       <hr>
       <input type="text" class="form-control" value="[[downloadURL]]">

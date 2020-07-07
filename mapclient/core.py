@@ -3,7 +3,7 @@
 from django.conf import settings
 import ee
 import time
-from utils import get_unique_string, transfer_files_to_user_drive
+from utils import _GetUniqueString, _GiveFilesToUser
 import pandas
 import geopandas
 from shapely.geometry import shape, Polygon, Point, MultiPolygon
@@ -13,13 +13,15 @@ import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
 import base64
+import win_inet_pton
 # -----------------------------------------------------------------------------
 class GEEApi():
     """ Google Earth Engine API """
 
     def __init__(self, start_year, end_year, start_month, end_month, shape, geom, radius, center, method):
 
-        ee.Initialize(settings.EE_CREDENTIALS)
+        # ee.Initialize(settings.EE_CREDENTIALS)
+        ee.Initialize()
         self.IMAGE_COLLECTION_RAW = ee.ImageCollection(settings.EE_IMAGE_COLLECTION_ID)
         self.MAYANMAR = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_MAYANMAR)
         self.FEATURE_COLLECTION = ee.FeatureCollection(settings.EE_MEKONG_FEATURE_COLLECTION_ID)
@@ -491,14 +493,15 @@ class GEEApi():
             url = water_percent_image.getDownloadURL({
                 'name': 'water_extract',
                 #'region' : self.geometry.bounds().getInfo()['coordinates'],
-                'scale': 150
+                'scale': 500
+
             })
             return {'downloadUrl': url}
         except Exception as e:
             print(e)
             return {'error': e.message}
 
-
+    # -------------------------------------------------------------------------
     def get_download_url_hazard(self):
         water_percent_image = self._calculate_water_percent_image()
         empty = ee.Image().float()
@@ -517,7 +520,7 @@ class GEEApi():
             url = FloodReclassfills.getDownloadURL({
                 'name': 'hazard-layer',
                 #'region' : self.geometry.bounds().getInfo()['coordinates'],
-                'scale': 150
+                'scale': 500
             })
             return {'downloadUrl': url}
         except Exception as e:
@@ -525,29 +528,52 @@ class GEEApi():
             return {'error': e.message}
 
     # -------------------------------------------------------------------------
-    def download_to_drive(self, user_email, user_id, file_name, oauth2object):
+    def download_shp_hazard(self,
+                          index = 0,
+                          file_name = '',
+                          user_email = None,
+                          user_id = None,
+                          oauth2object = None,
+                          user_name = None
+                          ):
 
-        # water_percent_image = self._calculate_water_percent_image()
-        temp_file_name = get_unique_string()
+        if not (user_email and user_id and oauth2object):
+            return {'error': 'something wrong with the google drive api!'}
+
+        water_percent_image = self._calculate_water_percent_image()
+        empty = ee.Image().float()
+        sumfeatures = water_percent_image.reduceRegions(
+                reducer=ee.Reducer.sum(),
+                collection=self.TS,
+                scale=150
+            )
+        FloodIndex = sumfeatures.map(self.Floodindexcal)
+        self.maximum = FloodIndex.reduceColumns(ee.Reducer.max(),['Findex']).get('max')
+        Floodreclass2 = FloodIndex.map(self.Floodreclass1)
+
+        # Use a unique prefix to identify the exported file.
+        temp_file_prefix = _GetUniqueString()
 
         if not file_name:
-            file_name = temp_file_name + ".tif"
+            file_name = temp_file_prefix
         else:
-            file_name = file_name + ".tif"
+            file_name = file_name
 
-        task = ee.batch.Export.image.toDrive(
-            image = water_percent_image,
-            description = 'Export from SERVIR Mekong Team',
-            fileNamePrefix = temp_file_name,
-            scale = 30,
-            region = self.geometry.getInfo()['coordinates'],
-            skipEmptyTiles = True
-        )
+        try:
+            task = ee.batch.Export.table.toDrive(
+                collection= Floodreclass2,
+                description = file_name,
+                folder= 'Historical Flood Analysis tool',
+                fileFormat = 'SHP'
+            )
+        except Exception as e:
+            return {'error': e.message}
+
         task.start()
 
         i = 1
         while task.active():
-            print ("past %d seconds" % (i * settings.EE_TASK_POLL_FREQUENCY))
+            # print ('past %d seconds' % (i * settings.EE_TASK_POLL_FREQUENCY))
             i += 1
             time.sleep(settings.EE_TASK_POLL_FREQUENCY)
 
@@ -555,11 +581,70 @@ class GEEApi():
         state = task.status()['state']
         if state == ee.batch.Task.State.COMPLETED:
             try:
-                link = transfer_files_to_user_drive(temp_file_name, user_email, user_id, file_name, oauth2object)
+                link = _GiveFilesToUser(temp_file_prefix, user_email, user_id, file_name, oauth2object)
                 return {'driveLink': link}
             except Exception as e:
                 print (str(e))
                 return {'error': str(e)}
         else:
-            print ('Task failed (id: %s) because %s.' % (task.id, task.status()['error_message']))
-            return {'error': 'Task failed (id: %s) because %s.' % (task.id, task.status()['error_message'])}
+            print ('Task failed (id: %s) because %s' % (task.id, task.status()['error_message']))
+            return {'error': 'Task failed (id: %s) because %s' % (task.id, task.status()['error_message'])}
+
+
+    # -------------------------------------------------------------------------
+    def download_to_drive(self,
+                          index = 0,
+                          file_name = '',
+                          user_email = None,
+                          user_id = None,
+                          oauth2object = None,
+                          user_name = None
+                          ):
+
+        if not (user_email and user_id and oauth2object):
+            return {'error': 'something wrong with the google drive api!'}
+
+        image = self._calculate_water_percent_image()
+
+        # Use a unique prefix to identify the exported file.
+        temp_file_prefix = _GetUniqueString()
+
+        if not file_name:
+            file_name = temp_file_prefix + '.tif'
+        else:
+            file_name = file_name
+
+        try:
+            task = ee.batch.Export.image.toDrive(
+                image = image,
+                description = 'JRC data from historical Flood Tool by SERVIR Mekong',
+                fileNamePrefix = file_name,
+                folder = 'Historical Flood Analysis tool',
+                scale = 150,
+                region = self.COUNTRIES_GEOM ,#self.geometry.bounds().getInfo()['coordinates'],#self.geometry.getInfo()['coordinates'],
+                skipEmptyTiles = True,
+                maxPixels = 1E13
+            )
+        except Exception as e:
+            return {'error': e.message}
+
+        task.start()
+
+        i = 1
+        while task.active():
+            # print ('past %d seconds' % (i * settings.EE_TASK_POLL_FREQUENCY))
+            i += 1
+            time.sleep(settings.EE_TASK_POLL_FREQUENCY)
+
+        # Make a copy (or copies) in the user's Drive if the task succeeded
+        state = task.status()['state']
+        if state == ee.batch.Task.State.COMPLETED:
+            try:
+                link = _GiveFilesToUser(temp_file_prefix, user_email, user_id, file_name, oauth2object)
+                return {'driveLink': link}
+            except Exception as e:
+                print (str(e))
+                return {'error': str(e)}
+        else:
+            print ('Task failed (id: %s) because %s' % (task.id, task.status()['error_message']))
+            return {'error': 'Task failed (id: %s) because %s' % (task.id, task.status()['error_message'])}

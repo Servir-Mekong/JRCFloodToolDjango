@@ -96,6 +96,7 @@
 			var promise = $http.get('/api/', config)
 			.then(function (response) {
 				return response.data;
+				console.log(response.data);
 			});
 			return promise;
 		};
@@ -108,6 +109,32 @@
 					startMonth: startMonth,
 					endMonth: endMonth,
 					action: 'download-to-drive',
+					file: fileName,
+					method: method
+				}
+			};
+
+			var shapeType = shape.type;
+			if (shapeType === 'polygon') {
+				config.params.shape = shapeType;
+				config.params.geom = shape.geom.toString();
+			}
+
+			var promise = $http.get('/api/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+		this.saveHazardToDrive = function (startYear, endYear, startMonth, endMonth, method, shape, fileName) {
+			var config = {
+				params: {
+					startYear: startYear,
+					endYear: endYear,
+					startMonth: startMonth,
+					endMonth: endMonth,
+					action: 'download-hazard-to-drive',
 					file: fileName,
 					method: method
 				}

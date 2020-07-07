@@ -1,0 +1,232 @@
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\SERVIR\jrcfloodtool\mapclient\api.py", line 86, in api
+    if settings.EE_USE_CELERY:
+  File "C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\conf\__init__.py", line 49, in __getattr__
+    return getattr(self._wrapped, name)
+AttributeError: 'Settings' object has no attribute 'EE_USE_CELERY'
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\servirmsi\Anaconda2\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 151, in get_response
+    % (callback.__module__, view_name))
+ValueError: The view mapclient.api.api didn't return an HttpResponse object. It returned None instead.
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 146, in api
+    return JsonResponse(data, safe=False)
+UnboundLocalError: local variable 'data' referenced before assignment
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 146, in api
+    return JsonResponse(data, safe=False)
+UnboundLocalError: local variable 'data' referenced before assignment
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 146, in api
+    return JsonResponse(data, safe=False)
+UnboundLocalError: local variable 'data' referenced before assignment
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /favicon.ico
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /en/favicon.ico/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/downloadExcel/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 162, in downloadExcel
+    data = core.getExposureDownload(request)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\core.py", line 281, in getExposureDownload
+    exposure_df = self.getExposureTables()
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\core.py", line 265, in getExposureTables
+    df5 = pandas.merge(flood_haz_df, pop_wh_sh_df, how='outer', left_on='TS_PCODE', right_on='TS_PCODE')
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\pandas\core\reshape\merge.py", line 61, in merge
+    validate=validate)
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\pandas\core\reshape\merge.py", line 551, in __init__
+    self.join_names) = self._get_merge_keys()
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\pandas\core\reshape\merge.py", line 871, in _get_merge_keys
+    lk, stacklevel=stacklevel))
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\pandas\core\generic.py", line 1379, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'TS_PCODE'
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 39, in api
+    data = core.get_hazard_map_id()
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\core.py", line 415, in get_hazard_map_id
+    'palette': '045b06, fafb27, d20504'
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\image.py", line 131, in getMapId
+    response = data.getMapId(request)
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\data.py", line 591, in getMapId
+    body=request))
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\data.py", line 340, in _execute_cloud_call
+    raise _translate_cloud_exception(e)
+EEException: Collection.loadTable: Collection asset 'users/thannarotk/hfa/mmr_adm0' not found.
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:256 - handle_uncaught_exception() ] Internal Server Error: /en/api/
+Traceback (most recent call last):
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\api.py", line 39, in api
+    data = core.get_hazard_map_id()
+  File "D:\ADPC\SERVIR-MK\Web Application\jrcfloodtool\mapclient\core.py", line 415, in get_hazard_map_id
+    'palette': '045b06, fafb27, d20504'
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\image.py", line 131, in getMapId
+    response = data.getMapId(request)
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\data.py", line 591, in getMapId
+    body=request))
+  File "C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\ee\data.py", line 340, in _execute_cloud_call
+    raise _translate_cloud_exception(e)
+EEException: Collection.loadTable: Collection asset 'users/thannarotk/hfa/mmr_adm0' not found.
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /map/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /downloadExcel/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
+[C:\Users\Thannarotk\anaconda3\envs\hfa\lib\site-packages\django\core\handlers\base.py:170 - get_response() ] Not Found: /api/
